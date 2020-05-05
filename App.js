@@ -30,32 +30,24 @@ export default class App extends Component {
           latitude: 42.227131,
           longitude: -87.949499,
         },
-        title: "Best Place",
-        description: "This is the best place in Portland",
       },
       {
         coordinate: {
           latitude: 42.243308,
           longitude: -87.951591,
         },
-        title: "Second Best Place",
-        description: "This is the second best place in Portland",
       },
       {
         coordinate: {
-          latitude: 45.5230786,
-          longitude: -122.6701034,
+          latitude: 42.273745,
+          longitude: -87.955041,
         },
-        title: "Third Best Place",
-        description: "This is the third best place in Portland",
       },
       {
         coordinate: {
-          latitude: 45.521016,
-          longitude: -122.6561917,
+          latitude: 42.239369,
+          longitude: -87.958517,
         },
-        title: "Fourth Best Place",
-        description: "This is the fourth best place in Portland",
       },
     ],
     region: {
@@ -85,6 +77,30 @@ export default class App extends Component {
     this.getLocationAsync();
     this.index = 0;
     this.animation = new Animated.Value(0);
+    this.animation.addListener(({ value }) => {
+    let index = Math.floor(value / CARD_WIDTH + 0.2); // animate 20% away from landing on the next item
+      if (index >= this.state.markers.length) {
+        index = this.state.markers.length - 1;
+      }
+      if (index <= 0) {
+        index = 0;
+      }
+      clearTimeout(this.regionTimeout);
+      this.regionTimeout = setTimeout(() => {
+        if (this.index !== index) {
+          this.index = index;
+          const { coordinate } = this.state.markers[index];
+          this.map.animateToRegion(
+            {
+              ...coordinate,
+              latitudeDelta: this.state.region.latitudeDelta,
+              longitudeDelta: this.state.region.longitudeDelta,
+            },
+            350
+          );
+        }
+      }, 10);
+    });
   }
 
   handleMapRegionChange = (map) => {
