@@ -136,6 +136,9 @@ export default class App extends Component {
           initialRegion={this.state.mapRegion}
           style={styles.container}
         >
+          {this.state.location != null ? <MapView.Marker key={this.state.markers.length} coordinate={this.state.location} title="Your Location" pinColor='blue' isPreselected={true}></MapView.Marker> : null}
+
+       
           {this.state.markers.map((marker, index) => {
             return (
               <MapView.Marker key={index} coordinate={marker.coordinate}>
@@ -162,7 +165,6 @@ export default class App extends Component {
             { useNativeDriver: true }
           )}
           style={styles.scrollView}
-          contentContainerStyle={styles.endPadding}
         >
           {this.state.markers.map((marker, index) => (
             <View style={styles.card} key={index}>
