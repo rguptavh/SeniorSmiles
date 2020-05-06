@@ -1,228 +1,269 @@
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Image,
-  Dimensions,
-} from "react-native";
-import MapView from "react-native-maps";
-import * as Location from 'expo-location';
+import React from 'react';
+import { Text, View, Vibration, Platform, StyleSheet,AsyncStorage, Image, Alert } from 'react-native';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import * as Font from 'expo-font';
+import Constants from 'expo-constants';
+import { createStackNavigator } from 'react-navigation-stack'
+import { createAppContainer } from 'react-navigation';
+import log from './components/Login';
+import map from './components/Map';
+import { SplashScreen } from 'expo';
+import { Asset } from 'expo-asset';
+import moment from 'moment';
 
-const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = height*0.3;
-const CARD_WIDTH = width*0.9;
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-  this.state = {
-    mapRegion: null,
-    hasLocationPermissions: false,
-    locationResult: null,
-    location: null,
-    markers: [
-      {
-        coordinate: {
-          latitude: 42.227131,
-          longitude: -87.949499,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.243308,
-          longitude: -87.951591,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.273745,
-          longitude: -87.955041,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.239369,
-          longitude: -87.958517,
-        },
-      },
-    ],
-    region: {
-      latitude: 45.52220671242907,
-      longitude: -122.6653281029795,
-      latitudeDelta: 0.04864195044303443,
-      longitudeDelta: 0.040142817690068,
-    },
+
+//import moment from 'moment';
+global.token = "None"
+let logged = false;
+
+export default class AppContainer extends React.Component {
+  state = {
+    notification: {},
+    assetsLoaded: false,
+    isAppReady: false,
   };
-}
-  animate() {
-    const { coordinate } = this.state.coordinate;
-    const newCoordinate = {
-      latitude: LATITUDE + (Math.random() - 0.5) * (LATITUDE_DELTA / 2),
-      longitude: LONGITUDE + (Math.random() - 0.5) * (LONGITUDE_DELTA / 2),
-    };
+  constructor() {
+    super();
+    Text.defaultProps = Text.defaultProps || {};
+    // Ignore dynamic type scaling on iOS
+    Text.defaultProps.allowFontScaling = false;
+    SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
+
+  }
+  registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        asked = await AsyncStorage.getItem('asked')
+        console.log(asked)
+        if (asked == null || asked == 'undefined') {
+          AsyncStorage.setItem('asked', "true");
+          Alert.alert('Please Enable Notifications','This app uses notifications to notify you about the status of requests.');
+        }
+
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+        finalStatus = status;
+        console.log(status)
+      }
+      if (finalStatus !== 'granted') {
+        return;
+      }
+      global.token = await Notifications.getExpoPushTokenAsync();
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
 
     if (Platform.OS === 'android') {
-      if (this.marker) {
-        this.marker._component.animateMarkerToCoordinate(newCoordinate, 500);
-      }
-    } else {
-      coordinate.timing(newCoordinate).start();
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      });
     }
-  }
-  componentDidMount() {
-    this.getLocationAsync();
-    this.index = 0;
-    this.animation = new Animated.Value(0);
-    this.animation.addListener(({ value }) => {
-    let index = Math.floor(value / CARD_WIDTH + 0.2); // animate 20% away from landing on the next item
-      if (index >= this.state.markers.length) {
-        index = this.state.markers.length - 1;
-      }
-      if (index <= 0) {
-        index = 0;
-      }
-      clearTimeout(this.regionTimeout);
-      this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-          const { coordinate } = this.state.markers[index];
-          this.map.animateToRegion(
-            {
-              ...coordinate,
-              latitudeDelta: this.state.region.latitudeDelta,
-              longitudeDelta: this.state.region.longitudeDelta,
-            },
-            350
-          );
-        }
-      }, 10);
+  };
+
+  async componentDidMount() {
+    this.registerForPushNotificationsAsync();
+
+    // Handle notifications that are received or selected while the app
+    // is open. If the app was closed and then opened by tapping the
+    // notification (rather than just tapping the app icon to open it),
+    // this function will fire on the next tick after the app starts
+    // with the notification data.
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    await Font.loadAsync({
+      'Noto': require('./assets/fonts/NotoSans-SemiBold.ttf'),
+      'WSR': require('./assets/fonts/WorkSans-Regular.ttf'),
+      'WSB': require('./assets/fonts/WorkSans-SemiBold.ttf'),
+      'WSBB': require('./assets/fonts/WorkSans-Black.ttf'),
     });
-  }
+    this.cacheResourcesAsync() // ask for resources
+    .then(() => this.setState({assetsLoaded: true})) // mark resources as loaded
 
-  handleMapRegionChange = (map) => {
-      //console.log(map);
-      this.setState({mapRegion: map });
+    global.logging = false;
+    let name;
+    try {
+      name = await AsyncStorage.getItem('username')
+    //  // console.log(name);
+    //  // console.log(global.logged);
+      if (name !== null && name != 'undefined') {
+        logged = true;
+        global.uname = name;
+      }
+
+    } catch (e) {
+      console.log('Failed to load .')
     }
+    if (logged) {
+      global.logging = true;
+      this.setState({ assetsLoaded: true });
+      var uname = name;
+      const Http = new XMLHttpRequest();
+      const url = 'https://script.google.com/macros/s/AKfycbxMNgxSn85f9bfVMc5Ow0sG1s0tBf4d2HwAKzASfCSuu9mePQYm/exec';
+      var data = "?username=" + uname + "&token=" + String(global.token) +"&action=getlogs";
+      console.log(data)
+      Http.open("GET", String(url + data));
+      Http.send();
+      var ok;
+      Http.onreadystatechange = (e) => {
+        ok = Http.responseText;
+        if (Http.readyState == 4) {
+          console.log(String(ok));
 
-  async getLocationAsync (){
-   let { status } = await Location.requestPermissionsAsync();
-   if (status !== 'granted') {
-     this.setState({
-       locationResult: 'Permission to access location was denied',
-     });
-   } else {
-     this.setState({ hasLocationPermissions: true });
-   }
+          if (ok.substring(0, 4) == "true") {
+            // console.log(response.toString());
+            global.uname = uname;
+            var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
+            global.hours = Math.floor(total);
+            global.minutes = Math.round((total - global.hours) * 60);
+            console.log(global.minutes)
+            var data = JSON.parse(ok.substring(ok.indexOf(",", 5) + 1, ok.length))
 
-   let location = await Location.getCurrentPositionAsync({});
-   console.log(location)
-   this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
-   this.setState({ locationResult: JSON.stringify(location) });
-   this.setState({ location: {latitude: location.coords.latitude, longitude: location.coords.longitude}});
-   
-   // Center the map on the location we just fetched.
+            // console.log(JSON.stringify(data))
+            var ongoing = [];
+            var specific = [];
+            var log = [];
+            for (var x = 0; x < data.length; x++) {
+              if (data[x].type == "Log") {
+                data[x]["id"] = "" + x;
+                log.push(data[x]);
+              }
+              else if (data[x].type == "Ongoing") {
+                data[x]["id"] = "" + x;
+                ongoing.push(data[x]);
+              }
+              else if (data[x].type == "Specific") {
+                data[x]["id"] = "" + x;
+                specific.push(data[x]);
+              }
+            }
+            console.log(data)
 
+            specific = specific.sort((a, b) => moment(a.date + " " + a.start, 'MM-DD-YYYY h:mm A').format('X') - moment(b.date + " " + b.start, 'MM-DD-YYYY h:mm A').format('X'))
+            log = log.sort((a, b) => moment(b.date, 'MM-DD-YYYY').format('X') - moment(a.date, 'MM-DD-YYYY').format('X'))
+            const map = new Map();
+            let result = [];
+            for (const item of log) {
+              if (!map.has(item.date)) {
+                map.set(item.date, true);    // set any value to Map
+                result.push(item.date);
+              }
+            }
+            for (var i = 0; i < log.length; i++) {
+              if (result.includes(log[i].date)) {
+                result.shift();
+                // console.log(result)
+                const he = {
+                  header: true,
+                  id: "" + (data.length + i),
+                  date: log[i].date
+                }
+                log.splice(i, 0, he);
+              }
+            }
+            var options = []
+            for (const item of ongoing) {
+              options.push({ label: item.name, value: item.name })
+            }
+            for (const item of specific) {
+              options.push({ label: item.name, value: item.name })
+            }
+            global.options = options;
+            global.ongoing = ongoing;
+            global.specific = specific;
+            global.logs = log;
+            // console.log(JSON.stringify(data))
+            this.setState({ isAppReady: true });
+
+          }
+          else {
+            console.log(ok)
+            global.hours = 0;
+            global.minutes = 0;
+            this.setState({ isAppReady: true });
+            setTimeout(() => { alert("Server Error"); }, 100);
+          }
+
+        }
+      }
+    }
+    else {
+      global.hours = 0;
+      global.minutes = 0;
+      SplashScreen.hide();
+      this.setState({ isAppReady: true });
+    }
+ 
   }
 
+  _handleNotification = notification => {
+    Vibration.vibrate();
+    this.setState({ notification: notification });
+  };
+
+  // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
   render() {
-    return (
-      <View style={styles.container}>
-        <MapView
-          ref={map => this.map = map}
-          initialRegion={this.state.mapRegion}
-          style={styles.container}
-        >
-          {this.state.location != null ? <MapView.Marker key={this.state.markers.length} coordinate={this.state.location} title="Your Location" pinColor='blue' isPreselected={true}></MapView.Marker> : null}
+    if (!this.state.assetsLoaded) {
+      return null;
+  }
+    if (!this.state.isAppReady) {
+        return (
+          <View style={{ flex: 1 }}>
+          <Image
+            style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
+            source={require('./assets/splash.gif')}
+            onLoadEnd={() => {
+              console.log('Image#onLoadEnd: hiding SplashScreen');
+              SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
+            }}
+            fadeDuration={0}
+          />
+        </View>
+      );
+        }
 
-       
-          {this.state.markers.map((marker, index) => {
-            return (
-              <MapView.Marker key={index} coordinate={marker.coordinate}>
+      const AppNavigator = createStackNavigator({
+        Login: {
+          screen: log
+        },
+        Map: {
+          screen: map
+        },
+      },
+        {
+          initialRouteName: logged ? 'Map' : 'Login',
+          headerMode: 'none'
+        });
 
-              </MapView.Marker>
-            );
-          })}
-        </MapView>
-        <Animated.ScrollView
-          horizontal
-          scrollEventThrottle={16}
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH*1.115}
-          disableIntervalMomentum={true}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: this.animation,
-                  },
-                },
-              },
-            ],
-            { useNativeDriver: true }
-          )}
-          style={styles.scrollView}
-        >
-          {this.state.markers.map((marker, index) => (
-            <View style={styles.card} key={index}>
-            </View>
-          ))}
-        </Animated.ScrollView>
-      </View>
-    );
+      const AppContainer = createAppContainer(AppNavigator);
+      return(
+      <AppContainer/>
+      );
+  }
+  async cacheResourcesAsync() {
+    const images = [require('./assets/splash.png')];
+    const cacheImages = images.map(image => Asset.fromModule(image).downloadAsync());
+    return Promise.all(cacheImages);
   }
 }
+
+/*  TO GET PUSH RECEIPTS, RUN THE FOLLOWING COMMAND IN TERMINAL, WITH THE RECEIPTID SHOWN IN THE CONSOLE LOGS
+
+    curl -H "Content-Type: application/json" -X POST "https://exp.host/--/api/v2/push/getReceipts" -d '{
+      "ids": ["YOUR RECEIPTID STRING HERE"]
+      }'
+*/
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollView: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    bottom: height*0.07,
-    paddingVertical: 0,
-    
-  },
-  endPadding: {
-    paddingRight: 0,
-  },
-  card: {
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#FFF",
-    shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    overflow: "hidden",
-    marginHorizontal:width*0.05,
-    borderRadius:25
-  },
-  cardImage: {
-    flex: 3,
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-  },
-  textContent: {
-    flex: 1,
-  },
-  cardtitle: {
-    fontSize: 12,
-    marginTop: 5,
-    fontWeight: "bold",
-  },
-  cardDescription: {
-    fontSize: 12,
-    color: "#444",
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
