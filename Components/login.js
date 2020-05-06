@@ -140,7 +140,7 @@ export default class Login extends React.Component {
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
             <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Welcome.</Text></View>
             <View style={{
-              flex: 2.25, width: '90%'
+              flex: 2.25, width: '90%', alignItems:'flex-end'
             }}>
               <View style={{ width: '100%', height: '85%', alignItems: 'flex-end' }}>
                 <View style={{
@@ -176,11 +176,13 @@ export default class Login extends React.Component {
                     value={this.state.password}
                     secureTextEntry={true}
 
-                  /></View>
-                <TouchableOpacity style={{ marginTop: 2*rem }}>
+                  />
+                  </View>
+
+              </View>
+              <TouchableOpacity style={{ marginTop: 2*rem, }}>
                   <Text style={{color: '#22B7CB' ,fontSize:15*wid,fontFamily:'Source'}}>Forgot your password?</Text>
                 </TouchableOpacity>
-              </View>
             </View>
             <View style={{
               width: '73%',
@@ -208,7 +210,7 @@ export default class Login extends React.Component {
               </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
                   <Text style={styles.link}>Sign up</Text>
                 </TouchableOpacity>
               </View>

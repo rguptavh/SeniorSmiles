@@ -8,6 +8,7 @@ import { createStackNavigator } from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
 import log from './Components/login';
 import map from './Components/Map';
+import signup from './Components/signup';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
@@ -234,6 +235,9 @@ export default class AppContainer extends React.Component {
         Map: {
           screen: map
         },
+        Signup: {
+          screen:signup
+        }
       },
         {
           initialRouteName: logged ? 'Login' : 'Login',
