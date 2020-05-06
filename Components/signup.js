@@ -148,7 +148,7 @@ export default class Login extends React.Component {
                 */
                
               this.setState({ loading: false });
-              alert("Succesfully signed up!");
+              setTimeout(() => { alert("Succesfully signed up!"); }, 100);
               this.props.navigation.navigate('Login')
 
             }
