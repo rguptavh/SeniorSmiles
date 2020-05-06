@@ -40,8 +40,7 @@ export default class Login extends React.Component {
           ok = Http.responseText;
           if (Http.readyState == 4) {
             console.log(String(ok));
-
-            if (ok.substring(0, 4) == "true") {
+            if (ok.substring(0, 9) == "Volunteer") {
               // console.log(response.toString());
               global.uname = uname;
               /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
@@ -107,9 +106,14 @@ export default class Login extends React.Component {
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
               this.setState({ loading: false });
-              alert('Success!');
+              this.props.navigation.navigate('Map');
               //this.props.navigation.replace('Main')
               
+            }
+            else if (ok.substring(0, 6) == "Senior") {
+              this.setState({ loading: false });
+              setTimeout(() => { alert("Senior Login"); }, 100);
+
             }
             else if (ok.substring(0, 5) == "false") {
               this.setState({ loading: false });
