@@ -77,10 +77,10 @@ export default class AppContainer extends React.Component {
     // with the notification data.
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
     await Font.loadAsync({
-      'Noto': require('./assets/fonts/NotoSans-SemiBold.ttf'),
-      'WSR': require('./assets/fonts/WorkSans-Regular.ttf'),
-      'WSB': require('./assets/fonts/WorkSans-SemiBold.ttf'),
-      'WSBB': require('./assets/fonts/WorkSans-Black.ttf'),
+      //'Noto': require('./assets/fonts/NotoSans-SemiBold.ttf'),
+      'Source': require('./assets/fonts/SourceSansPro-Regular.otf'),
+      'SourceB': require('./assets/fonts/SourceSansPro-Bold.otf'),
+      'SourceL': require('./assets/fonts/SourceSansPro-Light.otf'),
     });
     this.cacheResourcesAsync() // ask for resources
     .then(() => this.setState({assetsLoaded: true})) // mark resources as loaded
@@ -236,7 +236,7 @@ export default class AppContainer extends React.Component {
         },
       },
         {
-          initialRouteName: logged ? 'Map' : 'Login',
+          initialRouteName: logged ? 'Login' : 'Login',
           headerMode: 'none'
         });
 

@@ -138,7 +138,7 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold' }}>Welcome</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold' }}>Welcome.</Text></View>
             <View style={{
               flex: 2.25, width: '90%'
             }}>
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
+    fontFamily: 'Source',
     // left: 0, top: 0, position: 'absolute'
 
   },
@@ -262,4 +263,5 @@ const styles = StyleSheet.create({
     color: '#22B7CB',
     fontSize:15*wid
   },
+
 });
