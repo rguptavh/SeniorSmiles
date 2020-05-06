@@ -142,7 +142,7 @@ export default class Login extends React.Component {
             <View style={{
               flex: 2.25, width: '90%', alignItems:'flex-end'
             }}>
-              <View style={{ width: '100%', height: '85%', alignItems: 'flex-end' }}>
+              <View style={{ width: '100%', height: '80%', alignItems: 'flex-end' }}>
                 <View style={{
                   width: '100%',
                   flex: 1.5,
@@ -151,7 +151,7 @@ export default class Login extends React.Component {
                   borderRadius: 20,
                 }}>
                   <TextInput
-                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
+                    style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Username"
@@ -168,7 +168,7 @@ export default class Login extends React.Component {
                   borderRadius: 20
                 }}>
                   <TextInput
-                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
+                    style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Password"

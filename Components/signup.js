@@ -2,6 +2,8 @@ import * as React from 'react';
 import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import RNPickerSelect from 'react-native-picker-select';
+
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -13,6 +15,7 @@ export default class Login extends React.Component {
     password: '',
     email: '',
     loading: false,
+    event:null
   };
   constructor() {
     super();
@@ -25,7 +28,39 @@ export default class Login extends React.Component {
 
   render() {
 
-
+    const pickerStyle = {
+        inputIOS: {
+          color: 'black',
+          alignSelf: 'center',
+          fontSize: 15 * rem,
+          height: '100%',
+          width: '95%',
+          marginLeft:'5%',
+          fontFamily: 'SourceL'
+        },
+        inputAndroid: {
+          color: 'black',
+          alignSelf: 'center',
+          fontSize: 15 * rem,
+          height: '100%',
+          width: '95%',
+          marginLeft:'5%',
+          fontFamily: 'SourceL'
+  
+        },
+        placeholder: {
+          color: '#9EA0A4',
+          fontSize: rem*15,
+          fontFamily: 'SourceL'
+        },
+  
+      };    
+      const placeholder = {
+        label: 'Select an account type',
+        value: null,
+        color: '#9EA0A4',
+        fontFamily: 'SourceL'
+      };
     const onPress = () => {
       var uname = this.state.username;
       var pword = this.state.password;
@@ -175,10 +210,9 @@ export default class Login extends React.Component {
                     placeholder="Username"
                     onChangeText={(value) => this.setState({ username: value })}
                     value={this.state.username}
-                    secureTextEntry={true}
 
                   /></View>
-                                  <View style={{ width: '100%', flex: 0.4 }}></View>
+                <View style={{ width: '100%', flex: 0.4 }}></View>
                 <View style={{
                   width: '100%',
                   flex: 1.5,
@@ -196,6 +230,24 @@ export default class Login extends React.Component {
                     secureTextEntry={true}
 
                   /></View>
+                  <View style={{ width: '100%', flex: 0.4 }}></View>
+                  <View style={{
+                  width: '100%',
+                  flex: 1.5,
+                  borderColor: '#3C5984',
+                  borderWidth: 2,
+                  borderRadius: 20
+                }}>
+                  <RNPickerSelect
+                    style={pickerStyle}
+                    //  placeholderTextColor="red"
+                    useNativeAndroidPickerStyle={false}
+                    placeholder={placeholder}
+                    onValueChange={(value) => this.setState({ event: value})}
+                    items={[{label:'Volunteer',value:'Volunteer'},{label:'Senior',value:'Senior'}]}
+
+                  />
+                </View>
               </View>
             </View>
             <View style={{
