@@ -10,6 +10,7 @@ import log from './Components/login';
 import forgot from './Components/forgot';
 import map from './Components/Map';
 import signup from './Components/signup';
+import senior from './Components/senior';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
@@ -242,10 +243,13 @@ export default class AppContainer extends React.Component {
         },
         Forgot: {
           screen:forgot
+        },
+        Senior: {
+          screen:senior
         }
       },
         {
-          initialRouteName: logged ? 'Map' : 'Login',
+          initialRouteName: logged ? 'Map' : 'Senior',
           headerMode: 'none'
         });
 
