@@ -152,6 +152,7 @@ export default class App extends Component {
           scrollEventThrottle={16}
           showsHorizontalScrollIndicator={false}
           snapToInterval={CARD_WIDTH*1.115}
+          disableIntervalMomentum={true}
           onScroll={Animated.event(
             [
               {
@@ -203,7 +204,8 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     width: CARD_WIDTH,
     overflow: "hidden",
-    marginHorizontal:width*0.05
+    marginHorizontal:width*0.05,
+    borderRadius:25
   },
   cardImage: {
     flex: 3,
@@ -222,9 +224,5 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 12,
     color: "#444",
-  },
-  markerWrap: {
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
