@@ -11,11 +11,8 @@ const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
 export default class Login extends React.Component {
   state = {
-    username: '',
-    password: '',
     email: '',
     loading: false,
-    event:null
   };
   constructor() {
     super();
@@ -62,16 +59,13 @@ export default class Login extends React.Component {
         fontFamily: 'SourceL',
       };
     const onPress = () => {
-      var uname = this.state.username;
-      var pword = this.state.password;
-      var sv = this.state.event;
       var email = this.state.email;
 
-      if (uname != "" && pword != "") {
+      if (email != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=signup"+"&sv="+sv+"&email="+email;
+        var data = "?action=forgot"+"&email="+email;
         console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
@@ -148,7 +142,7 @@ export default class Login extends React.Component {
                 */
                
               this.setState({ loading: false });
-              alert("Succesfully signed up!");
+              setTimeout(() => { alert("Succesfully Sent Email"); }, 100);
               this.props.navigation.navigate('Login')
 
             }
