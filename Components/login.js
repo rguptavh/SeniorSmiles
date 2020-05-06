@@ -151,7 +151,7 @@ export default class Login extends React.Component {
                   borderRadius: 20,
                 }}>
                   <TextInput
-                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%' }}
+                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Username"
@@ -168,7 +168,7 @@ export default class Login extends React.Component {
                   borderRadius: 20
                 }}>
                   <TextInput
-                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%' }}
+                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Password"
