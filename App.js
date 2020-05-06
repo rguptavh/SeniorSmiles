@@ -6,8 +6,8 @@ import * as Font from 'expo-font';
 import Constants from 'expo-constants';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
-import log from './components/Login';
-import map from './components/Map';
+import log from './Components/login';
+import map from './Components/Map';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';

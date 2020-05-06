@@ -138,7 +138,7 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold' }}>Welcome.</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Welcome.</Text></View>
             <View style={{
               flex: 2.25, width: '90%'
             }}>
@@ -178,7 +178,7 @@ export default class Login extends React.Component {
 
                   /></View>
                 <TouchableOpacity style={{ marginTop: 2*rem }}>
-                  <Text style={{color: '#22B7CB' ,fontSize:15*wid}}>Forgot your password?</Text>
+                  <Text style={{color: '#22B7CB' ,fontSize:15*wid,fontFamily:'Source'}}>Forgot your password?</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -190,8 +190,9 @@ export default class Login extends React.Component {
             }}>
               <TouchableOpacity
                 style={{
-                  height: entireScreenWidth * 0.73 * 276 / 1096,
-                  width: '100%',
+                  height: entireScreenWidth * 0.73 * 240 / 720*0.8,
+                  marginTop:'7%',
+                  width: '80%',
                 }}
                 onPress={onPress}
                 disabled={this.state.loading}
@@ -227,7 +228,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'Source',
     // left: 0, top: 0, position: 'absolute'
 
   },
@@ -256,12 +256,14 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'black',
-    fontSize:15*wid
+    fontSize:18*wid,
+    fontFamily:'Source'
   },
   link: {
     fontWeight: 'bold',
     color: '#22B7CB',
-    fontSize:15*wid
+    fontSize:18*wid,
+    fontFamily:'SourceB'
   },
 
 });
