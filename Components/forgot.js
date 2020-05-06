@@ -24,40 +24,6 @@ export default class Login extends React.Component {
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
 
   render() {
-
-    const pickerStyle = {
-        inputIOS: {
-          color: 'black',
-          alignSelf: 'center',
-          fontSize: 15 * rem,
-          height: '100%',
-          width: '95%',
-          marginLeft:'5%',
-          fontFamily: 'SourceL'
-        },
-        inputAndroid: {
-          color: 'black',
-          alignSelf: 'center',
-          fontSize: 15 * rem,
-          height: '100%',
-          width: '95%',
-          marginLeft:'5%',
-          fontFamily: 'SourceL'
-  
-        },
-        placeholder: {
-          color: '#9EA0A4',
-          fontSize: rem*15,
-          fontFamily: 'SourceL'
-        },
-  
-      };    
-      const placeholder = {
-        label: 'Select an account type',
-        value: null,
-        color: '#9EA0A4',
-        fontFamily: 'SourceL',
-      };
     const onPress = () => {
       var email = this.state.email;
 
@@ -170,7 +136,7 @@ export default class Login extends React.Component {
           <View style={styles.container}>
             <Spinner
               visible={this.state.loading}
-              textContent={'Logging in...'}
+              textContent={'Sending Email...'}
               textStyle={styles.spinnerTextStyle}
             />
             <View style={{ flex: 0.35 }}></View>

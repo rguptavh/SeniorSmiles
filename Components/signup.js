@@ -176,7 +176,7 @@ export default class Login extends React.Component {
           <View style={styles.container}>
             <Spinner
               visible={this.state.loading}
-              textContent={'Logging in...'}
+              textContent={'Signing Up...'}
               textStyle={styles.spinnerTextStyle}
             />
             <View style={{ flex: 0.35 }}></View>
