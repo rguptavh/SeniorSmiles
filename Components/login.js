@@ -106,7 +106,7 @@ export default class Login extends React.Component {
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
               this.setState({ loading: false });
-              this.props.navigation.navigate('Map');
+              this.props.navigation.replace('Map');
               //this.props.navigation.replace('Main')
               
             }

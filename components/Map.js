@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -24,6 +23,7 @@ export default class App extends Component {
     hasLocationPermissions: false,
     locationResult: null,
     location: null,
+    index: 0,
     markers: [
       {
         coordinate: {
@@ -53,8 +53,8 @@ export default class App extends Component {
     region: {
       latitude: 45.52220671242907,
       longitude: -122.6653281029795,
-      latitudeDelta: 0.04864195044303443,
-      longitudeDelta: 0.040142817690068,
+      latitudeDelta: 0.02864195044303443,
+      longitudeDelta: 0.020142817690068,
     },
   };
 }
@@ -85,6 +85,7 @@ export default class App extends Component {
       if (index <= 0) {
         index = 0;
       }
+      this.setState({index: index})
       clearTimeout(this.regionTimeout);
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
@@ -141,7 +142,7 @@ export default class App extends Component {
        
           {this.state.markers.map((marker, index) => {
             return (
-              <MapView.Marker key={index} coordinate={marker.coordinate}>
+              <MapView.Marker key={index} coordinate={marker.coordinate} pinColor= {this.state.index == index ? 'green' : 'red'}>
 
               </MapView.Marker>
             );
