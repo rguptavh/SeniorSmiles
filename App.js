@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
 import log from './Components/login';
+import forgot from './Components/forgot';
 import map from './Components/Map';
 import signup from './Components/signup';
 import { SplashScreen } from 'expo';
@@ -100,6 +101,7 @@ export default class AppContainer extends React.Component {
     } catch (e) {
       console.log('Failed to load .')
     }
+    logged = false;
     if (logged) {
       global.logging = true;
       this.setState({ assetsLoaded: true });
@@ -237,10 +239,13 @@ export default class AppContainer extends React.Component {
         },
         Signup: {
           screen:signup
+        },
+        Forgot: {
+          screen:forgot
         }
       },
         {
-          initialRouteName: logged ? 'Login' : 'Login',
+          initialRouteName: logged ? 'Map' : 'Login',
           headerMode: 'none'
         });
 

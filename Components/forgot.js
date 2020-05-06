@@ -2,6 +2,8 @@ import * as React from 'react';
 import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import RNPickerSelect from 'react-native-picker-select';
+
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -11,7 +13,9 @@ export default class Login extends React.Component {
   state = {
     username: '',
     password: '',
+    email: '',
     loading: false,
+    event:null
   };
   constructor() {
     super();
@@ -24,15 +28,51 @@ export default class Login extends React.Component {
 
   render() {
 
-
+    const pickerStyle = {
+        inputIOS: {
+          color: 'black',
+          alignSelf: 'center',
+          fontSize: 15 * rem,
+          height: '100%',
+          width: '95%',
+          marginLeft:'5%',
+          fontFamily: 'SourceL'
+        },
+        inputAndroid: {
+          color: 'black',
+          alignSelf: 'center',
+          fontSize: 15 * rem,
+          height: '100%',
+          width: '95%',
+          marginLeft:'5%',
+          fontFamily: 'SourceL'
+  
+        },
+        placeholder: {
+          color: '#9EA0A4',
+          fontSize: rem*15,
+          fontFamily: 'SourceL'
+        },
+  
+      };    
+      const placeholder = {
+        label: 'Select an account type',
+        value: null,
+        color: '#9EA0A4',
+        fontFamily: 'SourceL',
+      };
     const onPress = () => {
       var uname = this.state.username;
       var pword = this.state.password;
+      var sv = this.state.event;
+      var email = this.state.email;
+
       if (uname != "" && pword != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=login";
+        var data = "?username=" + uname + "&password=" + pword + "&action=signup"+"&sv="+sv+"&email="+email;
+        console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
         var ok;
@@ -43,8 +83,8 @@ export default class Login extends React.Component {
 
             if (ok.substring(0, 4) == "true") {
               // console.log(response.toString());
-              global.uname = uname;
-              /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
+              /*global.uname = uname;
+              var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
               global.hours = Math.floor(total);
               global.minutes = Math.round((total - global.hours) * 60);
               console.log(global.minutes)
@@ -103,13 +143,14 @@ export default class Login extends React.Component {
               global.ongoing = ongoing;
               global.specific = specific;
               global.logs = log;
-              */
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
+                */
+               
               this.setState({ loading: false });
-              alert('Success!');
-              //this.props.navigation.replace('Main')
-              
+              alert("Succesfully signed up!");
+              this.props.navigation.navigate('Login')
+
             }
             else if (ok.substring(0, 5) == "false") {
               this.setState({ loading: false });
@@ -140,11 +181,11 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Welcome.</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Forgot Login.</Text></View>
             <View style={{
-              flex: 2.25, width: '90%', alignItems:'flex-end'
+              flex: 1, width: '90%'
             }}>
-              <View style={{ width: '100%', height: '80%', alignItems: 'flex-end' }}>
+              <View style={{ width: '100%', height: '100%', alignItems: 'flex-end' }}>
                 <View style={{
                   width: '100%',
                   flex: 1.5,
@@ -153,48 +194,27 @@ export default class Login extends React.Component {
                   borderRadius: 20,
                 }}>
                   <TextInput
-                    style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
+                    style={{ fontSize: 15 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                     autoCapitalize='none'
                     autoCompleteType='off'
-                    placeholder="Username"
-                    onChangeText={(value) => this.setState({ username: value })}
-                    value={this.state.username}
+                    placeholder="Email"
+                    onChangeText={(value) => this.setState({ email: value })}
+                    value={this.state.email}
 
                   /></View>
-                <View style={{ width: '100%', flex: 0.4 }}></View>
-                <View style={{
-                  width: '100%',
-                  flex: 1.5,
-                  borderColor: '#3C5984',
-                  borderWidth: 2,
-                  borderRadius: 20
-                }}>
-                  <TextInput
-                    style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
-                    autoCapitalize='none'
-                    autoCompleteType='off'
-                    placeholder="Password"
-                    onChangeText={(value) => this.setState({ password: value })}
-                    value={this.state.password}
-                    secureTextEntry={true}
-
-                  />
-                  </View>
-
+              <View style = {{flex:0.5}}></View>
               </View>
-              <TouchableOpacity style={{ marginTop: 2*rem, }} onPress={() => this.props.navigation.navigate('Forgot')}>
-                  <Text style={{color: '#22B7CB' ,fontSize:15*wid,fontFamily:'Source'}}>Forgot your password?</Text>
-                </TouchableOpacity>
+
             </View>
             <View style={{
-              width: '73%',
-              flex: 1.75,
+              width: '85%',
+              flex: 3,
               justifyContent: 'flex-start',
               alignItems:'center'
             }}>
               <TouchableOpacity
                 style={{
-                  height: entireScreenWidth * 0.73 * 240 / 720*0.8,
+                  height: entireScreenWidth * 0.85 * 240 / 1068,
                   marginTop:'7%',
                   width: '80%',
                 }}
@@ -202,7 +222,7 @@ export default class Login extends React.Component {
                 disabled={this.state.loading}
 
               >
-                <Image source={require('../assets/logbut.png')} style={{
+                <Image source={require('../assets/forgot.png')} style={{
                   height: '100%',
                   width: '100%',
                   flex: 1
@@ -211,9 +231,9 @@ export default class Login extends React.Component {
                 }} resizeMode="contain"></Image>
               </TouchableOpacity>
               <View style={styles.row}>
-                <Text style={styles.label}>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
-                  <Text style={styles.link}>Sign up</Text>
+                <Text style={styles.label}>Check email for your credentials. </Text>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+                  <Text style={styles.link}>Login</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -256,7 +276,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginTop: rem*10,
+    marginTop: rem*20,
   },
   label: {
     color: 'black',
