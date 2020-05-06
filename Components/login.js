@@ -31,7 +31,7 @@ export default class Login extends React.Component {
       if (uname != "" && pword != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbxMNgxSn85f9bfVMc5Ow0sG1s0tBf4d2HwAKzASfCSuu9mePQYm/exec';
+        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
         var data = "?username=" + uname + "&password=" + pword + "&action=login";
         Http.open("GET", String(url + data));
         Http.send();
@@ -44,7 +44,7 @@ export default class Login extends React.Component {
             if (ok.substring(0, 4) == "true") {
               // console.log(response.toString());
               global.uname = uname;
-              var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
+              /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
               global.hours = Math.floor(total);
               global.minutes = Math.round((total - global.hours) * 60);
               console.log(global.minutes)
@@ -103,11 +103,13 @@ export default class Login extends React.Component {
               global.ongoing = ongoing;
               global.specific = specific;
               global.logs = log;
+              */
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
               this.setState({ loading: false });
-              this.props.navigation.replace('Main')
-
+              alert('Success!');
+              //this.props.navigation.replace('Main')
+              
             }
             else if (ok.substring(0, 5) == "false") {
               this.setState({ loading: false });

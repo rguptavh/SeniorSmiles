@@ -59,16 +59,20 @@ export default class Login extends React.Component {
         label: 'Select an account type',
         value: null,
         color: '#9EA0A4',
-        fontFamily: 'SourceL'
+        fontFamily: 'SourceL',
       };
     const onPress = () => {
       var uname = this.state.username;
       var pword = this.state.password;
+      var sv = this.state.event;
+      var email = this.state.email;
+
       if (uname != "" && pword != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbxMNgxSn85f9bfVMc5Ow0sG1s0tBf4d2HwAKzASfCSuu9mePQYm/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=login";
+        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+        var data = "?username=" + uname + "&password=" + pword + "&action=signup"+"&sv="+sv+"&email="+email;
+        console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
         var ok;
@@ -79,7 +83,7 @@ export default class Login extends React.Component {
 
             if (ok.substring(0, 4) == "true") {
               // console.log(response.toString());
-              global.uname = uname;
+              /*global.uname = uname;
               var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
               global.hours = Math.floor(total);
               global.minutes = Math.round((total - global.hours) * 60);
@@ -141,8 +145,11 @@ export default class Login extends React.Component {
               global.logs = log;
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
+                */
+               
               this.setState({ loading: false });
-              this.props.navigation.replace('Main')
+              alert("Succesfully signed up!");
+              this.props.navigation.navigate('Login')
 
             }
             else if (ok.substring(0, 5) == "false") {
