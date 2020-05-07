@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Image,
-  Dimensions,
-} from "react-native";
+import {StyleSheet,Text,View,ScrollView,Animated,Image,Dimensions,Alert, AsyncStorage} from "react-native";
 import MapView from "react-native-maps";
 import * as Location from 'expo-location';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NavigationActions, StackActions } from 'react-navigation'
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height*0.3;
 const CARD_WIDTH = width*0.9;
-
+const entireScreenHeight = Dimensions.get('window').height;
+const rem = entireScreenHeight / 380;
+const entireScreenWidth = Dimensions.get('window').width;
+const wid = entireScreenWidth / 380;
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +44,31 @@ export default class App extends Component {
     } else {
       coordinate.timing(newCoordinate).start();
     }
+  }
+  onPress2 = async () => {
+    Alert.alert(
+      "Log Out",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "No"
+        },
+        {
+          text: "Yes", onPress: async () => {
+            await AsyncStorage.removeItem('username');
+            await AsyncStorage.removeItem('type');
+            const resetAction = StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({routeName: 'Login'})],
+              key: null,
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  
   }
   componentDidMount() {
     this.getLocationAsync();
@@ -148,6 +170,14 @@ export default class App extends Component {
             </View>
           ))}
         </Animated.ScrollView>
+        <Animated.ScrollView style = {{ position: "absolute",top:height*0.93, left:0,right:0, height:0.07*height}} scrollEnabled={false}>
+          <View style = {{height:height*0.07, width:width, alignItems:'center'}}>
+            <TouchableOpacity style = {{marginTop:height*0.005}} onPress={this.onPress2}>
+              <Text style = {{fontSize:Math.min(rem*20,wid*30), fontFamily:'Source'}}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.ScrollView>
+        
       </View>
     );
   }
