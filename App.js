@@ -20,6 +20,7 @@ import moment from 'moment';
 //import moment from 'moment';
 global.token = "None"
 let logged = false;
+let type = '';
 
 export default class AppContainer extends React.Component {
   state = {
@@ -102,14 +103,11 @@ export default class AppContainer extends React.Component {
     } catch (e) {
       console.log('Failed to load .')
     }
-    logged = false;
     if (logged) {
-      global.logging = true;
-      this.setState({ assetsLoaded: true });
-      var uname = name;
+      type = await AsyncStorage.getItem('type')
       const Http = new XMLHttpRequest();
-      const url = 'https://script.google.com/macros/s/AKfycbxMNgxSn85f9bfVMc5Ow0sG1s0tBf4d2HwAKzASfCSuu9mePQYm/exec';
-      var data = "?username=" + uname + "&token=" + String(global.token) +"&action=getlogs";
+      const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+      var data = "?username=" + name + "&type=" + type + "&token=" + String(global.token) + "&action=logged";
       console.log(data)
       Http.open("GET", String(url + data));
       Http.send();
@@ -117,81 +115,34 @@ export default class AppContainer extends React.Component {
       Http.onreadystatechange = (e) => {
         ok = Http.responseText;
         if (Http.readyState == 4) {
-          console.log(String(ok));
+            console.log(ok);
+            if (type == "Volunteer") {
+              global.uname = uname;
+              var seniors = JSON.parse(ok.substring(10,ok.length));
+              global.seniors = seniors;
+              var markers = [];
+              for (var x=0,l=seniors.length;x<l;x++){
+                markers.push(seniors[x].location);
+              }
+              global.markers = markers;
+              console.log(markers)
+              this.setState({ loading: false, isAppReady:true });
+              
+            }
+            else if (type == "Senior") {
+              var index = ok.indexOf(",",7);
+              var status = ok.substring(7,index);
+              var items = ok.substring(index+1,ok.length);
+              global.status = status;
+              global.items = JSON.parse(items);
+              AsyncStorage.setItem('type', "Senior");
+              this.setState({ loading: false, isAppReady:true });
 
-          if (ok.substring(0, 4) == "true") {
-            // console.log(response.toString());
-            global.uname = uname;
-            var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
-            global.hours = Math.floor(total);
-            global.minutes = Math.round((total - global.hours) * 60);
-            console.log(global.minutes)
-            var data = JSON.parse(ok.substring(ok.indexOf(",", 5) + 1, ok.length))
-
-            // console.log(JSON.stringify(data))
-            var ongoing = [];
-            var specific = [];
-            var log = [];
-            for (var x = 0; x < data.length; x++) {
-              if (data[x].type == "Log") {
-                data[x]["id"] = "" + x;
-                log.push(data[x]);
-              }
-              else if (data[x].type == "Ongoing") {
-                data[x]["id"] = "" + x;
-                ongoing.push(data[x]);
-              }
-              else if (data[x].type == "Specific") {
-                data[x]["id"] = "" + x;
-                specific.push(data[x]);
-              }
             }
-            console.log(data)
-
-            specific = specific.sort((a, b) => moment(a.date + " " + a.start, 'MM-DD-YYYY h:mm A').format('X') - moment(b.date + " " + b.start, 'MM-DD-YYYY h:mm A').format('X'))
-            log = log.sort((a, b) => moment(b.date, 'MM-DD-YYYY').format('X') - moment(a.date, 'MM-DD-YYYY').format('X'))
-            const map = new Map();
-            let result = [];
-            for (const item of log) {
-              if (!map.has(item.date)) {
-                map.set(item.date, true);    // set any value to Map
-                result.push(item.date);
-              }
+            else {
+              this.setState({ loading: false });
+              setTimeout(() => { alert("Server Error"); }, 100);
             }
-            for (var i = 0; i < log.length; i++) {
-              if (result.includes(log[i].date)) {
-                result.shift();
-                // console.log(result)
-                const he = {
-                  header: true,
-                  id: "" + (data.length + i),
-                  date: log[i].date
-                }
-                log.splice(i, 0, he);
-              }
-            }
-            var options = []
-            for (const item of ongoing) {
-              options.push({ label: item.name, value: item.name })
-            }
-            for (const item of specific) {
-              options.push({ label: item.name, value: item.name })
-            }
-            global.options = options;
-            global.ongoing = ongoing;
-            global.specific = specific;
-            global.logs = log;
-            // console.log(JSON.stringify(data))
-            this.setState({ isAppReady: true });
-
-          }
-          else {
-            console.log(ok)
-            global.hours = 0;
-            global.minutes = 0;
-            this.setState({ isAppReady: true });
-            setTimeout(() => { alert("Server Error"); }, 100);
-          }
 
         }
       }
@@ -249,7 +200,7 @@ export default class AppContainer extends React.Component {
         }
       },
         {
-          initialRouteName: logged ? 'Map' : 'Login',
+          initialRouteName: logged ? type == 'Volunteer' ? 'Map' : 'Senior' : 'Login',
           headerMode: 'none'
         });
 

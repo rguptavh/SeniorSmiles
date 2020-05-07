@@ -64,14 +64,15 @@ export default class Login extends React.Component {
               }
               global.markers = markers;
               console.log(markers)
-              //AsyncStorage.setItem('username', this.state.username);
+              AsyncStorage.setItem('username', this.state.username);
               AsyncStorage.setItem('type', "Volunteer");
               this.setState({ loading: false });
               this.props.navigation.replace('Map');
               
             }
             else if (ok.substring(0, 6) == "Senior") {
-              //AsyncStorage.setItem('username', this.state.username);
+              AsyncStorage.setItem('username', this.state.username);
+              AsyncStorage.setItem('type', 'Senior');
               var index = ok.indexOf(",",7);
               var status = ok.substring(7,index);
               var items = ok.substring(index+1,ok.length);
