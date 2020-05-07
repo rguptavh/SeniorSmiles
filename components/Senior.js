@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, TextComponent } from 'react-native';
+import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
+import { NavigationActions, StackActions } from 'react-navigation'
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -35,6 +36,31 @@ export default class Login extends React.Component {
   temp[temp.length-1]["index"] = temp.length-1;
   this.setState({items:temp});
   }
+  }
+  onPress2 = async () => {
+    Alert.alert(
+      "Log Out",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "No"
+        },
+        {
+          text: "Yes", onPress: async () => {
+            await AsyncStorage.removeItem('username');
+            await AsyncStorage.removeItem('type');
+            const resetAction = StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({routeName: 'Login'})],
+              key: null,
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  
   }
  async componentDidMount() {
     location = await Location.getCurrentPositionAsync({});
@@ -195,6 +221,9 @@ export default class Login extends React.Component {
               <Image style={{  width: '100%', height: '100%',}} source={require('../assets/submit.png')} resizeMode='contain'>
               </Image>
               </TouchableOpacity>
+              <TouchableOpacity style = {{marginTop:'3%',alignSelf:'center'}} onPress={this.onPress2}>
+              <Text style = {{fontSize:Math.min(rem*20,wid*30), fontFamily:'Source'}}>Logout</Text>
+            </TouchableOpacity>
               </View>
             </ImageBackground>
           </View>
