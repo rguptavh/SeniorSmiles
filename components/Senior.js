@@ -3,7 +3,10 @@ import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, I
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
+import { Notifications } from 'expo';
 import { NavigationActions, StackActions } from 'react-navigation'
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -17,6 +20,7 @@ export default class Login extends React.Component {
     loading: false,
     items: global.items,
     status: global.status,
+    userhelp: null,
   };
   constructor() {
     super();
@@ -64,7 +68,19 @@ export default class Login extends React.Component {
   }
  async componentDidMount() {
     location = await Location.getCurrentPositionAsync({});
+    
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
+  _handleNotification = notification => {
+    // do whatever you want to do with the notification
+    console.log(notification.data.action)
+  //  global.status = "helped"
+    if (notification.data.action == 'volunteer'){
+      this.setState({status: 'helped', userhelp: notification.data.username})
+      
+    }
+    console.log(notification)
+  };
   _renderItem = ({ item }) => {
     if (item.add) {
       if (this.state.status == 'order'){
@@ -198,13 +214,18 @@ export default class Login extends React.Component {
               textStyle={styles.spinnerTextStyle}
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
-              <View style={{ flex: 1.25, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <Text style = {{fontSize:Math.min(wid*35,rem*15), color:'white', fontFamily:'SourceB'}}>{this.state.status == 'ordered' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : 'Request started'} </Text>
+              <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
+                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.userhelp} </Text>
+                {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
+                {this.state.status == 'nothelped' ? <Image
+                    style={{ flex: 1, resizeMode: 'contain',}}
+                    source={require('../assets/spin.gif')}/> : this.state.status == 'helped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
+
               </View>
-              <View style={{ flex: 3, width: '100%', alignItems: 'center' }}>
-                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginTop:'-10%',marginBottom:'7%'}}>
+              <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
+                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom:'7%'}}>
                   <View style={{ flex: 0.75, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', paddingLeft: '7.5%' }}>
-                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'orderd' ? 'Items Desired:' : 'Items Requested:'}</Text>
+                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'order' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
                   <View style={{ flex: 3, width: '85%' }}>
                     <FlatList style={{ width: '100%', }}
@@ -217,12 +238,17 @@ export default class Login extends React.Component {
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
-              <TouchableOpacity style={{height:entireScreenWidth*0.7*240/720,width:'100%',}} onPress={onPress}>
-              <Image style={{  width: '100%', height: '100%',}} source={require('../assets/submit.png')} resizeMode='contain'>
-              </Image>
+              <TouchableOpacity style = {{height:'45%', width:'100%', alignItems:'center',}} onPress={onPress}>
+              <LinearGradient
+                colors={['#8B9DFD', '#BF0DFE']}
+                style={{height:'100%',alignItems: 'center', borderRadius: 20, width:'100%', justifyContent:'center' }}>
+                  
+                 <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(25*rem,45*wid), textAlign:'center'}}>Submit</Text>
+
+              </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity style = {{marginTop:'3%',alignSelf:'center'}} onPress={this.onPress2}>
-              <Text style = {{fontSize:Math.min(rem*20,wid*30), fontFamily:'Source'}}>Logout</Text>
+              <TouchableOpacity style = {{alignSelf:'center', justifyContent:'center', marginTop:rem*7}} onPress={this.onPress2}>
+              <Text style = {{fontSize:Math.min(rem*15,wid*36), fontFamily:'Source'}}>Logout</Text>
             </TouchableOpacity>
               </View>
             </ImageBackground>

@@ -158,7 +158,6 @@ export default class AppContainer extends React.Component {
 
   _handleNotification = notification => {
     Vibration.vibrate();
-    this.setState({ notification: notification });
   };
 
   // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
@@ -173,7 +172,6 @@ export default class AppContainer extends React.Component {
             style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
             source={require('./assets/splash.gif')}
             onLoadEnd={() => {
-              console.log('Image#onLoadEnd: hiding SplashScreen');
               SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
             }}
             fadeDuration={0}
