@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import * as Location from 'expo-location';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -21,7 +22,20 @@ export default class Login extends React.Component {
 
   }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
-
+  componentDidMount() {
+    this.getLocationAsync();
+  }
+  async getLocationAsync (){
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+      });
+    } else {
+      this.setState({ hasLocationPermissions: true });
+    }
+ 
+   }
   render() {
 
 
@@ -39,78 +53,28 @@ export default class Login extends React.Component {
         Http.onreadystatechange = (e) => {
           ok = Http.responseText;
           if (Http.readyState == 4) {
-            console.log(String(ok));
+            console.log(ok);
             if (ok.substring(0, 9) == "Volunteer") {
-              // console.log(response.toString());
               global.uname = uname;
-              /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
-              global.hours = Math.floor(total);
-              global.minutes = Math.round((total - global.hours) * 60);
-              console.log(global.minutes)
-              var data = JSON.parse(ok.substring(ok.indexOf(",", 5) + 1, ok.length))
-
-              // console.log(JSON.stringify(data))
-              var ongoing = [];
-              var specific = [];
-              var log = [];
-              for (var x = 0; x < data.length; x++) {
-                if (data[x].type == "Log") {
-                  data[x]["id"] = "" + x;
-                  log.push(data[x]);
-                }
-                else if (data[x].type == "Ongoing") {
-                  data[x]["id"] = "" + x;
-                  ongoing.push(data[x]);
-                }
-                else if (data[x].type == "Specific") {
-                  data[x]["id"] = "" + x;
-                  specific.push(data[x]);
-                }
-              }
-              console.log(data)
-
-              specific = specific.sort((a, b) => moment(a.date + " " + a.start, 'MM-DD-YYYY h:mm A').format('X') - moment(b.date + " " + b.start, 'MM-DD-YYYY h:mm A').format('X'))
-              log = log.sort((a, b) => moment(b.date, 'MM-DD-YYYY').format('X') - moment(a.date, 'MM-DD-YYYY').format('X'))
-              const map = new Map();
-              let result = [];
-              for (const item of log) {
-                if (!map.has(item.date)) {
-                  map.set(item.date, true);    // set any value to Map
-                  result.push(item.date);
-                }
-              }
-              for (var i = 0; i < log.length; i++) {
-                if (result.includes(log[i].date)) {
-                  result.shift();
-                  // console.log(result)
-                  const he = {
-                    header: true,
-                    id: "" + (data.length + i),
-                    date: log[i].date
-                  }
-                  log.splice(i, 0, he);
-                }
-              }
-              var options = []
-              for (const item of ongoing) {
-                options.push({ label: item.name, value: item.name })
-              }
-              for (const item of specific) {
-                options.push({ label: item.name, value: item.name })
-              }
-              global.options = options;
-              global.ongoing = ongoing;
-              global.specific = specific;
-              global.logs = log;
-              */
-              // console.log(JSON.stringify(data))
-              AsyncStorage.setItem('username', this.state.username);
+              //AsyncStorage.setItem('username', this.state.username);
+              AsyncStorage.setItem('type', "Volunteer");
               this.setState({ loading: false });
               this.props.navigation.replace('Map');
-              //this.props.navigation.replace('Main')
               
             }
             else if (ok.substring(0, 6) == "Senior") {
+              //AsyncStorage.setItem('username', this.state.username);
+              var index = ok.indexOf(",",7);
+              var status = ok.substring(7,index);
+              var items = ok.substring(index+1,ok.length);
+              global.status = status;
+              if (status == 'order'){
+              global.items = JSON.parse(items);
+              }
+              else{
+                global.items = JSON.parse(JSON.parse(items));
+              }
+              AsyncStorage.setItem('type', "Senior");
               this.setState({ loading: false });
               setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
 
