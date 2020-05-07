@@ -24,9 +24,14 @@ export default class Login extends React.Component {
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
   add = () => {
   var temp = this.state.items;
+  if (temp[temp.length-1].index == 10){
+    alert("Please have a max of 10 items")
+  }
+  else{
   temp.splice(temp.length-1,0,{index: temp.length-1, name:'',quantity:''});
   temp[temp.length-1]["index"] = temp.length-1;
   this.setState({items:temp});
+  }
   }
   _renderItem = ({ item }) => {
     if (item.add) {
@@ -69,19 +74,23 @@ export default class Login extends React.Component {
     );
   };
   render() {
-    const papi = () => {
-      console.log("papito");
-    }
 
     const onPress = () => {
       console.log("papito");
       var uname = 'rgupta';
       var loc = "test";
-      var items = this.state.items;
+      var items = this.state.items.slice();
       items.pop();
+      var empty = false;
+      for (var x=0, l = items.length; x<l; x++){
+        if (items[x].value == '' || items[x].quantity == ''){
+          empty = true;
+          break;
+        }
+      }
       items = JSON.stringify(items);
       
-      if (uname != "" && items != "") {
+      if (uname != "" && !empty) {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -95,68 +104,6 @@ export default class Login extends React.Component {
           if (Http.readyState == 4) {
             console.log(String(ok));
             if (ok == "true") {
-              // console.log(response.toString());
-              //global.uname = uname;
-              /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
-              global.hours = Math.floor(total);
-              global.minutes = Math.round((total - global.hours) * 60);
-              console.log(global.minutes)
-              var data = JSON.parse(ok.substring(ok.indexOf(",", 5) + 1, ok.length))
-
-              // console.log(JSON.stringify(data))
-              var ongoing = [];
-              var specific = [];
-              var log = [];
-              for (var x = 0; x < data.length; x++) {
-                if (data[x].type == "Log") {
-                  data[x]["id"] = "" + x;
-                  log.push(data[x]);
-                }
-                else if (data[x].type == "Ongoing") {
-                  data[x]["id"] = "" + x;
-                  ongoing.push(data[x]);
-                }
-                else if (data[x].type == "Specific") {
-                  data[x]["id"] = "" + x;
-                  specific.push(data[x]);
-                }
-              }
-              console.log(data)
-
-              specific = specific.sort((a, b) => moment(a.date + " " + a.start, 'MM-DD-YYYY h:mm A').format('X') - moment(b.date + " " + b.start, 'MM-DD-YYYY h:mm A').format('X'))
-              log = log.sort((a, b) => moment(b.date, 'MM-DD-YYYY').format('X') - moment(a.date, 'MM-DD-YYYY').format('X'))
-              const map = new Map();
-              let result = [];
-              for (const item of log) {
-                if (!map.has(item.date)) {
-                  map.set(item.date, true);    // set any value to Map
-                  result.push(item.date);
-                }
-              }
-              for (var i = 0; i < log.length; i++) {
-                if (result.includes(log[i].date)) {
-                  result.shift();
-                  // console.log(result)
-                  const he = {
-                    header: true,
-                    id: "" + (data.length + i),
-                    date: log[i].date
-                  }
-                  log.splice(i, 0, he);
-                }
-              }
-              var options = []
-              for (const item of ongoing) {
-                options.push({ label: item.name, value: item.name })
-              }
-              for (const item of specific) {
-                options.push({ label: item.name, value: item.name })
-              }
-              global.options = options;
-              global.ongoing = ongoing;
-              global.specific = specific;
-              global.logs = log;
-              */
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
               this.setState({ loading: false });
@@ -183,7 +130,7 @@ export default class Login extends React.Component {
         }
       }
       else {
-        alert("Please fill all fields")
+        alert("Please fill all items")
       }
     }
     return (
@@ -211,10 +158,8 @@ export default class Login extends React.Component {
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
-              <TouchableOpacity style={{flex: 0.75,width:'100%'}} onPress={onPress}  disabled={this.state.loading}
->
+              <TouchableOpacity style={{flex: 0.75,width:'100%'}} onPress={onPress}>
               <Image style={{  width: '100%', height: '100%',}} source={require('../assets/submit.png')} resizeMode='contain'>
-
               </Image>
               </TouchableOpacity>
               </View>

@@ -249,7 +249,7 @@ export default class AppContainer extends React.Component {
         }
       },
         {
-          initialRouteName: logged ? 'Map' : 'Senior',
+          initialRouteName: logged ? 'Map' : 'Login',
           headerMode: 'none'
         });
 

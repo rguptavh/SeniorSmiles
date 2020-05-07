@@ -161,6 +161,7 @@ export default class Login extends React.Component {
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Username"
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     onChangeText={(value) => this.setState({ username: value })}
                     value={this.state.username}
 
