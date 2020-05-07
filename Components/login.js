@@ -56,6 +56,14 @@ export default class Login extends React.Component {
             console.log(ok);
             if (ok.substring(0, 9) == "Volunteer") {
               global.uname = uname;
+              var seniors = JSON.parse(ok.substring(10,ok.length));
+              global.seniors = seniors;
+              var markers = [];
+              for (var x=0,l=seniors.length;x<l;x++){
+                markers.push(seniors[x].location);
+              }
+              global.markers = markers;
+              console.log(markers)
               //AsyncStorage.setItem('username', this.state.username);
               AsyncStorage.setItem('type', "Volunteer");
               this.setState({ loading: false });
@@ -68,12 +76,7 @@ export default class Login extends React.Component {
               var status = ok.substring(7,index);
               var items = ok.substring(index+1,ok.length);
               global.status = status;
-              if (status == 'order'){
               global.items = JSON.parse(items);
-              }
-              else{
-                global.items = JSON.parse(JSON.parse(items));
-              }
               AsyncStorage.setItem('type', "Senior");
               this.setState({ loading: false });
               setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
