@@ -24,32 +24,7 @@ export default class App extends Component {
     locationResult: null,
     location: null,
     index: 0,
-    markers: [
-      {
-        coordinate: {
-          latitude: 42.227131,
-          longitude: -87.949499,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.243308,
-          longitude: -87.951591,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.273745,
-          longitude: -87.955041,
-        },
-      },
-      {
-        coordinate: {
-          latitude: 42.239369,
-          longitude: -87.958517,
-        },
-      },
-    ],
+    markers: global.markers,
     region: {
       latitude: 45.52220671242907,
       longitude: -122.6653281029795,

@@ -122,7 +122,7 @@ export default class Login extends React.Component {
       
       if (uname != "" && !empty) {
         location = await Location.getCurrentPositionAsync({});
-        var loc = JSON.stringify({'longitude' : location.coords.longitude, 'latitude': location.coords.latitude});
+        var loc = JSON.stringify({coordinate : {longitude : location.coords.longitude, latitude: location.coords.latitude}});
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -173,7 +173,7 @@ export default class Login extends React.Component {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1.25, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <Text style = {{fontSize:Math.min(wid*35,rem*15), color:'white', fontFamily:'SourceB'}}>No ongoing requests.</Text>
+                <Text style = {{fontSize:Math.min(wid*35,rem*15), color:'white', fontFamily:'SourceB'}}>{this.state.status == 'ordered' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : 'Request started'} </Text>
               </View>
               <View style={{ flex: 3, width: '100%', alignItems: 'center' }}>
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginTop:'-10%',marginBottom:'7%'}}>
@@ -191,7 +191,7 @@ export default class Login extends React.Component {
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
-              <TouchableOpacity style={{flex: 0.75,width:'100%'}} onPress={onPress}>
+              <TouchableOpacity style={{height:entireScreenWidth*0.7*240/720,width:'100%',}} onPress={onPress}>
               <Image style={{  width: '100%', height: '100%',}} source={require('../assets/submit.png')} resizeMode='contain'>
               </Image>
               </TouchableOpacity>
