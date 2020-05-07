@@ -67,7 +67,7 @@ export default class Login extends React.Component {
       var sv = this.state.event;
       var email = this.state.email;
 
-      if (uname != "" && pword != "") {
+      if (uname != "" && pword != "" && sv != null && email != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';

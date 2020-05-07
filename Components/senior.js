@@ -205,7 +205,6 @@ export default class Login extends React.Component {
                       data={this.state.items}
                       renderItem={this._renderItem}
                       keyExtractor={item => "" + item.index}
-                    // stickyHeaderIndices={this.state.stickyHeaderIndices}
                     />
                   </View>
                   <View style={{ flex: 0.2 }}></View>

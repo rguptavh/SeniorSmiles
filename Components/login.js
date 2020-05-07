@@ -112,7 +112,7 @@ export default class Login extends React.Component {
             }
             else if (ok.substring(0, 6) == "Senior") {
               this.setState({ loading: false });
-              setTimeout(() => { alert("Senior Login"); }, 100);
+              setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
 
             }
             else if (ok.substring(0, 5) == "false") {
