@@ -188,7 +188,7 @@ export default class Login extends React.Component {
                 <Text style = {{fontSize:Math.min(wid*35,rem*15), color:'white', fontFamily:'SourceB'}}>No ongoing requests.</Text>
               </View>
               <View style={{ flex: 3, width: '100%', alignItems: 'center' }}>
-                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, }}>
+                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginTop:'-10%',marginBottom:'7%'}}>
                   <View style={{ flex: 0.75, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', paddingLeft: '7.5%' }}>
                     <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>Items Desired:</Text>
                   </View>
