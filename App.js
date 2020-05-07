@@ -70,9 +70,9 @@ export default class AppContainer extends React.Component {
     }
   };
 
+
   async componentDidMount() {
     this.registerForPushNotificationsAsync();
-
     // Handle notifications that are received or selected while the app
     // is open. If the app was closed and then opened by tapping the
     // notification (rather than just tapping the app icon to open it),

@@ -2,17 +2,20 @@ import * as React from 'react';
 import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, TextComponent } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import * as Location from 'expo-location';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
 const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
+let location = null;
 export default class Login extends React.Component {
   state = {
     username: '',
     password: '',
     loading: false,
-    items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }]
+    items: global.items,
+    status: global.status,
   };
   constructor() {
     super();
@@ -25,7 +28,7 @@ export default class Login extends React.Component {
   add = () => {
   var temp = this.state.items;
   if (temp[temp.length-1].index == 10){
-    alert("Please have a max of 10 items")
+    alert("Please have a maximum of 10 items")
   }
   else{
   temp.splice(temp.length-1,0,{index: temp.length-1, name:'',quantity:''});
@@ -33,8 +36,12 @@ export default class Login extends React.Component {
   this.setState({items:temp});
   }
   }
+ async componentDidMount() {
+    location = await Location.getCurrentPositionAsync({});
+  }
   _renderItem = ({ item }) => {
     if (item.add) {
+      if (this.state.status == 'order'){
       return (
         <View style={{ height: rem * 35, width: '100%' }}>
           <TouchableOpacity style={{ height: '60%', width: '100%', flexDirection: 'row', alignItems:'center', }} onPress={this.add}>
@@ -47,7 +54,13 @@ export default class Login extends React.Component {
           </TouchableOpacity>
         </View>
       );
+      }
+      else {
+        return null;
+        }
     }
+    else{
+    if (this.state.status == 'order'){
     return (
 
       <View style={{ height: rem * 35, width: '100%' }}>
@@ -72,13 +85,30 @@ export default class Login extends React.Component {
         </View>
       </View>
     );
+  }
+  else{
+    return (
+
+      <View style={{ height: rem * 35, width: '100%' }}>
+        <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
+          <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent:'center', }}>
+            <Text style={{ width: '90%', marginLeft: '10%',fontFamily:'SourceL',fontSize:rem*15, }}>{this.state.items[item.index].name}</Text>
+          </View>
+          <View style={{ flex: 0.25 }}></View>
+          <View style={{ flex: 1, borderWidth: 2, borderRadius: 20,justifyContent:'center', alignItems:'center' }}>
+          <Text style={{ width: '90%',fontFamily:'SourceL',fontSize:rem*15, textAlign:'center' }}>{this.state.items[item.index].quantity}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
   };
   render() {
-
-    const onPress = () => {
+    console.log(this.state.items)
+    const onPress = async () => {
       console.log("papito");
       var uname = 'rgupta';
-      var loc = "test";
       var items = this.state.items.slice();
       items.pop();
       var empty = false;
@@ -91,6 +121,8 @@ export default class Login extends React.Component {
       items = JSON.stringify(items);
       
       if (uname != "" && !empty) {
+        location = await Location.getCurrentPositionAsync({});
+        var loc = JSON.stringify({'longitude' : location.coords.longitude, 'latitude': location.coords.latitude});
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -104,12 +136,8 @@ export default class Login extends React.Component {
           if (Http.readyState == 4) {
             console.log(String(ok));
             if (ok == "true") {
-              // console.log(JSON.stringify(data))
-              AsyncStorage.setItem('username', this.state.username);
-              this.setState({ loading: false });
-              //this.props.navigation.replace('Map');
-              //this.props.navigation.replace('Main')
-
+              this.setState({ loading: false, status:'nothelped' });
+              setTimeout(() => { alert("Success!"); }, 100);
             }
            /* else if (ok.substring(0, 6) == "Senior") {
               this.setState({ loading: false });
@@ -138,6 +166,11 @@ export default class Login extends React.Component {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
 
           <View style={styles.container}>
+          <Spinner
+              visible={this.state.loading}
+              textContent={'Submitting request...'}
+              textStyle={styles.spinnerTextStyle}
+            />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1.25, width: '100%', alignItems:'center', justifyContent:'center' }}>
                 <Text style = {{fontSize:Math.min(wid*35,rem*15), color:'white', fontFamily:'SourceB'}}>No ongoing requests.</Text>
@@ -145,7 +178,7 @@ export default class Login extends React.Component {
               <View style={{ flex: 3, width: '100%', alignItems: 'center' }}>
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginTop:'-10%',marginBottom:'7%'}}>
                   <View style={{ flex: 0.75, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', paddingLeft: '7.5%' }}>
-                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>Items Desired:</Text>
+                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'orderd' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
                   <View style={{ flex: 3, width: '85%' }}>
                     <FlatList style={{ width: '100%', }}
