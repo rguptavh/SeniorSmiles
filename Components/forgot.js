@@ -9,6 +9,12 @@ const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
 const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
+
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
 export default class Login extends React.Component {
   state = {
     email: '',
@@ -27,7 +33,7 @@ export default class Login extends React.Component {
     const onPress = () => {
       var email = this.state.email;
 
-      if (email != "") {
+      if (validateEmail(email)) {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -114,7 +120,7 @@ export default class Login extends React.Component {
             }
             else if (ok.substring(0, 5) == "false") {
               this.setState({ loading: false });
-              setTimeout(() => { alert("Failed Login"); }, 100);
+              setTimeout(() => { alert("Sorry, we don't have an account registered with the email you have entered"); }, 100);
 
             }
             else {
@@ -126,7 +132,7 @@ export default class Login extends React.Component {
         }
       }
       else {
-        alert("Please fill all fields")
+        alert("Please enter a valid email")
       }
     }
     return (
@@ -136,7 +142,7 @@ export default class Login extends React.Component {
           <View style={styles.container}>
             <Spinner
               visible={this.state.loading}
-              textContent={'Sending Email...'}
+              textContent={'Checking Database...'}
               textStyle={styles.spinnerTextStyle}
             />
             <View style={{ flex: 0.35 }}></View>
@@ -158,6 +164,7 @@ export default class Login extends React.Component {
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Email"
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     onChangeText={(value) => this.setState({ email: value })}
                     value={this.state.email}
 

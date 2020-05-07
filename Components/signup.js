@@ -9,6 +9,12 @@ const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
 const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
+
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
 export default class Login extends React.Component {
   state = {
     username: '',
@@ -66,8 +72,8 @@ export default class Login extends React.Component {
       var pword = this.state.password;
       var sv = this.state.event;
       var email = this.state.email;
-
-      if (uname != "" && pword != "" && sv != null && email != "") {
+      const emailgood = validateEmail(email)
+      if (uname != "" && pword != "" && sv != null && emailgood) {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -152,9 +158,14 @@ export default class Login extends React.Component {
               this.props.navigation.navigate('Login')
 
             }
-            else if (ok.substring(0, 5) == "false") {
+            else if (ok.substring(0, 5) == "email") {
               this.setState({ loading: false });
-              setTimeout(() => { alert("Failed Login"); }, 100);
+              setTimeout(() => { alert("The email you have entered is already registered with an account."); }, 100);
+
+            }
+            else if (ok.substring(0, 8) == "username") {
+              this.setState({ loading: false });
+              setTimeout(() => { alert("Sorry, that username is already taken."); }, 100);
 
             }
             else {
@@ -166,7 +177,12 @@ export default class Login extends React.Component {
         }
       }
       else {
+        if (emailgood){
         alert("Please fill all fields")
+        }
+        else{
+          alert("Please enter a valid email address")
+        }
       }
     }
     return (
@@ -198,6 +214,7 @@ export default class Login extends React.Component {
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Email"
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     onChangeText={(value) => this.setState({ email: value })}
                     value={this.state.email}
 
@@ -215,6 +232,7 @@ export default class Login extends React.Component {
                     autoCapitalize='none'
                     autoCompleteType='off'
                     placeholder="Username"
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     onChangeText={(value) => this.setState({ username: value })}
                     value={this.state.username}
 
