@@ -69,16 +69,24 @@ export default class Login extends React.Component {
     );
   };
   render() {
-
+    const papi = () => {
+      console.log("papito");
+    }
 
     const onPress = () => {
-      var uname = this.state.username;
-      var pword = this.state.password;
-      if (uname != "" && pword != "") {
+      console.log("papito");
+      var uname = 'rgupta';
+      var loc = "test";
+      var items = this.state.items;
+      items.pop();
+      items = JSON.stringify(items);
+      
+      if (uname != "" && items != "") {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=login";
+        var data = "?username=" + uname + "&location=" + loc +"&items="+items+ "&action=senior";
+        console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
         var ok;
@@ -86,9 +94,9 @@ export default class Login extends React.Component {
           ok = Http.responseText;
           if (Http.readyState == 4) {
             console.log(String(ok));
-            if (ok.substring(0, 9) == "Volunteer") {
+            if (ok == "true") {
               // console.log(response.toString());
-              global.uname = uname;
+              //global.uname = uname;
               /*var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
               global.hours = Math.floor(total);
               global.minutes = Math.round((total - global.hours) * 60);
@@ -152,11 +160,11 @@ export default class Login extends React.Component {
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
               this.setState({ loading: false });
-              this.props.navigation.replace('Map');
+              //this.props.navigation.replace('Map');
               //this.props.navigation.replace('Main')
 
             }
-            else if (ok.substring(0, 6) == "Senior") {
+           /* else if (ok.substring(0, 6) == "Senior") {
               this.setState({ loading: false });
               setTimeout(() => { alert("Senior Login"); }, 100);
 
@@ -165,7 +173,7 @@ export default class Login extends React.Component {
               this.setState({ loading: false });
               setTimeout(() => { alert("Failed Login"); }, 100);
 
-            }
+            }*/
             else {
               this.setState({ loading: false });
               setTimeout(() => { alert("Server Error"); }, 100);
@@ -204,7 +212,8 @@ export default class Login extends React.Component {
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
-              <TouchableOpacity style={{flex: 0.75,width:'100%'}}>
+              <TouchableOpacity style={{flex: 0.75,width:'100%'}} onPress={onPress}  disabled={this.state.loading}
+>
               <Image style={{  width: '100%', height: '100%',}} source={require('../assets/submit.png')} resizeMode='contain'>
 
               </Image>
