@@ -6,11 +6,11 @@ import * as Font from 'expo-font';
 import Constants from 'expo-constants';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation';
-import log from './Components/login';
-import forgot from './Components/forgot';
-import map from './Components/Map';
-import signup from './Components/signup';
-import senior from './Components/senior';
+import log from './components/Login';
+import forgot from './components/Forgot';
+import map from './components/Map';
+import signup from './components/Signup';
+import senior from './components/Senior';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
