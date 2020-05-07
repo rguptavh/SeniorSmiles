@@ -216,32 +216,30 @@ export default class Login extends React.Component {
               justifyContent: 'flex-start',
               alignItems:'center'
             }}>
+              <View style = {{flex:1, marginTop:'4%', width:'100%', alignItems:'center',}}>
               <TouchableOpacity
                 style={{
-                  height: entireScreenWidth * 0.73 * 240 / 720*0.8,
-                  marginTop:'7%',
+                  height: '40%',
                   width: '80%',
+                  borderRadius:20,
+                  backgroundColor:'#BF0DFE',
+                  justifyContent:'center',
+                  alignItems:'center'
                 }}
                 onPress={onPress}
-                disabled={this.state.loading}
 
               >
-                <Image source={require('../assets/singup.png')} style={{
-                  height: '100%',
-                  width: '100%',
-                  flex: 1
-
-
-                }} resizeMode="contain"></Image>
-              </TouchableOpacity>
+                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(20*rem,36*wid),}}>Sign Up</Text>
+                </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Already have an account? </Text>
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
                   <Text style={styles.link}>Login</Text>
                 </TouchableOpacity>
               </View>
+              </View>
             </View>
-
+            
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView >
@@ -284,13 +282,13 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'black',
-    fontSize:18*wid,
+    fontSize:Math.min(18*wid,10*rem),
     fontFamily:'Source'
   },
   link: {
     fontWeight: 'bold',
     color: '#22B7CB',
-    fontSize:18*wid,
+    fontSize:Math.min(18*wid,10*rem),
     fontFamily:'SourceB'
   },
 

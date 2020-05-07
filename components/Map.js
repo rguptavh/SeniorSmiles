@@ -173,7 +173,7 @@ export default class App extends Component {
         <Animated.ScrollView style = {{ position: "absolute",top:height*0.93, left:0,right:0, height:0.07*height}} scrollEnabled={false}>
           <View style = {{height:height*0.07, width:width, alignItems:'center'}}>
             <TouchableOpacity style = {{marginTop:height*0.005}} onPress={this.onPress2}>
-              <Text style = {{fontSize:Math.min(rem*20,wid*30), fontFamily:'Source'}}>Logout</Text>
+              <Text style = {{fontSize:Math.min(rem*15,wid*27), fontFamily:'Source'}}>Logout</Text>
             </TouchableOpacity>
           </View>
         </Animated.ScrollView>

@@ -165,29 +165,28 @@ export default class Login extends React.Component {
               justifyContent: 'flex-start',
               alignItems:'center'
             }}>
+              <View style = {{flex:1, marginTop:'4%', width:'100%', alignItems:'center'}}>
               <TouchableOpacity
                 style={{
-                  height: entireScreenWidth * 0.73 * 240 / 720*0.8,
-                  marginTop:'7%',
+                  height: '40%',
                   width: '80%',
+                  borderRadius:20,
+                  backgroundColor:'#BF0DFE',
+                  justifyContent:'center',
+                  alignItems:'center'
                 }}
                 onPress={onPress}
                 disabled={this.state.loading}
 
               >
-                <Image source={require('../assets/logbut.png')} style={{
-                  height: '100%',
-                  width: '100%',
-                  flex: 1
-
-
-                }} resizeMode="contain"></Image>
+                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(25*rem,45*wid)}}>Login</Text>
               </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Don’t have an account? </Text>
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
                   <Text style={styles.link}>Sign up</Text>
                 </TouchableOpacity>
+              </View>
               </View>
             </View>
 
