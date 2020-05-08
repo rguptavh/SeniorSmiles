@@ -38,7 +38,6 @@ class Chat extends React.Component  {
     );
   }
   componentWillUnmount() {
-    Fire.shared.signout();
     Fire.shared.off();
   }
 }

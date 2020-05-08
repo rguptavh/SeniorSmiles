@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, Text
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
+import Fire from '../Fire';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -56,6 +57,7 @@ export default class Login extends React.Component {
             console.log(ok);
             if (ok.substring(0, 9) == "Volunteer") {
               global.uname = uname;
+              Fire.shared.observeAuth2();
               var seniors = JSON.parse(ok.substring(10,ok.length));
               global.seniors = seniors;
               var markers = [];
@@ -72,6 +74,7 @@ export default class Login extends React.Component {
             }
             else if (ok.substring(0, 6) == "Senior") {
               global.uname = uname
+              Fire.shared.observeAuth2();
               AsyncStorage.setItem('username', this.state.username);
               AsyncStorage.setItem('type', 'Senior');
               var index = ok.indexOf(",",7);
