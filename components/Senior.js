@@ -7,6 +7,7 @@ import { Notifications } from 'expo';
 import { NavigationActions, StackActions } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
+import Fire from '../Fire';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
