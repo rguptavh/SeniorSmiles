@@ -34,6 +34,20 @@ class Fire {
       }
     }
   };
+  
+  observeAuth2 = () =>
+    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
+
+  onAuthStateChanged = user => {
+    if (!user) {
+      try {
+        //alert(global.newuser+"@seniorsmiles.com")
+        firebase.auth().signInWithEmailAndPassword(global.uname+"@seniorsmiles.com", '123456ABC')
+      } catch ({ message }) {
+        alert(message);
+      }
+    }
+  };
   signout = () => {
   firebase.auth().signOut();
   }
@@ -42,7 +56,7 @@ class Fire {
   }
 
   get ref() {
-    return firebase.database().ref(global.name);
+    return firebase.database().ref(global.volname + '+' + global.senname);
   }
 
   parse = snapshot => {

@@ -4,6 +4,7 @@ import MapView from "react-native-maps";
 import * as Location from 'expo-location';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationActions, StackActions } from 'react-navigation'
+import Fire from '../Fire';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height*0.3;
@@ -63,6 +64,7 @@ export default class App extends Component {
             var data = "?username=" + global.uname+ "&token=" + global.token + "&action=logout";
             Http.open("GET", String(url + data));
             Http.send();
+            Fire.shared.signout();
             const resetAction = StackActions.reset({
               index: 0,
               actions: [NavigationActions.navigate({routeName: 'Login'})],
@@ -147,13 +149,9 @@ export default class App extends Component {
     console.log(data)
     Http.open("GET", String(url + data));
     Http.send();
-    var ok;
-    Http.onreadystatechange = (e) => {
-      ok = Http.responseText;
-      if (Http.readyState == 4) {
-      
-      }
-  }
+    global.volname = uname;
+    global.senname = senior.name;
+    this.props.navigation.navigate('Chat')
   }
   handleMapRegionChange = (map) => {
       //console.log(map);

@@ -41,6 +41,11 @@ export default class Login extends React.Component {
   this.setState({items:temp});
   }
   }
+  chat = () => {
+  global.volname = this.state.status;
+  global.senname = global.uname;
+  this.props.navigation.navigate('Chat')
+  }
   onPress2 = async () => {
     Alert.alert(
       "Log Out",
@@ -81,6 +86,7 @@ export default class Login extends React.Component {
     console.log(notification.data.action)
   //  global.status = "helped"
     if (notification.data.action == 'volunteer'){
+      global.status = notification.data.username
       this.setState({status: notification.data.username})
       
     }
@@ -220,7 +226,7 @@ export default class Login extends React.Component {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status} </Text>
+                <TouchableOpacity disabled = {this.state.status == 'no'|| this.state.status == 'nothelped'}onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status} </Text></TouchableOpacity>
                 {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
                 {this.state.status == 'nothelped' ? <Image
                     style={{ flex: 1, resizeMode: 'contain',}}
