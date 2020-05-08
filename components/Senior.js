@@ -162,8 +162,7 @@ export default class Login extends React.Component {
   render() {
     console.log(this.state.items)
     const onPress = async () => {
-      console.log("papito");
-      var uname = 'rgupta';
+      var uname = global.uname;
       var items = this.state.items.slice();
       items.pop();
       var empty = false;
