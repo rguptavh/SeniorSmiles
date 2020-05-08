@@ -120,6 +120,7 @@ export default class AppContainer extends React.Component {
             console.log(ok);
             if (type == "Volunteer") {
               global.uname = uname;
+              Fire.shared.observeAuth2();
               var seniors = JSON.parse(ok.substring(10,ok.length));
               global.seniors = seniors;
               var markers = [];
