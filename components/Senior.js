@@ -53,6 +53,11 @@ export default class Login extends React.Component {
           text: "Yes", onPress: async () => {
             await AsyncStorage.removeItem('username');
             await AsyncStorage.removeItem('type');
+            const Http = new XMLHttpRequest();
+            const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+            var data = "?username=" + global.uname+ "&token=" + global.token + "&action=logout";
+            Http.open("GET", String(url + data));
+            Http.send();
             const resetAction = StackActions.reset({
               index: 0,
               actions: [NavigationActions.navigate({routeName: 'Login'})],
@@ -76,7 +81,7 @@ export default class Login extends React.Component {
     console.log(notification.data.action)
   //  global.status = "helped"
     if (notification.data.action == 'volunteer'){
-      this.setState({status: 'helped', userhelp: notification.data.username})
+      this.setState({status: notification.data.username})
       
     }
     console.log(notification)
@@ -215,11 +220,11 @@ export default class Login extends React.Component {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.userhelp} </Text>
+                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status} </Text>
                 {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
                 {this.state.status == 'nothelped' ? <Image
                     style={{ flex: 1, resizeMode: 'contain',}}
-                    source={require('../assets/spin.gif')}/> : this.state.status == 'helped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
+                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
 
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>

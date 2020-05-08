@@ -58,6 +58,11 @@ export default class App extends Component {
           text: "Yes", onPress: async () => {
             await AsyncStorage.removeItem('username');
             await AsyncStorage.removeItem('type');
+            const Http = new XMLHttpRequest();
+            const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+            var data = "?username=" + global.uname+ "&token=" + global.token + "&action=logout";
+            Http.open("GET", String(url + data));
+            Http.send();
             const resetAction = StackActions.reset({
               index: 0,
               actions: [NavigationActions.navigate({routeName: 'Login'})],
@@ -130,6 +135,25 @@ export default class App extends Component {
       disp+=item.name + " x" + item.quantity + "\n"
     }
     Alert.alert("Items Requested",disp)
+  }
+
+
+  accept = (senior) => {
+    var senname = senior.name;
+    var uname = global.uname;
+    const Http = new XMLHttpRequest();
+    const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+    var data = "?username=" + uname + "&sen=" + senname + "&action=vol";
+    console.log(data)
+    Http.open("GET", String(url + data));
+    Http.send();
+    var ok;
+    Http.onreadystatechange = (e) => {
+      ok = Http.responseText;
+      if (Http.readyState == 4) {
+      
+      }
+    }
   }
   handleMapRegionChange = (map) => {
       //console.log(map);
@@ -205,7 +229,7 @@ export default class App extends Component {
                 </View>
               </View>
               <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
-              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].name}</Text>
+              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].store}</Text>
               </View>
               <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
               <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1) + ' Miles': null}</Text>
@@ -213,6 +237,11 @@ export default class App extends Component {
               <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
                 <TouchableOpacity onPress={() => this.items(this.state.seniors[index].items)}>
                 <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Click to see items</Text>
+                </TouchableOpacity>
+              </View>
+              <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity onPress={() => this.accept(this.state.seniors[index])}>
+                <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Accept Request</Text>
                 </TouchableOpacity>
               </View>
             </View>
