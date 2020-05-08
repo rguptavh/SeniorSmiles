@@ -1,0 +1,91 @@
+import firebase from 'firebase'; // 4.8.1
+
+class Fire {
+  constructor() {
+    if (!firebase.apps.length) {
+    this.init();
+    }
+    //this.observeAuth();
+  }
+
+  init = () =>
+    firebase.initializeApp({
+    apiKey: "AIzaSyBoWaoUS85-_RMqnzU35NGRxqGMb-HY3VY",
+    authDomain: "seniorsmiles-e4433.firebaseapp.com",
+    databaseURL: "https://seniorsmiles-e4433.firebaseio.com",
+    projectId: "seniorsmiles-e4433",
+    storageBucket: "seniorsmiles-e4433.appspot.com",
+    messagingSenderId: "656251460102",
+    appId: "1:656251460102:web:d2941a1d60ac18faeb8187",
+    measurementId: "G-Y4JE80G7DN"
+    });
+
+  observeAuth = () =>
+    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
+
+  onAuthStateChanged = user => {
+    if (!user) {
+      try {
+        //alert(global.newuser+"@seniorsmiles.com")
+        firebase.auth().createUserWithEmailAndPassword(global.newuser+"@seniorsmiles.com","123456ABC");
+        firebase.auth().signOut();
+      } catch ({ message }) {
+        alert(message);
+      }
+    }
+  };
+  signout = () => {
+  firebase.auth().signOut();
+  }
+  get uid() {
+    return (firebase.auth().currentUser || {}).uid;
+  }
+
+  get ref() {
+    return firebase.database().ref(global.name);
+  }
+
+  parse = snapshot => {
+    const { timestamp: numberStamp, text, user } = snapshot.val();
+    const { key: _id } = snapshot;
+    const timestamp = new Date(numberStamp);
+    const message = {
+      _id,
+      timestamp,
+      text,
+      user,
+    };
+    return message;
+  };
+
+  on = callback =>
+    this.ref
+      .limitToLast(20)
+      .on('child_added', snapshot => callback(this.parse(snapshot)));
+
+  get timestamp() {
+    return firebase.database.ServerValue.TIMESTAMP;
+  }
+  // send the message to the Backend
+  send = messages => {
+    for (let i = 0; i < messages.length; i++) {
+      const { text, user } = messages[i];
+      const message = {
+        text,
+        user,
+        timestamp: this.timestamp,
+      };
+      this.append(message);
+    }
+  };
+
+  append = message => this.ref.push(message);
+
+  // close the connection to the Backend
+  off() {
+    this.ref.off();
+  }
+}
+
+Fire.shared = new Fire();
+export default Fire;
