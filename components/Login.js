@@ -46,7 +46,7 @@ export default class Login extends React.Component {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=login";
+        var data = "?username=" + uname + "&password=" + pword + "&token=" + global.token + "&action=login";
         Http.open("GET", String(url + data));
         Http.send();
         var ok;
@@ -71,6 +71,7 @@ export default class Login extends React.Component {
               
             }
             else if (ok.substring(0, 6) == "Senior") {
+              global.uname = uname
               AsyncStorage.setItem('username', this.state.username);
               AsyncStorage.setItem('type', 'Senior');
               var index = ok.indexOf(",",7);
