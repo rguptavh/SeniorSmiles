@@ -15,6 +15,7 @@ import chat from './components/Chat';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
+import Fire from './Fire';
 
 
 

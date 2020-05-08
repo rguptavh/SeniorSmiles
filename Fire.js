@@ -63,11 +63,13 @@ class Fire {
     const { timestamp: numberStamp, text, user } = snapshot.val();
     const { key: _id } = snapshot;
     const timestamp = new Date(numberStamp);
+    const createdAt = new Date(numberStamp);
     const message = {
       _id,
       timestamp,
       text,
       user,
+      createdAt
     };
     return message;
   };
@@ -90,6 +92,7 @@ class Fire {
         timestamp: this.timestamp,
       };
       this.append(message);
+      console.log(message)
     }
   };
 
