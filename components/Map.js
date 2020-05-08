@@ -28,6 +28,7 @@ export default class App extends Component {
       latitudeDelta: 0.02864195044303443,
       longitudeDelta: 0.020142817690068,
     },
+    seniors: global.seniors,
   };
 }
   animate() {
@@ -70,11 +71,33 @@ export default class App extends Component {
     );
   
   }
+  distance(lat1, lon1, lat2, lon2, unit) {
+    if ((lat1 == lat2) && (lon1 == lon2)) {
+      return 0;
+    }
+    else {
+      var radlat1 = Math.PI * lat1/180;
+      var radlat2 = Math.PI * lat2/180;
+      var theta = lon1-lon2;
+      var radtheta = Math.PI * theta/180;
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist);
+      dist = dist * 180/Math.PI;
+      dist = dist * 60 * 1.1515;
+      if (unit=="K") { dist = dist * 1.609344 }
+      if (unit=="N") { dist = dist * 0.8684 }
+      return dist;
+    }
+  }
   componentDidMount() {
     this.getLocationAsync();
     this.index = 0;
     this.animation = new Animated.Value(0);
     this.animation.addListener(({ value }) => {
+
     let index = Math.floor(value / CARD_WIDTH + 0.2); // animate 20% away from landing on the next item
       if (index >= this.state.markers.length) {
         index = this.state.markers.length - 1;
@@ -82,11 +105,12 @@ export default class App extends Component {
       if (index <= 0) {
         index = 0;
       }
-      this.setState({index: index})
       clearTimeout(this.regionTimeout);
+      
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
           this.index = index;
+          this.setState({index: index})
           const { coordinate } = this.state.markers[index];
           this.map.animateToRegion(
             {
@@ -97,15 +121,23 @@ export default class App extends Component {
             350
           );
         }
-      }, 10);
+      }, 0);
     });
   }
-
+  items = (items) => {
+    var disp = "";
+    for (const item of items){
+      disp+=item.name + " x" + item.quantity + "\n"
+    }
+    Alert.alert("Items Requested",disp)
+  }
   handleMapRegionChange = (map) => {
       //console.log(map);
       this.setState({mapRegion: map });
     }
 
+
+    
   async getLocationAsync (){
    let { status } = await Location.requestPermissionsAsync();
    if (status !== 'granted') {
@@ -167,11 +199,27 @@ export default class App extends Component {
         >
           {this.state.markers.map((marker, index) => (
             <View style={styles.card} key={index}>
+              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+                <View style = {{borderBottomColor: 'black', borderBottomWidth: 4}}>
+                <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.seniors[index].name}</Text>
+                </View>
+              </View>
+              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].name}</Text>
+              </View>
+              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1) + ' Miles': null}</Text>
+              </View>
+              <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity onPress={() => this.items(this.state.seniors[index].items)}>
+                <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Click to see items</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ))}
         </Animated.ScrollView>
         <Animated.ScrollView style = {{ position: "absolute",top:height*0.93, left:0,right:0, height:0.07*height}} scrollEnabled={false}>
-          <View style = {{height:height*0.07, width:width, alignItems:'center'}}>
+          <View style = {{height:height*0.07, width:width, alignItems:'center',}}>
             <TouchableOpacity style = {{marginTop:height*0.005}} onPress={this.onPress2}>
               <Text style = {{fontSize:Math.min(rem*15,wid*27), fontFamily:'Source'}}>Logout</Text>
             </TouchableOpacity>
