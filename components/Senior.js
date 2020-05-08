@@ -59,6 +59,7 @@ export default class Login extends React.Component {
             await AsyncStorage.removeItem('username');
             await AsyncStorage.removeItem('type');
             const Http = new XMLHttpRequest();
+            Fire.shared.signout();
             const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
             var data = "?username=" + global.uname+ "&token=" + global.token + "&action=logout";
             Http.open("GET", String(url + data));
