@@ -36,9 +36,9 @@ class Fire {
   };
   
   observeAuth2 = () =>
-    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
+    firebase.auth().onAuthStateChanged(this.onAuthStateChanged2);
 
-  onAuthStateChanged = user => {
+  onAuthStateChanged2 = user => {
     if (!user) {
       try {
         //alert(global.newuser+"@seniorsmiles.com")
