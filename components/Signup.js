@@ -4,6 +4,8 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNPickerSelect from 'react-native-picker-select';
 
+import Fire from '../Fire';
+
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -71,7 +73,7 @@ export default class Login extends React.Component {
       var uname = this.state.username;
       var pword = this.state.password;
       var sv = this.state.event;
-      var email = this.state.email;
+      var email = this.state.email
       const emailgood = validateEmail(email)
       if (uname != "" && pword != "" && sv != null && emailgood) {
         this.setState({ loading: true });
@@ -89,6 +91,9 @@ export default class Login extends React.Component {
 
             if (ok.substring(0, 4) == "true") {
               this.setState({ loading: false });
+              global.newuser = uname;
+              Fire.shared.signout();
+              Fire.shared.observeAuth();
               setTimeout(() => { alert("Succesfully signed up!"); }, 100);
               this.props.navigation.navigate('Login')
 

@@ -11,6 +11,7 @@ import forgot from './components/Forgot';
 import map from './components/Map';
 import signup from './components/Signup';
 import senior from './components/Senior';
+import chat from './components/Chat';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
@@ -196,11 +197,14 @@ export default class AppContainer extends React.Component {
         },
         Senior: {
           screen:senior
+        },
+        Chat: {
+          screen:chat
         }
       },
         {
           initialRouteName: logged ? type == 'Volunteer' ? 'Map' : 'Senior' : 'Login',
-          headerMode: 'none'
+          headerMode:'none'
         });
 
       const AppContainer = createAppContainer(AppNavigator);

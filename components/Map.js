@@ -153,7 +153,7 @@ export default class App extends Component {
       if (Http.readyState == 4) {
       
       }
-    }
+  }
   }
   handleMapRegionChange = (map) => {
       //console.log(map);
