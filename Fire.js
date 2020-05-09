@@ -1,4 +1,5 @@
 import firebase from 'firebase'; // 4.8.1
+import 'firebase/storage';
 
 class Fire {
   constructor() {
@@ -60,7 +61,8 @@ class Fire {
   }
 
   parse = snapshot => {
-    const { timestamp: numberStamp, text, user } = snapshot.val();
+    //console.log(snapshot)
+    const { timestamp: numberStamp, text, user, image } = snapshot.val();
     const { key: _id } = snapshot;
     const timestamp = new Date(numberStamp);
     const createdAt = new Date(numberStamp);
@@ -69,6 +71,7 @@ class Fire {
       timestamp,
       text,
       user,
+      image,
       createdAt
     };
     return message;
@@ -91,8 +94,8 @@ class Fire {
         user,
         timestamp: this.timestamp,
       };
-      this.append(message);
       console.log(message)
+      this.append(message);
     }
   };
 
@@ -102,7 +105,47 @@ class Fire {
   off() {
     this.ref.off();
   }
+  uploadToFirebase = (blob,id) => {
+
+    return new Promise((resolve, reject)=>{
+  
+      var storageRef = firebase.storage().ref();
+  
+      storageRef.child('uploads/' + id + '.jpg').put(blob, {
+        contentType: 'image/jpeg'
+      }).then((snapshot)=>{
+  
+        blob.close();
+  
+        resolve(snapshot);
+  
+      }).catch((error)=>{
+  
+        reject(error);
+  
+      });
+  
+    });
+  
+  
+  }    
+  getAndSend = async (id) => {
+
+  
+      var storageRef = firebase.storage().ref('uploads/' + id + '.jpg');
+      var x = await storageRef.getDownloadURL()
+      const message = {
+        text: '',
+        user: {_id : (firebase.auth().currentUser || {}).uid , name: global.uname},
+        image: x,
+        timestamp: this.timestamp,
+      };
+     this.append(message);
+  
+  
+  }    
 }
+  
 
 Fire.shared = new Fire();
 export default Fire;
