@@ -2,8 +2,9 @@
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import * as ImagePicker from 'expo-image-picker';
-
-import { View, TouchableOpacity, Image, Dimensions, Text } from "react-native";
+import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Permissions from 'expo-permissions';
+import { View, TouchableOpacity, Image, Dimensions, Text, Platform } from "react-native";
 import Fire from '../Fire';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import * as ImageManipulator from "expo-image-manipulator";
@@ -28,6 +29,7 @@ class Chat extends React.Component {
       _id: Fire.shared.uid,
     };
   }
+  
   handleOnPress =  () => {
     var x = this.guidGenerator()
     var cancel = false;

@@ -227,11 +227,11 @@ export default class Login extends React.Component {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <TouchableOpacity disabled = {this.state.status == 'no'|| this.state.status == 'nothelped'}onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status} </Text></TouchableOpacity>
+                <TouchableOpacity disabled = {this.state.status == 'no'|| this.state.status == 'nothelped'}onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status == 'payment' ? 'Items Delivered' : this.state.status} </Text></TouchableOpacity>
                 {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
                 {this.state.status == 'nothelped' ? <Image
                     style={{ flex: 1, resizeMode: 'contain',}}
-                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
+                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order' && this.state.status != 'payment') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
 
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
@@ -250,15 +250,20 @@ export default class Login extends React.Component {
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
+                {this.state.status == 'order' ? 
               <TouchableOpacity style = {{height:'45%', width:'100%', alignItems:'center',}} onPress={onPress}>
               <LinearGradient
                 colors={['#8B9DFD', '#BF0DFE']}
                 style={{height:'100%',alignItems: 'center', borderRadius: 20, width:'100%', justifyContent:'center' }}>
-                  
-                 <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(25*rem,45*wid), textAlign:'center'}}>Submit</Text>
-
+                  <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(25*rem,45*wid), textAlign:'center'}}>Submit</Text>
               </LinearGradient>
-              </TouchableOpacity>
+              </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style = {{height:'45%', width:'100%', alignItems:'center',}} onPress={onPress}>
+              <LinearGradient
+                colors={['#8B9DFD', '#BF0DFE']}
+                style={{height:'100%',alignItems: 'center', borderRadius: 20, width:'100%', justifyContent:'center' }}>
+                  <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Verify Payment</Text>
+              </LinearGradient>
+              </TouchableOpacity> : null}
               <TouchableOpacity style = {{alignSelf:'center', justifyContent:'center', marginTop:rem*7}} onPress={this.onPress2}>
               <Text style = {{fontSize:Math.min(rem*15,wid*36), fontFamily:'Source'}}>Logout</Text>
             </TouchableOpacity>
