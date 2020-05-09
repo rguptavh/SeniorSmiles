@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet,Text,View,Animated,Dimensions,Alert, AsyncStorage} from "react-native";
+import {StyleSheet,Text,View,Animated, Dimensions ,Alert, AsyncStorage} from "react-native";
 import MapView from "react-native-maps";
 import * as Location from 'expo-location';
 import { TouchableOpacity } from 'react-native-gesture-handler';
