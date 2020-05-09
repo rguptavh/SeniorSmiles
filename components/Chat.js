@@ -3,18 +3,23 @@ import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import * as ImagePicker from 'expo-image-picker';
 
-import { View, TouchableOpacity, Image, Dimensions } from "react-native";
+import { View, TouchableOpacity, Image, Dimensions, Text } from "react-native";
 import Fire from '../Fire';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import * as ImageManipulator from "expo-image-manipulator";
+import { NavigationActions } from 'react-navigation'
 
 const entireScreenHeight = Dimensions.get('window').height;
+const rem = entireScreenHeight / 380;
+const entireScreenWidth = Dimensions.get('window').width;
+const wid = entireScreenWidth / 380;
 class Chat extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({ title: global.uname, });
 
   state = {
     messages: [],
+    other: ''
   };
 
   get user() {
@@ -25,6 +30,7 @@ class Chat extends React.Component {
   }
   handleOnPress =  () => {
     var x = this.guidGenerator()
+    var cancel = false;
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images"
     }).then((result) => {
@@ -35,15 +41,18 @@ class Chat extends React.Component {
         return this.uriToBlob(uri);
 
       }
+      else{
+        cancel = true;
+      }
 
     }).then((blob) => {
-
+      if (!cancel){
       return Fire.shared.uploadToFirebase(blob, x);
-
+      }
     }).then((snapshot) => {
-
-      console.log(Fire.shared.getAndSend(x))
-
+      if (!cancel){
+      Fire.shared.getAndSend(x)
+      }
     }).catch((error) => {
 
       throw error;
@@ -88,10 +97,13 @@ class Chat extends React.Component {
       <View style={{ flex: 1, alignItems: 'center', paddingTop: getStatusBarHeight() }}>
         <View style={{ height: '7%', width: '100%', flexDirection: 'row'}}>
           <View style={{ flex: 1, height:'80%'}}>
-            <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginLeft:'10%'}}>
-              <Image style = {{width:'100%', height:'100%'}} source={require('../assets/backarrow.png')} resizeMode='contain'>
+            <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginLeft:'10%'}} onPress = {() => this.props.navigation.dispatch(NavigationActions.back())}>
+              <Image style = {{width:'100%', height:'100%'}} source={require('../assets/backarrow.png')} resizeMode='contain' >
               </Image>
               </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, height:'80%', alignItems:'center', justifyContent:'center'}}>
+          <Text style = {{fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.other}</Text>
           </View>
           <View style={{ flex: 1, height:'80%', alignItems:'flex-end'}}>
           <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginRight:'10%'}} onPress = {this.handleOnPress}>
@@ -100,7 +112,7 @@ class Chat extends React.Component {
               </TouchableOpacity>
           </View>
         </View>
-        <View style={{ height: '95%', width: '100%' }}>
+        <View style={{ height: '93%', width: '100%' }}>
           <GiftedChat
             messages={this.state.messages}
             onSend={Fire.shared.send}
@@ -112,6 +124,7 @@ class Chat extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({other: String(global.uname) != String(global.volname) ? global.volname : global.senname})
     Fire.shared.on(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
