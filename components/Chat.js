@@ -4,10 +4,11 @@ import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
+import { Camera } from 'expo-camera';
 import { View, TouchableOpacity, Image, Dimensions, Text, Platform } from "react-native";
 import Fire from '../Fire';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import * as ImageManipulator from "expo-image-manipulator";
+import ImageResizer from 'react-native-image-resizer';
 import { NavigationActions } from 'react-navigation'
 
 const entireScreenHeight = Dimensions.get('window').height;
@@ -20,7 +21,10 @@ class Chat extends React.Component {
 
   state = {
     messages: [],
-    other: ''
+    other: '',
+    camera: false,
+    hasPermission: null,
+    cameraType: Camera.Constants.Type.back,
   };
 
   get user() {
@@ -29,37 +33,78 @@ class Chat extends React.Component {
       _id: Fire.shared.uid,
     };
   }
+  camera = async () =>{
+    await this.getPermissionAsync();
+    console.log(this.state.hasPermission)
+    if (this.state.hasPermission){
+    this.setState({camera: true})
+    }
+    else{
+      return;
+    }
+  }
+  getPermissionAsync = async () => {
+    // Camera roll Permission 
+    if (Platform.OS === 'ios') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions');
+      }
+    }
+    // Camera Permission
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ hasPermission: status === 'granted' });
+  }
+
+  handleCameraType=()=>{
+    const { cameraType } = this.state
+
+    this.setState({cameraType:
+      cameraType === Camera.Constants.Type.back
+      ? Camera.Constants.Type.front
+      : Camera.Constants.Type.back
+    })
+  }
+
+  takePicture = async () => {
+    if (this.camera) {
+      let photo = await this.camera.takePictureAsync();
+      ImageResizer.createResizedImage(photo.uri, 2000, 2000, 'JPEG', 50)
+  .then(response => {
+    this.addmessage(response.uri)
+    this.setState({camera: false})
+  })
+  .catch(err => {
+    // Oops, something went wrong. Check that the filename is correct and
+    // inspect err to get more details.
+  });
+
+    }
+  }
+
+  pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images
+    });
+    if (!result.cancelled){
+      this.addmessage(result.uri)
+      this.setState({camera: false})
+    }
+  }
   
-  handleOnPress =  () => {
+  addmessage =  async (uri) => {
     var x = this.guidGenerator()
-    var cancel = false;
-    ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "Images"
-    }).then((result) => {
-
-      if (!result.cancelled) {
-        // User picked an image
-        const { height, width, type, uri } = result;
-        return this.uriToBlob(uri);
-
-      }
-      else{
-        cancel = true;
-      }
-
-    }).then((blob) => {
-      if (!cancel){
+ this.uriToBlob(uri).then((blob) => {
       return Fire.shared.uploadToFirebase(blob, x);
-      }
+
     }).then((snapshot) => {
-      if (!cancel){
       Fire.shared.getAndSend(x)
-      }
     }).catch((error) => {
 
       throw error;
 
     });
+
 
 
   }
@@ -95,6 +140,55 @@ class Chat extends React.Component {
 
   }
   render() {
+    if (this.state.camera){
+      return (
+        <View style={{ flex: 1 }}>
+          <Camera style={{ flex: 1 }} type={this.state.cameraType}  ref={ref => {this.camera = ref}}>
+            <View style={{flex:1, flexDirection:"row",justifyContent:"space-between",margin:30}}>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent'                 
+                }}
+                onPress={()=>this.pickImage()}>
+                <Ionicons
+                    name="ios-photos"
+                    style={{ color: "#fff", fontSize: 40}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                }}
+                onPress={()=>this.takePicture()}
+                >
+                <FontAwesome
+                    name="camera"
+                    style={{ color: "#fff", fontSize: 40}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                }}
+                onPress={()=>this.handleCameraType()}
+                >
+                <MaterialCommunityIcons
+                    name="camera-switch"
+                    style={{ color: "#fff", fontSize: 40}}
+                />
+              </TouchableOpacity>
+            </View>
+          </Camera>
+      </View>
+    );
+    }
+    else{
     return (
       <View style={{ flex: 1, alignItems: 'center', paddingTop: getStatusBarHeight() }}>
         <View style={{ height: '7%', width: '100%', flexDirection: 'row'}}>
@@ -108,7 +202,7 @@ class Chat extends React.Component {
           <Text style = {{fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.other}</Text>
           </View>
           <View style={{ flex: 1, height:'80%', alignItems:'flex-end'}}>
-          <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginRight:'10%'}} onPress = {this.handleOnPress}>
+          <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginRight:'10%'}} onPress = {this.camera}>
               <Image style = {{width:'100%', height:'100%'}} source={require('../assets/camera.png')} resizeMode='contain'>
               </Image>
               </TouchableOpacity>
@@ -124,6 +218,7 @@ class Chat extends React.Component {
       </View>
     );
   }
+}
 
   componentDidMount() {
     this.setState({other: String(global.uname) != String(global.volname) ? global.volname : global.senname})
