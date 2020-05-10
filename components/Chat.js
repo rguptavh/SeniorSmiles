@@ -40,20 +40,17 @@ class Chat extends React.Component {
     this.setState({camera: true})
     }
     else{
-      return;
+      alert('Please enable Camera and Camera Roll permissions')
     }
   }
   getPermissionAsync = async () => {
     // Camera roll Permission 
     if (Platform.OS === 'ios') {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions');
-      }
+      const { status1 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     }
     // Camera Permission
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasPermission: status === 'granted' });
+    this.setState({ hasPermission: status === 'granted' && status1 === 'granted' });
   }
 
   handleCameraType=()=>{
