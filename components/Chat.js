@@ -8,8 +8,8 @@ import { Camera } from 'expo-camera';
 import { View, TouchableOpacity, Image, Dimensions, Text, Platform } from "react-native";
 import Fire from '../Fire';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import ImageResizer from 'react-native-image-resizer';
 import { NavigationActions } from 'react-navigation'
+import * as ImageManipulator from "expo-image-manipulator";
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -42,15 +42,20 @@ class Chat extends React.Component {
     else{
       alert('Please enable Camera and Camera Roll permissions')
     }
+    return;
   }
   getPermissionAsync = async () => {
     // Camera roll Permission 
+    var roll = true;
     if (Platform.OS === 'ios') {
-      const { status1 } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted'){
+        roll = false
+      }
     }
     // Camera Permission
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasPermission: status === 'granted' && status1 === 'granted' });
+    this.setState({ hasPermission: status === 'granted' && roll});
   }
 
   handleCameraType=()=>{
@@ -66,15 +71,13 @@ class Chat extends React.Component {
   takePicture = async () => {
     if (this.camera) {
       let photo = await this.camera.takePictureAsync();
-      ImageResizer.createResizedImage(photo.uri, 2000, 2000, 'JPEG', 50)
-  .then(response => {
-    this.addmessage(response.uri)
+      const manipResult = await ImageManipulator.manipulateAsync(
+        photo.uri,
+        [],
+        { compress: 0.1, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      this.addmessage(manipResult.uri)
     this.setState({camera: false})
-  })
-  .catch(err => {
-    // Oops, something went wrong. Check that the filename is correct and
-    // inspect err to get more details.
-  });
 
     }
   }
@@ -84,8 +87,13 @@ class Chat extends React.Component {
       mediaTypes: ImagePicker.MediaTypeOptions.Images
     });
     if (!result.cancelled){
-      this.addmessage(result.uri)
-      this.setState({camera: false})
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [],
+        { compress: 0.1, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      this.addmessage(manipResult.uri)
+    this.setState({camera: false})
     }
   }
   
