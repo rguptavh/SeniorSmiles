@@ -157,7 +157,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].userhelp == global.uname ? 'Accepted' : null}{this.state.seniors[index].name}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
