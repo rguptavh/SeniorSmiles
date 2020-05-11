@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationActions, StackActions } from 'react-navigation'
 import Fire from '../Fire';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height*0.3;
@@ -131,12 +132,9 @@ export default class App extends Component {
       }, 0);
     });
   }
-  items = (items) => {
-    var disp = "";
-    for (const item of items){
-      disp+=item.name + " x" + item.quantity + "\n"
-    }
-    Alert.alert("Items Requested",disp)
+  details = (senior, index, distance,store) => {
+    global.accept = [senior,index, distance,store];
+    this.props.navigation.navigate('Info')
   }
 
 
@@ -158,7 +156,56 @@ export default class App extends Component {
       this.setState({mapRegion: map });
     }
 
-
+    cards = (marker,index) => {
+    if (this.state.seniors[index].userhelp != global.uname){
+      return (
+      <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style = {styles.card}  key={index}>
+      <View style={{flex:1, width:'100%'}}>
+        <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <View style = {{borderBottomColor: 'black', borderBottomWidth: 4}}>
+          <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.seniors[index].name}</Text>
+          </View>
+        </View>
+        <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].store}</Text>
+        </View>
+        <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1) + ' Miles': null}</Text>
+        </View>
+        <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
+          <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index,this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1),this.state.seniors[index].store)}>
+          <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Click for more information</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      </LinearGradient>
+    );
+      }
+      else{
+        return (
+          <LinearGradient colors={['#FFCD9F', '#FF6666']} style = {styles.card}  key={index}>
+          <View style={{flex:1, width:'100%'}}>
+            <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <View style = {{borderBottomColor: 'black', borderBottomWidth: 4}}>
+              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.seniors[index].name}</Text>
+              </View>
+            </View>
+            <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].store}</Text>
+            </View>
+            <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1) + ' Miles': null}</Text>
+            </View>
+            <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
+              <TouchableOpacity onPress={() => this.details(this.state.seniors[index])}>
+              <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Click for more information</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          </LinearGradient>
+        );
+      }
+    }
     
   async getLocationAsync (){
    let { status } = await Location.requestPermissionsAsync();
@@ -220,30 +267,8 @@ export default class App extends Component {
           )}
           style={styles.scrollView}
         >
-          {this.state.markers.map((marker, index) => (
-            <View style={styles.card} key={index}>
-              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <View style = {{borderBottomColor: 'black', borderBottomWidth: 4}}>
-                <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.seniors[index].name}</Text>
-                </View>
-              </View>
-              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
-              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Preferred Store: {this.state.seniors[index].store}</Text>
-              </View>
-              <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
-              <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude,marker.coordinate.longitude,this.state.location.latitude,this.state.location.longitude,'N').toFixed(1) + ' Miles': null}</Text>
-              </View>
-              <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
-                <TouchableOpacity onPress={() => this.items(this.state.seniors[index].items)}>
-                <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Click to see items</Text>
-                </TouchableOpacity>
-              </View>
-              <View style = {{flex:1, width:'100%', alignItems:'center', justifyContent:'center'}}>
-                <TouchableOpacity onPress={() => this.accept(this.state.seniors[index])}>
-                <Text style = {{ fontFamily:'SourceL', fontSize:Math.min(15*rem,27*wid)}}>Accept Request</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          {this.state.markers.map((marker, index) => ( 
+            this.cards(marker,index)
           ))}
         </Animated.ScrollView>
         <Animated.ScrollView style = {{ position: "absolute",top:height*0.93, left:0,right:0, height:0.07*height}} scrollEnabled={false}>
@@ -350,7 +375,6 @@ const styles = StyleSheet.create({
   card: {
     padding: 10,
     elevation: 2,
-    backgroundColor: "#FFF",
     shadowColor: "#000",
     shadowRadius: 5,
     shadowOpacity: 0.3,

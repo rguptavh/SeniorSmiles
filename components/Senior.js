@@ -16,8 +16,6 @@ const wid = entireScreenWidth / 380;
 let location = null;
 export default class Login extends React.Component {
   state = {
-    username: '',
-    password: '',
     loading: false,
     items: global.items,
     status: global.status,
