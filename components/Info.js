@@ -34,12 +34,7 @@ export default class Login extends React.Component {
   }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
 
-  chat = () => {
-    global.volname = this.state.userhelp;
-    global.senname = global.uname;
-    console.log(global.volname + " " + global.senname)
-    this.props.navigation.navigate('Chat')
-  }
+
 
   async componentDidMount() {
     this.getLocationAsync();

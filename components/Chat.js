@@ -2,7 +2,7 @@
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { View, TouchableOpacity, Image, Dimensions, Text, Platform } from "react-native";
@@ -33,38 +33,29 @@ class Chat extends React.Component {
       _id: Fire.shared.uid,
     };
   }
-  camera = async () =>{
-    await this.getPermissionAsync();
-    console.log(this.state.hasPermission)
-    if (this.state.hasPermission){
-    this.setState({camera: true})
-    }
-    else{
-      alert('Please enable Camera and Camera Roll permissions')
-    }
-    return;
-  }
+
   getPermissionAsync = async () => {
     // Camera roll Permission 
     var roll = true;
     if (Platform.OS === 'ios') {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted'){
+      if (status !== 'granted') {
         roll = false
       }
     }
     // Camera Permission
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasPermission: status === 'granted' && roll});
+    this.setState({ hasPermission: status === 'granted' && roll });
   }
 
-  handleCameraType=()=>{
+  handleCameraType = () => {
     const { cameraType } = this.state
 
-    this.setState({cameraType:
-      cameraType === Camera.Constants.Type.back
-      ? Camera.Constants.Type.front
-      : Camera.Constants.Type.back
+    this.setState({
+      cameraType:
+        cameraType === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
     })
   }
 
@@ -77,7 +68,7 @@ class Chat extends React.Component {
         { compress: 0.1, format: ImageManipulator.SaveFormat.JPEG }
       );
       this.addmessage(manipResult.uri)
-    this.setState({camera: false})
+      this.setState({ camera: false })
 
     }
   }
@@ -86,20 +77,20 @@ class Chat extends React.Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images
     });
-    if (!result.cancelled){
+    if (!result.cancelled) {
       const manipResult = await ImageManipulator.manipulateAsync(
         result.uri,
         [],
         { compress: 0.1, format: ImageManipulator.SaveFormat.JPEG }
       );
       this.addmessage(manipResult.uri)
-    this.setState({camera: false})
+      this.setState({ camera: false })
     }
   }
-  
-  addmessage =  async (uri) => {
+
+  addmessage = async (uri) => {
     var x = this.guidGenerator()
- this.uriToBlob(uri).then((blob) => {
+    this.uriToBlob(uri).then((blob) => {
       return Fire.shared.uploadToFirebase(blob, x);
 
     }).then((snapshot) => {
@@ -145,21 +136,21 @@ class Chat extends React.Component {
 
   }
   render() {
-    if (this.state.camera){
+    if (this.state.camera) {
       return (
         <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }} type={this.state.cameraType}  ref={ref => {this.camera = ref}}>
-            <View style={{flex:1, flexDirection:"row",justifyContent:"space-between",margin:30}}>
+          <Camera style={{ flex: 1 }} type={this.state.cameraType} ref={ref => { this.camera = ref }}>
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", margin: 30 }}>
               <TouchableOpacity
                 style={{
                   alignSelf: 'flex-end',
                   alignItems: 'center',
-                  backgroundColor: 'transparent'                 
+                  backgroundColor: 'transparent'
                 }}
-                onPress={()=>this.pickImage()}>
+                onPress={() => this.pickImage()}>
                 <Ionicons
-                    name="ios-photos"
-                    style={{ color: "#fff", fontSize: 40}}
+                  name="ios-photos"
+                  style={{ color: "#fff", fontSize: 40 }}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -168,11 +159,11 @@ class Chat extends React.Component {
                   alignItems: 'center',
                   backgroundColor: 'transparent',
                 }}
-                onPress={()=>this.takePicture()}
-                >
+                onPress={() => this.takePicture()}
+              >
                 <FontAwesome
-                    name="camera"
-                    style={{ color: "#fff", fontSize: 40}}
+                  name="camera"
+                  style={{ color: "#fff", fontSize: 40 }}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -181,52 +172,64 @@ class Chat extends React.Component {
                   alignItems: 'center',
                   backgroundColor: 'transparent',
                 }}
-                onPress={()=>this.handleCameraType()}
-                >
+                onPress={() => this.handleCameraType()}
+              >
                 <MaterialCommunityIcons
-                    name="camera-switch"
-                    style={{ color: "#fff", fontSize: 40}}
+                  name="camera-switch"
+                  style={{ color: "#fff", fontSize: 40 }}
                 />
               </TouchableOpacity>
             </View>
           </Camera>
-      </View>
-    );
+        </View>
+      );
     }
-    else{
-    return (
-      <View style={{ flex: 1, alignItems: 'center', paddingTop: getStatusBarHeight() }}>
-        <View style={{ height: '7%', width: '100%', flexDirection: 'row'}}>
-          <View style={{ flex: 1, height:'80%'}}>
-            <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginLeft:'10%'}} onPress = {() => this.props.navigation.dispatch(NavigationActions.back())}>
-              <Image style = {{width:'100%', height:'100%'}} source={require('../assets/backarrow.png')} resizeMode='contain' >
-              </Image>
+    else {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', paddingTop: getStatusBarHeight() }}>
+          <View style={{ height: '7%', width: '100%', flexDirection: 'row' }}>
+            <View style={{ flex: 1, height: '80%' }}>
+              <TouchableOpacity style={{ height: '100%', width: (entireScreenHeight - getStatusBarHeight()) * 0.07, marginLeft: '10%' }} onPress={() => this.props.navigation.dispatch(NavigationActions.back())}>
+                <Image style={{ width: '100%', height: '100%' }} source={require('../assets/backarrow.png')} resizeMode='contain' >
+                </Image>
               </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, height:'80%', alignItems:'center', justifyContent:'center'}}>
-          <Text style = {{fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>{this.state.other}</Text>
-          </View>
-          <View style={{ flex: 1, height:'80%', alignItems:'flex-end'}}>
-          <TouchableOpacity style = {{height:'100%', width: (entireScreenHeight-getStatusBarHeight()) * 0.07, marginRight:'10%'}} onPress = {this.camera}>
-              <Image style = {{width:'100%', height:'100%'}} source={require('../assets/camera.png')} resizeMode='contain'>
-              </Image>
+            </View>
+            <View style={{ flex: 1, height: '80%', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.other}</Text>
+            </View>
+            <View style={{ flex: 1, height: '80%', alignItems: 'flex-end' }}>
+              <TouchableOpacity style={{ height: '100%', width: (entireScreenHeight - getStatusBarHeight()) * 0.07, marginRight: '10%' }} onPress={async () => {
+                if (!this.state.hasPermission) {
+                  await this.getPermissionAsync();
+                }
+                console.log(this.state.hasPermission)
+                if (this.state.hasPermission) {
+                  console.log('hii')
+                  this.setState({ camera: true })
+                }
+                else {
+                  alert('Please enable Camera and Camera Roll permissions')
+                }
+              }}>
+                <Image style={{ width: '100%', height: '100%' }} source={require('../assets/camera.png')} resizeMode='contain'>
+                </Image>
               </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ height: '93%', width: '100%' }}>
+            <GiftedChat
+              messages={this.state.messages}
+              onSend={Fire.shared.send}
+              user={this.user}
+            />
           </View>
         </View>
-        <View style={{ height: '93%', width: '100%' }}>
-          <GiftedChat
-            messages={this.state.messages}
-            onSend={Fire.shared.send}
-            user={this.user}
-          />
-        </View>
-      </View>
-    );
+      );
+    }
   }
-}
 
   componentDidMount() {
-    this.setState({other: String(global.uname) != String(global.volname) ? global.volname : global.senname})
+    this.setState({ other: String(global.uname) != String(global.volname) ? global.volname : global.senname })
     Fire.shared.on(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),

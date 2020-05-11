@@ -79,6 +79,12 @@ export default class App extends Component {
     );
 
   }
+  chat = (senior) => {
+    global.volname = global.uname;
+    global.senname = senior.name;
+    console.log(global.volname + " " + global.senname)
+    this.props.navigation.navigate('Chat')
+  }
   distance(lat1, lon1, lat2, lon2, unit) {
     if ((lat1 == lat2) && (lon1 == lon2)) {
       return 0;
@@ -157,7 +163,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].userhelp == global.uname ? 'Accepted' : null}{this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -181,7 +187,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Accepted {this.state.seniors[index].name}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -193,6 +199,11 @@ export default class App extends Component {
             <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
               <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker)}>
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
+                <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
               </TouchableOpacity>
             </View>
           </View>
