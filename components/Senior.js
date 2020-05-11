@@ -21,7 +21,7 @@ export default class Login extends React.Component {
     loading: false,
     items: global.items,
     status: global.status,
-    userhelp: null,
+    userhelp: global.userhelp,
   };
   constructor() {
     super();
@@ -43,8 +43,9 @@ export default class Login extends React.Component {
   }
   }
   chat = () => {
-  global.volname = this.state.status;
+  global.volname = this.state.userhelp;
   global.senname = global.uname;
+  console.log(global.volname + " " + global.senname)
   this.props.navigation.navigate('Chat')
   }
   onPress2 = async () => {
@@ -88,8 +89,9 @@ export default class Login extends React.Component {
     console.log(notification.data.action)
   //  global.status = "helped"
     if (notification.data.action == 'volunteer'){
-      global.status = notification.data.username
-      this.setState({status: notification.data.username})
+      global.status = 'yes'
+      global.userhelp = notification.data.username;
+      this.setState({status: 'yes', userhelp: notification.data.username})
       
     }
     console.log(notification)
@@ -227,12 +229,12 @@ export default class Login extends React.Component {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
               <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <TouchableOpacity disabled = {this.state.status == 'no'|| this.state.status == 'nothelped'}onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.status == 'payment' ? 'Items Delivered' : this.state.status} </Text></TouchableOpacity>
+                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.userhelp} </Text>
                 {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
                 {this.state.status == 'nothelped' ? <Image
                     style={{ flex: 1, resizeMode: 'contain',}}
-                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order' && this.state.status != 'payment') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>Has accepted your request</Text> : null}
-
+                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>{this.state.status == 'payment' ? 'Has delivered your items' : 'Has accepted your request'}</Text> : null}
+              {this.state.status == 'payment'|| this.state.status == 'yes' ? <TouchableOpacity onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'Source',}}>Click to chat with them</Text></TouchableOpacity> : null}
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom:'7%'}}>

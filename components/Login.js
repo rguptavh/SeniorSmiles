@@ -74,6 +74,7 @@ export default class Login extends React.Component {
             }
             else if (ok.substring(0, 6) == "Senior") {
               global.uname = uname
+              console.log(ok)
               Fire.shared.observeAuth2();
               AsyncStorage.setItem('username', this.state.username);
               AsyncStorage.setItem('type', 'Senior');
@@ -81,7 +82,10 @@ export default class Login extends React.Component {
               var status = ok.substring(7,index);
               var items = ok.substring(index+1,ok.length);
               global.status = status;
-              global.items = JSON.parse(items);
+              var temp = JSON.parse(items);
+              global.userhelp = temp[temp.length-1].username
+              temp.splice(temp.length-1, 1);
+              global.items = temp;
               AsyncStorage.setItem('type', "Senior");
               this.setState({ loading: false });
               setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
