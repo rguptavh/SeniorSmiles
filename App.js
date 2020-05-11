@@ -138,7 +138,10 @@ export default class AppContainer extends React.Component {
               var status = ok.substring(7,index);
               var items = ok.substring(index+1,ok.length);
               global.status = status;
-              global.items = JSON.parse(items);
+              var temp = JSON.parse(items);
+              global.userhelp = temp[temp.length-1].username
+              temp.splice(temp.length-1, 1);
+              global.items = temp;
               AsyncStorage.setItem('type', "Senior");
               this.setState({ loading: false, isAppReady:true });
 

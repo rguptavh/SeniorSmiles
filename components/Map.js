@@ -181,6 +181,7 @@ export default class App extends Component {
   }
 
   render() {
+    if (this.state.markers.length !=0){
     return (
       <View style={styles.container}>
         <MapView
@@ -255,6 +256,78 @@ export default class App extends Component {
         
       </View>
     );
+          }
+          else{
+            return (
+              <View style={styles.container}>
+                <MapView
+                  ref={map => this.map = map}
+                  initialRegion={this.state.mapRegion}
+                  style={styles.container}
+                >
+                  {this.state.location != null ? <MapView.Marker key={this.state.markers.length} coordinate={this.state.location} title="Your Location" pinColor='blue' isPreselected={true}></MapView.Marker> : null}
+        
+               
+                  {this.state.markers.map((marker, index) => {
+                    return (
+                      <MapView.Marker key={index} coordinate={marker.coordinate} pinColor= {this.state.index == index ? 'green' : 'red'}>
+        
+                      </MapView.Marker>
+                    );
+                  })}
+                </MapView>
+                <Animated.ScrollView
+                  horizontal
+                  scrollEventThrottle={16}
+                  showsHorizontalScrollIndicator={false}
+                  snapToInterval={CARD_WIDTH*1.115}
+                  scrollEnabled={false}
+                  disableIntervalMomentum={true}
+                  onScroll={Animated.event(
+                    [
+                      {
+                        nativeEvent: {
+                          contentOffset: {
+                            x: this.animation,
+                          },
+                        },
+                      },
+                    ],
+                    { useNativeDriver: true }
+                  )}
+                  style={styles.scrollView}
+                >
+                  
+                    <View style={styles.card}>
+                      <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+                        <View style = {{borderBottomColor: 'black', borderBottomWidth: 4}}>
+                        <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid)}}>No Seniors</Text>
+                        </View>
+                      </View>
+                      <View style = {{flex:3, alignItems:'center', justifyContent:'center'}}>
+                      <Text style = {{ fontFamily:'SourceB', fontSize:Math.min(15*rem,27*wid),}}>Sorry, there are no active requests. Please try again later.</Text>
+                      </View>
+                      <View style = {{flex:2, alignItems:'center', justifyContent:'center'}}></View>
+                    </View>
+                </Animated.ScrollView>
+                <Animated.ScrollView style = {{ position: "absolute",top:height*0.93, left:0,right:0, height:0.07*height}} scrollEnabled={false}>
+                  <View style = {{height:height*0.07, width:width, alignItems:'center', flexDirection:'row'}}>
+                    <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <TouchableOpacity style = {{marginTop:height*0.005}} onPress={this.onPress2}>
+                      <Text style = {{fontSize:Math.min(rem*15,wid*27), fontFamily:'Source'}}>Logout</Text>
+                    </TouchableOpacity>
+                    </View>
+                    <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <TouchableOpacity style = {{marginTop:height*0.005}} onPress={this.onPress2}>
+                      <Text style = {{fontSize:Math.min(rem*15,wid*27), fontFamily:'Source'}}>Profile</Text>
+                    </TouchableOpacity>
+                    </View>
+                  </View>
+                </Animated.ScrollView>
+                
+              </View>
+            );
+          }
   }
 }
 
