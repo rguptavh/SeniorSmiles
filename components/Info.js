@@ -23,7 +23,8 @@ export default class Login extends React.Component {
     index: global.accept[1],
     distance: global.accept[2],
     store: global.accept[3],
-    marker: global.accept[4]
+    marker: global.accept[4],
+    location: null
   };
   constructor() {
     super();
