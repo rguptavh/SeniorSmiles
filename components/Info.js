@@ -60,180 +60,168 @@ export default class Login extends React.Component {
       </View>
     );
   }
-  render() {
-    console.log(this.state.senior.items)
-    const onPress = async () => {
-      var uname = global.uname;
-      var items = this.state.senior.items.slice();
-      items.pop();
-      var empty = false;
-      for (var x = 0, l = items.length; x < l; x++) {
-        if (items[x].value == '' || items[x].quantity == '') {
-          empty = true;
-          break;
-        }
-      }
-      items = JSON.stringify(items);
 
-      if (uname != "" && !empty) {
-        location = await Location.getCurrentPositionAsync({});
-        var loc = JSON.stringify({ coordinate: { longitude: location.coords.longitude, latitude: location.coords.latitude } });
-        this.setState({ loading: true });
-        const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&location=" + loc + "&items=" + items + "&action=senior";
-        console.log(data);
-        Http.open("GET", String(url + data));
-        Http.send();
-        var ok;
-        Http.onreadystatechange = (e) => {
-          ok = Http.responseText;
-          if (Http.readyState == 4) {
-            console.log(String(ok));
-            if (ok == "true") {
-              this.setState({ loading: false, status: 'nothelped' });
-              setTimeout(() => { alert("Success!"); }, 100);
-            }
-            /* else if (ok.substring(0, 6) == "Senior") {
-               this.setState({ loading: false });
-               setTimeout(() => { alert("Senior Login"); }, 100);
- 
-             }
-             else if (ok.substring(0, 5) == "false") {
-               this.setState({ loading: false });
-               setTimeout(() => { alert("Failed Login"); }, 100);
- 
-             }*/
-            else {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Server Error"); }, 100);
-            }
-
+  accept = () => {
+    var senname = this.state.senior.name;
+    var uname = global.uname;
+    this.setState({ loading: true });
+    const Http = new XMLHttpRequest();
+    const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+    var data = "?username=" + uname + "&sen=" + senname + "&action=vol";
+    console.log(data)
+    Http.open("GET", String(url + data));
+    Http.send();
+    Http.onreadystatechange = (e) => {
+      if (Http.readyState == 4) {
+        var ok = Http.responseText;
+        if (ok.substring(0, 4) == 'true') {
+          var seniors = JSON.parse(ok.substring(5, ok.length));
+          global.seniors = seniors;
+          var markers = [];
+          for (var x = 0, l = seniors.length; x < l; x++) {
+            markers.push(seniors[x].location);
           }
+          global.markers = markers;
+          this.setState({ loading: false });
+          this.props.navigation.replace('Map');
         }
-      }
-      else {
-        alert("Please fill all items")
+        else if (ok.substring(0, 5) == 'false') {
+          alert("Sorry, this request has already been accepted")
+          var seniors = JSON.parse(ok.substring(6, ok.length));
+          global.seniors = seniors;
+          var markers = [];
+          for (var x = 0, l = seniors.length; x < l; x++) {
+            markers.push(seniors[x].location);
+          }
+          global.markers = markers;
+          this.setState({ loading: false });
+          this.props.navigation.replace('Map');
+
+        }
       }
     }
-    return (
-      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
+  }
 
-          <View style={styles.container}>
-            <Spinner
-              visible={this.state.loading}
-              textContent={'Accepting request...'}
-              textStyle={styles.spinnerTextStyle}
-            />
-            <View style={{ flex: 1, width: '100%', alignItems: 'center', marginTop: getStatusBarHeight() }}>
-              <View style={{ borderBottomColor: '#BF0DFE', borderBottomWidth: 10, marginTop: -entireScreenHeight * 0.01 }}>
-                <Text style={{ fontSize: Math.min(wid * 54, rem * 30), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center' }}>{this.state.senior.name}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', width: '80%', marginTop: '5%' }}>
-                <View style={{ flex: 4 }}>
-                  <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.distance} Miles Away</Text>
+    render() {
+      
+      return (
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
+
+            <View style={styles.container}>
+              <Spinner
+                visible={this.state.loading}
+                textContent={'Accepting request...'}
+                textStyle={styles.spinnerTextStyle}
+              />
+              <View style={{ flex: 1, width: '100%', alignItems: 'center', marginTop: getStatusBarHeight() }}>
+                <View style={{ borderBottomColor: '#BF0DFE', borderBottomWidth: 10, marginTop: -entireScreenHeight * 0.01 }}>
+                  <Text style={{ fontSize: Math.min(wid * 54, rem * 30), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center' }}>{this.state.senior.name}</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <TouchableOpacity style={{ flex: 1 }}>
-                    <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }}>
+                <View style={{ flexDirection: 'row', width: '80%', marginTop: '5%' }}>
+                  <View style={{ flex: 4 }}>
+                    <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.distance} Miles Away</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity style={{ flex: 1 }}>
+                      <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }}>
 
-                      <Image style={{ width: '100%', height: '100%', }} source={require('../assets/compass.png')} resizeMode='contain'>
-                      </Image>
+                        <Image style={{ width: '100%', height: '100%', }} source={require('../assets/compass.png')} resizeMode='contain'>
+                        </Image>
 
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center', marginTop: '3%' }}>Preferred Store: {this.state.store}</Text>
+
+
+
+              </View>
+              <View style={{ flex: 2, width: '100%', alignItems: 'center' }}>
+                <LinearGradient colors={['#22B7CB', '#BF0DFE']} style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, padding: 2 }}>
+                  <View style={{ flex: 1, width: '100%', alignItems: 'center', backgroundColor: 'white', borderRadius: 20 }}>
+                    <View style={{ flex: 0.6, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', alignItems: 'center' }}>
+                      <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB', }}>Items List</Text>
+                    </View>
+                    <View style={{ flex: 3, width: '85%' }}>
+                      <FlatList style={{ width: '100%', }}
+                        data={this.state.senior.items}
+                        renderItem={this._renderItem}
+                        keyExtractor={item => "" + item.index}
+                      />
+                    </View>
+                    <View style={{ flex: 0.2 }}></View>
+                  </View>
+                </LinearGradient>
+              </View>
+              <View style={{ flex: 0.75, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
+                  <TouchableOpacity style={{ width: '100%', height: '40%', }} onPress={() => this.props.navigation.navigate('Map')}>
+                    <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Back</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
+                  <TouchableOpacity style={{ width: '100%', height: '40%', }}>
+                    <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }} onPress = {() => this.accept()}>Accept</Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
               </View>
-              <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center', marginTop: '3%' }}>Preferred Store: {this.state.store}</Text>
-
-
-
             </View>
-            <View style={{ flex: 2, width: '100%', alignItems: 'center' }}>
-              <LinearGradient colors={['#22B7CB', '#BF0DFE']} style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, padding: 2 }}>
-                <View style={{ flex: 1, width: '100%', alignItems: 'center', backgroundColor: 'white', borderRadius: 20 }}>
-                  <View style={{ flex: 0.75, justifyContent: 'flex-start', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', alignItems: 'center' }}>
-                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>Items List</Text>
-                  </View>
-                  <View style={{ flex: 3, width: '85%' }}>
-                    <FlatList style={{ width: '100%', }}
-                      data={this.state.senior.items}
-                      renderItem={this._renderItem}
-                      keyExtractor={item => "" + item.index}
-                    />
-                  </View>
-                  <View style={{ flex: 0.2 }}></View>
-                </View>
-              </LinearGradient>
-            </View>
-            <View style={{ flex: 0.75, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
-              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
-                <TouchableOpacity style={{ width: '100%', height: '40%', }}>
-                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems:'center', justifyContent:'center' }}>
-                    <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Back</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
-                <TouchableOpacity style={{ width: '100%', height: '40%', }}>
-                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems:'center', justifyContent:'center' }}>
-                    <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Accept</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView >
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView >
 
-    );
+      );
+    }
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
-    // left: 0, top: 0, position: 'absolute'
+  const styles = StyleSheet.create({
+    container: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white'
+      // left: 0, top: 0, position: 'absolute'
 
-  },
-  image: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    alignItems: 'center',
-  },
-  imagefront: {
-    flex: 1,
-    height: '100%',
-    width: '100%',
-  },
-  spinnerTextStyle: {
-    color: '#FFF',
-    top: 60
-  },
-  label: {
-    color: '#22B7CB'
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: rem * 10,
-  },
-  label: {
-    color: 'black',
-    fontSize: 18 * wid,
-    fontFamily: 'Source'
-  },
-  link: {
-    fontWeight: 'bold',
-    color: '#22B7CB',
-    fontSize: 18 * wid,
-    fontFamily: 'SourceB'
-  },
+    },
+    image: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+      alignItems: 'center',
+    },
+    imagefront: {
+      flex: 1,
+      height: '100%',
+      width: '100%',
+    },
+    spinnerTextStyle: {
+      color: '#FFF',
+      top: 60
+    },
+    label: {
+      color: '#22B7CB'
+    },
+    row: {
+      flexDirection: 'row',
+      marginTop: rem * 10,
+    },
+    label: {
+      color: 'black',
+      fontSize: 18 * wid,
+      fontFamily: 'Source'
+    },
+    link: {
+      fontWeight: 'bold',
+      color: '#22B7CB',
+      fontSize: 18 * wid,
+      fontFamily: 'SourceB'
+    },
 
-});
+  });

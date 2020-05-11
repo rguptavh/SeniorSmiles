@@ -59,6 +59,17 @@ export default class Login extends React.Component {
               global.uname = uname;
               Fire.shared.observeAuth2();
               var seniors = JSON.parse(ok.substring(10,ok.length));
+              var accepted = []
+              var notaccepted = [];
+              for (const item of seniors){
+                if (item.userhelp == global.uname){
+                  accepted.push(item)
+                }
+                else{
+                  notaccepted.push(item)
+                }
+              }
+              seniors = accepted.concat(notaccepted)
               global.seniors = seniors;
               var markers = [];
               for (var x=0,l=seniors.length;x<l;x++){
