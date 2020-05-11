@@ -127,25 +127,25 @@ export default class Login extends React.Component {
               textStyle={styles.spinnerTextStyle}
             />
             <View style={{ flex: 1, width: '100%', alignItems: 'center', marginTop: getStatusBarHeight() }}>
-              <View style={{ borderBottomColor: '#BF0DFE', borderBottomWidth: 10, marginTop: -entireScreenHeight*0.01}}>
+              <View style={{ borderBottomColor: '#BF0DFE', borderBottomWidth: 10, marginTop: -entireScreenHeight * 0.01 }}>
                 <Text style={{ fontSize: Math.min(wid * 54, rem * 30), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center' }}>{this.state.senior.name}</Text>
               </View>
-              <View style = {{flexDirection:'row', width:'80%', marginTop:'5%'}}>
-                <View style = {{flex:4}}>
-                <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB'}}>{this.state.distance} Miles Away</Text>
+              <View style={{ flexDirection: 'row', width: '80%', marginTop: '5%' }}>
+                <View style={{ flex: 4 }}>
+                  <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.distance} Miles Away</Text>
                 </View>
-                <View style = {{flex:1}}>
-                <TouchableOpacity style = {{flex:1}}>
-                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style = {{width:'100%', flex:1, borderRadius:25}}>
- 
-                  <Image style={{ width: '100%', height: '100%',}} source={require('../assets/compass.png')} resizeMode='contain'>
-                  </Image>
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity style={{ flex: 1 }}>
+                    <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }}>
 
-                  </LinearGradient>
+                      <Image style={{ width: '100%', height: '100%', }} source={require('../assets/compass.png')} resizeMode='contain'>
+                      </Image>
+
+                    </LinearGradient>
                   </TouchableOpacity>
                 </View>
-                </View>
-                <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center', marginTop:'3%' }}>Preferred Store: {this.state.store}</Text>
+              </View>
+              <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center', marginTop: '3%' }}>Preferred Store: {this.state.store}</Text>
 
 
 
@@ -167,24 +167,21 @@ export default class Login extends React.Component {
                 </View>
               </LinearGradient>
             </View>
-            <View style={{ flex: 0.75, width: '70%' }}>
-              {this.state.status == 'order' ?
-                <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
-                  <LinearGradient
-                    colors={['#8B9DFD', '#BF0DFE']}
-                    style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                    <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
+            <View style={{ flex: 0.75, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
+                <TouchableOpacity style={{ width: '100%', height: '40%', }}>
+                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems:'center', justifyContent:'center' }}>
+                    <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Back</Text>
                   </LinearGradient>
-                </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
-                  <LinearGradient
-                    colors={['#8B9DFD', '#BF0DFE']}
-                    style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                    <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Payment</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%' }}>
+                <TouchableOpacity style={{ width: '100%', height: '40%', }}>
+                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems:'center', justifyContent:'center' }}>
+                    <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Accept</Text>
                   </LinearGradient>
-                </TouchableOpacity> : null}
-              <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
-                <Text style={{ fontSize: Math.min(rem * 15, wid * 36), fontFamily: 'Source' }}>Logout</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
