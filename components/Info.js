@@ -9,7 +9,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
 import openMap from 'react-native-open-maps';
-import * as Location from 'expo-location';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -79,9 +78,13 @@ export default class Login extends React.Component {
       </View>
     );
   }
-  map = () => {
+  map = async () => {
     console.log('hi')
-    openMap({latitude: this.state.marker.coordinate.latitude, longitude:this.state.marker.coordinate.longitude})
+    var y = await Location.reverseGeocodeAsync({latitude: this.state.marker.coordinate.latitude, longitude:this.state.marker.coordinate.longitude});
+    var x = y[0];
+    var addy = x.name + " " + x.city + ", " + x.region + " " + x.postalCode;
+    console.log(addy);
+    openMap(addy, ["My Location"])
   }
   accept = () => {
     var senname = this.state.senior.name;
