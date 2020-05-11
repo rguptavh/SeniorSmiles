@@ -36,27 +36,6 @@ export default class Login extends React.Component {
 
 
 
-  async componentDidMount() {
-    this.getLocationAsync();
-
-  }
-  async getLocationAsync() {
-    let { status } = await Location.requestPermissionsAsync();
-    if (status !== 'granted') {
-      this.setState({
-        locationResult: 'Permission to access location was denied',
-      });
-    } else {
-      this.setState({ hasLocationPermissions: true });
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location)
-    this.setState({ location: { latitude: location.coords.latitude, longitude: location.coords.longitude } });
-
-    // Center the map on the location we just fetched.
-
-  }
   _renderItem = ({ item }) => {
 
     return (
@@ -75,11 +54,9 @@ export default class Login extends React.Component {
     );
   }
   map = async () => {
-    console.log('hi')
     var y = await Location.reverseGeocodeAsync({latitude: this.state.marker.coordinate.latitude, longitude:this.state.marker.coordinate.longitude});
     var x = y[0];
     var addy = x.name + " " + x.city + ", " + x.region + " " + x.postalCode;
-    console.log(addy);
     openMap({end: addy})
   }
   accept = () => {
