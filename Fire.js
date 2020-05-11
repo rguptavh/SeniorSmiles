@@ -21,34 +21,28 @@ class Fire {
     measurementId: "G-Y4JE80G7DN"
     });
 
-  observeAuth = () =>
-    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
-
-  onAuthStateChanged = user => {
-    if (!user) {
-      try {
-        //alert(global.newuser+"@seniorsmiles.com")
-        firebase.auth().createUserWithEmailAndPassword(global.newuser+"@seniorsmiles.com","123456ABC");
-        firebase.auth().signOut();
-      } catch ({ message }) {
-        alert(message);
-      }
+  observeAuth = () => {
+    try {
+      //alert(global.newuser+"@seniorsmiles.com")
+      firebase.auth().createUserWithEmailAndPassword(global.newuser+"@seniorsmiles.com","123456ABC");
+      firebase.auth().signOut();
+    } catch ({ message }) {
+      alert(message);
     }
-  };
+
+  }
+
+
   
-  observeAuth2 = () =>
-    firebase.auth().onAuthStateChanged(this.onAuthStateChanged2);
-
-  onAuthStateChanged2 = user => {
-    if (!user) {
-      try {
-        //alert(global.newuser+"@seniorsmiles.com")
-        firebase.auth().signInWithEmailAndPassword(global.uname+"@seniorsmiles.com", '123456ABC')
-      } catch ({ message }) {
-        alert(message);
-      }
+  observeAuth2 = () => {
+    try {
+      //alert(global.newuser+"@seniorsmiles.com")
+      firebase.auth().signInWithEmailAndPassword(global.uname+"@seniorsmiles.com", '123456ABC')
+    } catch ({ message }) {
+      alert(message);
     }
-  };
+  }
+
   signout = () => {
   firebase.auth().signOut();
   }
