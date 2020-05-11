@@ -80,7 +80,7 @@ export default class Login extends React.Component {
     var x = y[0];
     var addy = x.name + " " + x.city + ", " + x.region + " " + x.postalCode;
     console.log(addy);
-    openMap(addy, ["My Location"])
+    openMap({end: addy})
   }
   accept = () => {
     var senname = this.state.senior.name;
