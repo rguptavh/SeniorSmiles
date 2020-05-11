@@ -8,6 +8,8 @@ import { NavigationActions, StackActions } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
+import openMap from 'react-native-open-maps';
+import * as Location from 'expo-location';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -20,7 +22,8 @@ export default class Login extends React.Component {
     senior: global.accept[0],
     index: global.accept[1],
     distance: global.accept[2],
-    store: global.accept[3]
+    store: global.accept[3],
+    marker: global.accept[4]
   };
   constructor() {
     super();
@@ -39,10 +42,26 @@ export default class Login extends React.Component {
   }
 
   async componentDidMount() {
-
+    this.getLocationAsync();
 
   }
+  async getLocationAsync() {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+      });
+    } else {
+      this.setState({ hasLocationPermissions: true });
+    }
 
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location)
+    this.setState({ location: { latitude: location.coords.latitude, longitude: location.coords.longitude } });
+
+    // Center the map on the location we just fetched.
+
+  }
   _renderItem = ({ item }) => {
 
     return (
@@ -60,7 +79,10 @@ export default class Login extends React.Component {
       </View>
     );
   }
-
+  map = () => {
+    console.log('hi')
+    openMap({latitude: this.state.marker.coordinate.latitude, longitude:this.state.marker.coordinate.longitude})
+  }
   accept = () => {
     var senname = this.state.senior.name;
     var uname = global.uname;
@@ -123,10 +145,10 @@ export default class Login extends React.Component {
                     <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.distance} Miles Away</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <TouchableOpacity style={{ flex: 1 }}>
-                      <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }}>
+                    <TouchableOpacity style={{ flex: 1 }} onPress = {() => this.map()}>
+                      <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }} >
 
-                        <Image style={{ width: '100%', height: '100%', }} source={require('../assets/compass.png')} resizeMode='contain'>
+                        <Image style={{ width: '100%', height: '100%' }} source={require('../assets/compass.png')} resizeMode='contain'>
                         </Image>
 
                       </LinearGradient>
