@@ -9,7 +9,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
 import openMap from 'react-native-open-maps';
-import * as Location from 'expo-location';
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
