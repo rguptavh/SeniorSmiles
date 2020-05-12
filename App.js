@@ -13,6 +13,7 @@ import signup from './components/Signup';
 import senior from './components/Senior';
 import chat from './components/Chat';
 import info from './components/Info';
+import profile from './components/Profile';
 import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import moment from 'moment';
@@ -222,6 +223,9 @@ export default class AppContainer extends React.Component {
         },
         Info: {
           screen: info
+        },
+        Profile: {
+          screen: profile
         },
       },
         {
