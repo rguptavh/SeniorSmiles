@@ -14,12 +14,14 @@ const rem = entireScreenHeight / 380;
 const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
 let location = null;
+let first = true;
 export default class Login extends React.Component {
   state = {
     loading: false,
     items: global.items,
     status: global.status,
     userhelp: global.userhelp,
+    store: '',
   };
   constructor() {
     super();
@@ -30,21 +32,21 @@ export default class Login extends React.Component {
   }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
   add = () => {
-  var temp = this.state.items;
-  if (temp[temp.length-1].index == 10){
-    alert("Please have a maximum of 10 items")
-  }
-  else{
-  temp.splice(temp.length-1,0,{index: temp.length-1, name:'',quantity:''});
-  temp[temp.length-1]["index"] = temp.length-1;
-  this.setState({items:temp});
-  }
+    var temp = this.state.items;
+    if (temp[temp.length - 1].index == 10) {
+      alert("Please have a maximum of 10 items")
+    }
+    else {
+      temp.splice(temp.length - 1, 0, { index: temp.length - 1, name: '', quantity: '' });
+      temp[temp.length - 1]["index"] = temp.length - 1;
+      this.setState({ items: temp });
+    }
   }
   chat = () => {
-  global.volname = this.state.userhelp;
-  global.senname = global.uname;
-  console.log(global.volname + " " + global.senname)
-  this.props.navigation.navigate('Chat')
+    global.volname = this.state.userhelp;
+    global.senname = global.uname;
+    console.log(global.volname + " " + global.senname)
+    this.props.navigation.navigate('Chat')
   }
   onPress2 = async () => {
     Alert.alert(
@@ -61,12 +63,12 @@ export default class Login extends React.Component {
             const Http = new XMLHttpRequest();
             Fire.shared.signout();
             const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-            var data = "?username=" + global.uname+ "&token=" + global.token + "&action=logout";
+            var data = "?username=" + global.uname + "&token=" + global.token + "&action=logout";
             Http.open("GET", String(url + data));
             Http.send();
             const resetAction = StackActions.reset({
               index: 0,
-              actions: [NavigationActions.navigate({routeName: 'Login'})],
+              actions: [NavigationActions.navigate({ routeName: 'Login' })],
               key: null,
             });
             this.props.navigation.dispatch(resetAction);
@@ -75,113 +77,114 @@ export default class Login extends React.Component {
       ],
       { cancelable: false }
     );
-  
+
   }
- async componentDidMount() {
+  async componentDidMount() {
     location = await Location.getCurrentPositionAsync({});
-    
+
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
   _handleNotification = notification => {
     // do whatever you want to do with the notification
     console.log(notification.data.action)
-  //  global.status = "helped"
-    if (notification.data.action == 'volunteer'){
+    //  global.status = "helped"
+    if (notification.data.action == 'volunteer') {
       global.status = 'yes'
       global.userhelp = notification.data.username;
-      this.setState({status: 'yes', userhelp: notification.data.username})
-      
+      this.setState({ status: 'yes', userhelp: notification.data.username })
+
     }
     console.log(notification)
   };
   _renderItem = ({ item }) => {
     if (item.add) {
-      if (this.state.status == 'order'){
-      return (
-        <View style={{ height: rem * 35, width: '100%' }}>
-          <TouchableOpacity style={{ height: '60%', width: '100%', flexDirection: 'row', alignItems:'center', }} onPress={this.add}>
-              <Image style={{ flex: 0.75, width: '100%', height: '100%',}} source={require('../assets/plus.png')} resizeMode='contain'>
+      if (this.state.status == 'order') {
+        return (
+          <View style={{ height: rem * 35, width: '100%' }}>
+            <TouchableOpacity style={{ height: '60%', width: '100%', flexDirection: 'row', alignItems: 'center', }} onPress={this.add}>
+              <Image style={{ flex: 0.75, width: '100%', height: '100%', }} source={require('../assets/plus.png')} resizeMode='contain'>
               </Image>
               <View style={{ flex: 0.2 }}></View>
-            <View style={{ flex: 3 }}>
-              <Text style = {{fontFamily:'SourceL', fontSize:rem*15}}>Add Item</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
+              <View style={{ flex: 3 }}>
+                <Text style={{ fontFamily: 'SourceL', fontSize: rem * 15 }}>Add Item</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        );
       }
       else {
         return null;
-        }
+      }
     }
-    else{
-    if (this.state.status == 'order'){
-    return (
+    else {
+      if (this.state.status == 'order') {
+        return (
 
-      <View style={{ height: rem * 35, width: '100%' }}>
-        <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
-          <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, }}>
-            <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%',fontFamily:'SourceL',fontSize:rem*15 }} placeholder="Name" onChangeText={(value) => {
-              var temp = this.state.items;
-              temp[item.index]["name"] = value;
-              this.setState({items: temp})
-              console.log(this.state.items)
-            } }></TextInput>
+          <View style={{ height: rem * 35, width: '100%' }}>
+            <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
+              <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, }}>
+                <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} placeholder="Name" onChangeText={(value) => {
+                  var temp = this.state.items;
+                  temp[item.index]["name"] = value;
+                  this.setState({ items: temp })
+                  console.log(this.state.items)
+                }}></TextInput>
+              </View>
+              <View style={{ flex: 0.25 }}></View>
+              <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
+                <TextInput style={{ flex: 1, width: '100%', textAlign: 'center', fontFamily: 'SourceL', fontSize: rem * 15 }} keyboardType='number-pad' maxLength={2} placeholder="#" onChangeText={(value) => {
+                  var temp = this.state.items;
+                  temp[item.index]["quantity"] = value;
+                  this.setState({ items: temp })
+                  console.log(this.state.items)
+                }}></TextInput>
+              </View>
+            </View>
           </View>
-          <View style={{ flex: 0.25 }}></View>
-          <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
-            <TextInput style={{ flex: 1, width: '100%', textAlign: 'center',fontFamily:'SourceL', fontSize:rem*15 }} keyboardType='number-pad' placeholder="#" onChangeText={(value) => {
-              var temp = this.state.items;
-              temp[item.index]["quantity"] = value;
-              this.setState({items: temp})
-              console.log(this.state.items)
-            } }></TextInput>
-          </View>
-        </View>
-      </View>
-    );
-  }
-  else{
-    return (
+        );
+      }
+      else {
+        return (
 
-      <View style={{ height: rem * 35, width: '100%' }}>
-        <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
-          <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent:'center', }}>
-            <Text style={{ width: '90%', marginLeft: '10%',fontFamily:'SourceL',fontSize:rem*15, }}>{this.state.items[item.index].name}</Text>
+          <View style={{ height: rem * 35, width: '100%' }}>
+            <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
+              <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', }}>
+                <Text style={{ width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15, }}>{this.state.items[item.index].name}</Text>
+              </View>
+              <View style={{ flex: 0.25 }}></View>
+              <View style={{ flex: 1, borderWidth: 2, borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ width: '90%', fontFamily: 'SourceL', fontSize: rem * 15, textAlign: 'center' }}>{this.state.items[item.index].quantity}</Text>
+              </View>
+            </View>
           </View>
-          <View style={{ flex: 0.25 }}></View>
-          <View style={{ flex: 1, borderWidth: 2, borderRadius: 20,justifyContent:'center', alignItems:'center' }}>
-          <Text style={{ width: '90%',fontFamily:'SourceL',fontSize:rem*15, textAlign:'center' }}>{this.state.items[item.index].quantity}</Text>
-          </View>
-        </View>
-      </View>
-    );
-  }
-}
+        );
+      }
+    }
   };
   render() {
     console.log(this.state.items)
     const onPress = async () => {
       var uname = global.uname;
       var items = this.state.items.slice();
+      var store = this.state.store
       items.pop();
       var empty = false;
-      for (var x=0, l = items.length; x<l; x++){
-        if (items[x].value == '' || items[x].quantity == ''){
+      for (var x = 0, l = items.length; x < l; x++) {
+        if (items[x].value == '' || items[x].quantity == '') {
           empty = true;
           break;
         }
       }
       items = JSON.stringify(items);
-      
-      if (uname != "" && !empty) {
+
+      if (store != "" && !empty) {
         this.setState({ loading: true, message: 'Getting your location...\nPlease be patient' });
-        location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
+        location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
         this.setState({ loading: true, message: 'Sending Request...' });
-        var loc = JSON.stringify({coordinate : {longitude : location.coords.longitude, latitude: location.coords.latitude}});
+        var loc = JSON.stringify({ coordinate: { longitude: location.coords.longitude, latitude: location.coords.latitude } });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&location=" + loc +"&items="+items+ "&action=senior";
+        var data = "?username=" + uname + "&location=" + loc + "&items=" + items + "&store=" + store + "&action=senior";
         console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
@@ -191,19 +194,19 @@ export default class Login extends React.Component {
           if (Http.readyState == 4) {
             console.log(String(ok));
             if (ok == "true") {
-              this.setState({ loading: false, status:'nothelped' });
+              this.setState({ loading: false, status: 'nothelped' });
               setTimeout(() => { alert("Success!"); }, 100);
             }
-           /* else if (ok.substring(0, 6) == "Senior") {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Senior Login"); }, 100);
-
-            }
-            else if (ok.substring(0, 5) == "false") {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Failed Login"); }, 100);
-
-            }*/
+            /* else if (ok.substring(0, 6) == "Senior") {
+               this.setState({ loading: false });
+               setTimeout(() => { alert("Senior Login"); }, 100);
+ 
+             }
+             else if (ok.substring(0, 5) == "false") {
+               this.setState({ loading: false });
+               setTimeout(() => { alert("Failed Login"); }, 100);
+ 
+             }*/
             else {
               this.setState({ loading: false });
               setTimeout(() => { alert("Server Error"); }, 100);
@@ -221,22 +224,22 @@ export default class Login extends React.Component {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
 
           <View style={styles.container}>
-          <Spinner
+            <Spinner
               visible={this.state.loading}
               textContent={this.state.message}
               textStyle={styles.spinnerTextStyle}
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
-              <View style={{ flex: 1, width: '100%', alignItems:'center', justifyContent:'center' }}>
-                <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign:'center'}}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.userhelp} </Text>
-                {this.state.status == 'nothelped' ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB',}}>Awaiting Volunteer Response</Text> : null}
+              <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'SourceB', marginTop: this.state.status == 'nothelped' ? getStatusBarHeight() : '5%', textAlign: 'center' }}>{this.state.status == 'order' ? 'No ongoing requests.' : this.state.status == 'nothelped' ? 'Request submitted' : this.state.userhelp} </Text>
+                {this.state.status == 'nothelped' ? <Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'SourceB', }}>Awaiting Volunteer Response</Text> : null}
                 {this.state.status == 'nothelped' ? <Image
-                    style={{ flex: 1, resizeMode: 'contain',}}
-                    source={require('../assets/spin.gif')}/> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'SourceB', marginTop:'2%'}}>{this.state.status == 'payment' ? 'Has delivered your items' : 'Has accepted your request'}</Text> : null}
-              {this.state.status == 'payment'|| this.state.status == 'yes' ? <TouchableOpacity onPress={this.chat}><Text style = {{fontSize:Math.min(wid*27,rem*15), color:'white', fontFamily:'Source',}}>Click to chat with them</Text></TouchableOpacity> : null}
+                  style={{ flex: 1, resizeMode: 'contain', }}
+                  source={require('../assets/spin.gif')} /> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'SourceB', marginTop: '2%' }}>{this.state.status == 'payment' ? 'Has delivered your items' : 'Has accepted your request'}</Text> : null}
+                {this.state.status == 'payment' || this.state.status == 'yes' ? <TouchableOpacity onPress={this.chat}><Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'Source', }}>Click to chat with them</Text></TouchableOpacity> : null}
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
-                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom:'7%'}}>
+                <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom: '7%' }}>
                   <View style={{ flex: 0.75, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', paddingLeft: '7.5%' }}>
                     <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'order' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
@@ -247,27 +250,46 @@ export default class Login extends React.Component {
                       keyExtractor={item => "" + item.index}
                     />
                   </View>
-                  <View style={{ flex: 0.2 }}></View>
+                  <View style={{ flex: 0.7, alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+                    <View style={{ height: '80%', width: '85%', borderColor: 'black', borderWidth: 2, borderRadius: 20 }}>
+                      <TextInput
+                        style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
+                        autoCapitalize='none'
+                        autoCompleteType='off'
+                        placeholder="Preferred Store"
+                        onChangeText={(value) => this.setState({ store: value })}
+                        value={this.state.store}
+                        onFocus={() => {
+                          if (first) {
+                            Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
+                            first = false;
+                          }
+
+                        }
+                        }
+                      />
+                    </View>
+                  </View>
                 </View>
               </View>
               <View style={{ flex: 1, width: '70%' }}>
-                {this.state.status == 'order' ? 
-              <TouchableOpacity style = {{height:'45%', width:'100%', alignItems:'center',}} onPress={onPress}>
-              <LinearGradient
-                colors={['#8B9DFD', '#BF0DFE']}
-                style={{height:'100%',alignItems: 'center', borderRadius: 20, width:'100%', justifyContent:'center' }}>
-                  <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(25*rem,45*wid), textAlign:'center'}}>Submit</Text>
-              </LinearGradient>
-              </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style = {{height:'45%', width:'100%', alignItems:'center',}} onPress={onPress}>
-              <LinearGradient
-                colors={['#8B9DFD', '#BF0DFE']}
-                style={{height:'100%',alignItems: 'center', borderRadius: 20, width:'100%', justifyContent:'center' }}>
-                  <Text style = {{color:'white', fontFamily:'SourceB', fontSize:  Math.min(20*rem,36*wid), textAlign:'center'}}>Verify Payment</Text>
-              </LinearGradient>
-              </TouchableOpacity> : null}
-              <TouchableOpacity style = {{alignSelf:'center', justifyContent:'center', marginTop:rem*7}} onPress={this.onPress2}>
-              <Text style = {{fontSize:Math.min(rem*15,wid*36), fontFamily:'Source'}}>Logout</Text>
-            </TouchableOpacity>
+                {this.state.status == 'order' ?
+                  <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Payment</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> : null}
+                <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
+                  <Text style={{ fontSize: Math.min(rem * 15, wid * 36), fontFamily: 'Source' }}>Logout</Text>
+                </TouchableOpacity>
               </View>
             </ImageBackground>
           </View>
@@ -302,7 +324,7 @@ const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF',
     top: 60,
-    alignItems:'center',
+    alignItems: 'center',
     textAlign: 'center'
   },
   label: {
