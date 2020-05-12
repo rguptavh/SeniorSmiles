@@ -96,6 +96,8 @@ export default class Login extends React.Component {
               var temp = JSON.parse(items);
               global.userhelp = temp[temp.length-1].username
               temp.splice(temp.length-1, 1);
+              global.store = temp[temp.length-1].store
+              temp.splice(temp.length-1, 1);
               global.items = temp;
               AsyncStorage.setItem('type', "Senior");
               this.setState({ loading: false });

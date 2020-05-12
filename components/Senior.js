@@ -21,7 +21,8 @@ export default class Login extends React.Component {
     items: global.items,
     status: global.status,
     userhelp: global.userhelp,
-    store: '',
+    store: global.store,
+    keyboard: false,
   };
   constructor() {
     super();
@@ -33,8 +34,8 @@ export default class Login extends React.Component {
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
   add = () => {
     var temp = this.state.items;
-    if (temp[temp.length - 1].index == 10) {
-      alert("Please have a maximum of 10 items")
+    if (temp[temp.length - 1].index == 15) {
+      alert("Please have a maximum of 15 items")
     }
     else {
       temp.splice(temp.length - 1, 0, { index: temp.length - 1, name: '', quantity: '' });
@@ -80,6 +81,8 @@ export default class Login extends React.Component {
 
   }
   async componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     location = await Location.getCurrentPositionAsync({});
 
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
@@ -96,6 +99,13 @@ export default class Login extends React.Component {
     }
     console.log(notification)
   };
+  _keyboardDidShow = () => {
+    this.setState({keyboard: true})
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({keyboard: false})
+  }
   _renderItem = ({ item }) => {
     if (item.add) {
       if (this.state.status == 'order') {
@@ -221,8 +231,7 @@ export default class Login extends React.Component {
     }
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
-
+ <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false} disabled= {!this.state.keyboard}>
           <View style={styles.container}>
             <Spinner
               visible={this.state.loading}
@@ -247,6 +256,7 @@ export default class Login extends React.Component {
                     <FlatList style={{ width: '100%', }}
                       data={this.state.items}
                       renderItem={this._renderItem}
+                      
                       keyExtractor={item => "" + item.index}
                     />
                   </View>
@@ -264,7 +274,6 @@ export default class Login extends React.Component {
                             Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
                             first = false;
                           }
-
                         }
                         }
                       />
@@ -293,7 +302,7 @@ export default class Login extends React.Component {
               </View>
             </ImageBackground>
           </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
       </KeyboardAvoidingView >
 
     );
