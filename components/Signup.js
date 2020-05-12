@@ -91,7 +91,6 @@ export default class Login extends React.Component {
 
             if (ok.substring(0, 4) == "true") {
               this.setState({ loading: false });
-              global.newuser = uname;
               Fire.shared.signout();
               Fire.shared.observeAuth();
               setTimeout(() => { alert("Succesfully signed up!"); }, 100);
