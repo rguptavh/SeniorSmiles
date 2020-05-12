@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
+import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert, ScrollView} from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
@@ -40,10 +40,10 @@ export default class Login extends React.Component {
 
     return (
 
-      <View style={{ height: rem * 35, width: '100%' }}>
-        <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
-          <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', }}>
-            <Text style={{ width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15, }}>{this.state.senior.items[item.index].name}</Text>
+      <View style={{ width: '100%', marginTop:rem*7, }}>
+        <View style={{ width: '100%', flexDirection: 'row', }}>
+          <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
+            <Text style={{ width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: Math.min(rem * 20,wid*36), }}>{this.state.senior.items[item.index].name}</Text>
           </View>
           <View style={{ flex: 0.25 }}></View>
           <View style={{ flex: 1, borderWidth: 2, borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
@@ -104,7 +104,6 @@ export default class Login extends React.Component {
       
       return (
         <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
 
             <View style={styles.container}>
               <Spinner
@@ -170,7 +169,6 @@ export default class Login extends React.Component {
                 </View>
               </View>
             </View>
-          </TouchableWithoutFeedback>
         </KeyboardAvoidingView >
 
       );

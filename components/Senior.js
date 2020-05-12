@@ -110,7 +110,7 @@ export default class Login extends React.Component {
     if (item.add) {
       if (this.state.status == 'order') {
         return (
-          <View style={{ height: rem * 35, width: '100%' }}>
+          <View style={{ height: rem * 35, width: '100%', marginTop:rem*7 }}>
             <TouchableOpacity style={{ height: '60%', width: '100%', flexDirection: 'row', alignItems: 'center', }} onPress={this.add}>
               <Image style={{ flex: 0.75, width: '100%', height: '100%', }} source={require('../assets/plus.png')} resizeMode='contain'>
               </Image>
@@ -129,14 +129,14 @@ export default class Login extends React.Component {
     else {
       if (this.state.status == 'order') {
         return (
-
-          <View style={{ height: rem * 35, width: '100%' }}>
-            <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
-              <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, }}>
-                <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} placeholder="Name" onChangeText={(value) => {
+      <View style={{ width: '100%', marginTop:rem*7, }}>
+      <View style={{ width: '100%', flexDirection: 'row', }}>
+        <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
+                <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} multiline={true} placeholder="Name" onChangeText={(value) => {
                   var temp = this.state.items;
                   temp[item.index]["name"] = value;
                   this.setState({ items: temp })
+
                   console.log(this.state.items)
                 }}></TextInput>
               </View>
@@ -156,9 +156,9 @@ export default class Login extends React.Component {
       else {
         return (
 
-          <View style={{ height: rem * 35, width: '100%' }}>
-            <View style={{ height: '80%', width: '100%', flexDirection: 'row', }}>
-              <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', }}>
+          <View style={{ width: '100%', marginTop:rem*7, }}>
+          <View style={{ width: '100%', flexDirection: 'row', }}>
+            <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
                 <Text style={{ width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15, }}>{this.state.items[item.index].name}</Text>
               </View>
               <View style={{ flex: 0.25 }}></View>
