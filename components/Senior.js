@@ -4,7 +4,7 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
 import { Notifications } from 'expo';
-import { NavigationActions, StackActions } from 'react-navigation'
+import { NavigationActions, StackActions, ThemeColors } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
@@ -130,7 +130,7 @@ export default class Login extends React.Component {
           </View>
           <View style={{ flex: 0.25 }}></View>
           <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
-            <TextInput style={{ flex: 1, width: '100%', textAlign: 'center',fontFamily:'SourceL', fontSize:rem*15 }} placeholder="#" onChangeText={(value) => {
+            <TextInput style={{ flex: 1, width: '100%', textAlign: 'center',fontFamily:'SourceL', fontSize:rem*15 }} keyboardType='number-pad' placeholder="#" onChangeText={(value) => {
               var temp = this.state.items;
               temp[item.index]["quantity"] = value;
               this.setState({items: temp})
@@ -175,9 +175,10 @@ export default class Login extends React.Component {
       items = JSON.stringify(items);
       
       if (uname != "" && !empty) {
-        location = await Location.getCurrentPositionAsync({});
+        this.setState({ loading: true, message: 'Getting your location...\nPlease be patient' });
+        location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
+        this.setState({ loading: true, message: 'Sending Request...' });
         var loc = JSON.stringify({coordinate : {longitude : location.coords.longitude, latitude: location.coords.latitude}});
-        this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
         var data = "?username=" + uname + "&location=" + loc +"&items="+items+ "&action=senior";
@@ -222,7 +223,7 @@ export default class Login extends React.Component {
           <View style={styles.container}>
           <Spinner
               visible={this.state.loading}
-              textContent={'Submitting request...'}
+              textContent={this.state.message}
               textStyle={styles.spinnerTextStyle}
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/seniorreq.png')}>
@@ -300,7 +301,9 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     color: '#FFF',
-    top: 60
+    top: 60,
+    alignItems:'center',
+    textAlign: 'center'
   },
   label: {
     color: '#22B7CB'
