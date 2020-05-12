@@ -235,64 +235,64 @@ export default class Login extends React.Component {
     );
   }
 }
-  render() {
-    console.log(this.state.items)
-    const onPress = async () => {
-      var uname = global.uname;
-      var items = this.state.items.slice();
-      var store = this.state.store
-      items.pop();
-      var empty = false;
-      for (var x = 0, l = items.length; x < l; x++) {
-        if (items[x].value == '' || items[x].quantity == '') {
-          empty = true;
-          break;
-        }
-      }
-      items = JSON.stringify(items);
+ onPress = async () => {
+  var uname = global.uname;
+  var items = this.state.items.slice();
+  var store = this.state.store
+  items.pop();
+  var empty = false;
+  for (var x = 0, l = items.length; x < l; x++) {
+    if (items[x].value == '' || items[x].quantity == '') {
+      empty = true;
+      break;
+    }
+  }
+  items = JSON.stringify(items);
 
-      if (store != "" && !empty) {
-        this.setState({ loading: true, message: 'Getting your location...\nPlease be patient' });
-        location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
-        this.setState({ loading: true, message: 'Sending Request...' });
-        var loc = JSON.stringify({ coordinate: { longitude: location.coords.longitude, latitude: location.coords.latitude } });
-        const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&location=" + loc + "&items=" + items + "&store=" + store + "&action=senior";
-        console.log(data);
-        Http.open("GET", String(url + data));
-        Http.send();
-        var ok;
-        Http.onreadystatechange = (e) => {
-          ok = Http.responseText;
-          if (Http.readyState == 4) {
-            console.log(String(ok));
-            if (ok == "true") {
-              this.setState({ loading: false, status: 'nothelped' });
-              setTimeout(() => { alert("Success!"); }, 100);
-            }
-            /* else if (ok.substring(0, 6) == "Senior") {
-               this.setState({ loading: false });
-               setTimeout(() => { alert("Senior Login"); }, 100);
- 
-             }
-             else if (ok.substring(0, 5) == "false") {
-               this.setState({ loading: false });
-               setTimeout(() => { alert("Failed Login"); }, 100);
- 
-             }*/
-            else {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Server Error"); }, 100);
-            }
-
-          }
+  if (store != "" && !empty) {
+    this.setState({ loading: true, message: 'Getting your location...\nPlease be patient' });
+    location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
+    this.setState({ loading: true, message: 'Sending Request...' });
+    var loc = JSON.stringify({ coordinate: { longitude: location.coords.longitude, latitude: location.coords.latitude } });
+    const Http = new XMLHttpRequest();
+    const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+    var data = "?username=" + uname + "&location=" + loc + "&items=" + items + "&store=" + store + "&action=senior";
+    console.log(data);
+    Http.open("GET", String(url + data));
+    Http.send();
+    var ok;
+    Http.onreadystatechange = (e) => {
+      ok = Http.responseText;
+      if (Http.readyState == 4) {
+        console.log(String(ok));
+        if (ok == "true") {
+          this.setState({ loading: false, status: 'nothelped' });
+          setTimeout(() => { alert("Success!"); }, 100);
         }
-      }
-      else {
-        alert("Please fill all items")
+        /* else if (ok.substring(0, 6) == "Senior") {
+           this.setState({ loading: false });
+           setTimeout(() => { alert("Senior Login"); }, 100);
+
+         }
+         else if (ok.substring(0, 5) == "false") {
+           this.setState({ loading: false });
+           setTimeout(() => { alert("Failed Login"); }, 100);
+
+         }*/
+        else {
+          this.setState({ loading: false });
+          setTimeout(() => { alert("Server Error"); }, 100);
+        }
+
       }
     }
+  }
+  else {
+    alert("Please fill all items")
+  }
+}
+  render() {
+    
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
           <View style={styles.container}>

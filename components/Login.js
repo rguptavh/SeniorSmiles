@@ -37,90 +37,91 @@ export default class Login extends React.Component {
     }
  
    }
+    onPress = () => {
+    var uname = this.state.username;
+    var pword = this.state.password;
+    if (uname != "" && pword != "") {
+      this.setState({ loading: true });
+      const Http = new XMLHttpRequest();
+      const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+      var data = "?username=" + uname + "&password=" + pword + "&token=" + global.token + "&action=login";
+      Http.open("GET", String(url + data));
+      Http.send();
+      var ok;
+      Http.onreadystatechange = (e) => {
+        ok = Http.responseText;
+        if (Http.readyState == 4) {
+          console.log(ok);
+          if (ok.substring(0, 9) == "Volunteer") {
+            global.uname = uname;
+            Fire.shared.observeAuth2();
+            var seniors = JSON.parse(ok.substring(10,ok.length));
+            var accepted = []
+            var notaccepted = [];
+            for (const item of seniors){
+              if (item.userhelp == global.uname){
+                accepted.push(item)
+              }
+              else{
+                notaccepted.push(item)
+              }
+            }
+            seniors = accepted.concat(notaccepted)
+            global.seniors = seniors;
+            var markers = [];
+            for (var x=0,l=seniors.length;x<l;x++){
+              markers.push(seniors[x].location);
+            }
+            global.markers = markers;
+            console.log(markers)
+            AsyncStorage.setItem('username', this.state.username);
+            AsyncStorage.setItem('type', "Volunteer");
+            this.setState({ loading: false });
+            this.props.navigation.replace('Map');
+            
+          }
+          else if (ok.substring(0, 6) == "Senior") {
+            global.uname = uname
+            console.log(ok)
+            Fire.shared.observeAuth2();
+            AsyncStorage.setItem('username', this.state.username);
+            AsyncStorage.setItem('type', 'Senior');
+            var index = ok.indexOf(",",7);
+            var status = ok.substring(7,index);
+            var items = ok.substring(index+1,ok.length);
+            global.status = status;
+            var temp = JSON.parse(items);
+            global.userhelp = temp[temp.length-1].username
+            temp.splice(temp.length-1, 1);
+            global.store = temp[temp.length-1].store
+            temp.splice(temp.length-1, 1);
+            global.items = temp;
+            AsyncStorage.setItem('type', "Senior");
+            this.setState({ loading: false });
+            setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
+
+          }
+          else if (ok.substring(0, 5) == "false") {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("Failed Login"); }, 100);
+
+          }
+          else {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("Server Error"); }, 100);
+          }
+
+        }
+      }
+    }
+    else {
+      alert("Please fill all fields")
+    }
+  }
   render() {
 
 
-    const onPress = () => {
-      var uname = this.state.username;
-      var pword = this.state.password;
-      if (uname != "" && pword != "") {
-        this.setState({ loading: true });
-        const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&token=" + global.token + "&action=login";
-        Http.open("GET", String(url + data));
-        Http.send();
-        var ok;
-        Http.onreadystatechange = (e) => {
-          ok = Http.responseText;
-          if (Http.readyState == 4) {
-            console.log(ok);
-            if (ok.substring(0, 9) == "Volunteer") {
-              global.uname = uname;
-              Fire.shared.observeAuth2();
-              var seniors = JSON.parse(ok.substring(10,ok.length));
-              var accepted = []
-              var notaccepted = [];
-              for (const item of seniors){
-                if (item.userhelp == global.uname){
-                  accepted.push(item)
-                }
-                else{
-                  notaccepted.push(item)
-                }
-              }
-              seniors = accepted.concat(notaccepted)
-              global.seniors = seniors;
-              var markers = [];
-              for (var x=0,l=seniors.length;x<l;x++){
-                markers.push(seniors[x].location);
-              }
-              global.markers = markers;
-              console.log(markers)
-              AsyncStorage.setItem('username', this.state.username);
-              AsyncStorage.setItem('type', "Volunteer");
-              this.setState({ loading: false });
-              this.props.navigation.replace('Map');
-              
-            }
-            else if (ok.substring(0, 6) == "Senior") {
-              global.uname = uname
-              console.log(ok)
-              Fire.shared.observeAuth2();
-              AsyncStorage.setItem('username', this.state.username);
-              AsyncStorage.setItem('type', 'Senior');
-              var index = ok.indexOf(",",7);
-              var status = ok.substring(7,index);
-              var items = ok.substring(index+1,ok.length);
-              global.status = status;
-              var temp = JSON.parse(items);
-              global.userhelp = temp[temp.length-1].username
-              temp.splice(temp.length-1, 1);
-              global.store = temp[temp.length-1].store
-              temp.splice(temp.length-1, 1);
-              global.items = temp;
-              AsyncStorage.setItem('type', "Senior");
-              this.setState({ loading: false });
-              setTimeout(() => { this.props.navigation.replace('Senior'); }, 100);
-
-            }
-            else if (ok.substring(0, 5) == "false") {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Failed Login"); }, 100);
-
-            }
-            else {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Server Error"); }, 100);
-            }
-
-          }
-        }
-      }
-      else {
-        alert("Please fill all fields")
-      }
-    }
+    
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -196,7 +197,7 @@ export default class Login extends React.Component {
                   justifyContent:'center',
                   alignItems:'center'
                 }}
-                onPress={onPress}
+                onPress={() => this.onPress()}
                 disabled={this.state.loading}
 
               >

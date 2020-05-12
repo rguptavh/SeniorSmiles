@@ -17,6 +17,39 @@ function validateEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
+const pickerStyle = {
+  inputIOS: {
+    color: 'black',
+    alignSelf: 'center',
+    fontSize: 15 * rem,
+    height: '100%',
+    width: '95%',
+    marginLeft:'5%',
+    fontFamily: 'SourceL'
+  },
+  inputAndroid: {
+    color: 'black',
+    alignSelf: 'center',
+    fontSize: 15 * rem,
+    height: '100%',
+    width: '95%',
+    marginLeft:'5%',
+    fontFamily: 'SourceL'
+
+  },
+  placeholder: {
+    color: '#9EA0A4',
+    fontSize: rem*15,
+    fontFamily: 'SourceL'
+  },
+
+};    
+const placeholder = {
+  label: 'Select an account type',
+  value: null,
+  color: '#9EA0A4',
+  fontFamily: 'SourceL',
+};
 export default class Login extends React.Component {
   state = {
     username: '',
@@ -34,96 +67,64 @@ export default class Login extends React.Component {
   }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
 
-  render() {
+   onPress = () => {
+    var uname = this.state.username;
+    var pword = this.state.password;
+    var sv = this.state.event;
+    var email = this.state.email
+    const emailgood = validateEmail(email)
+    if (uname != "" && pword != "" && sv != null && emailgood) {
+      this.setState({ loading: true });
+      const Http = new XMLHttpRequest();
+      const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+      var data = "?username=" + uname + "&password=" + pword + "&action=signup"+"&sv="+sv+"&email="+email;
+      console.log(data);
+      Http.open("GET", String(url + data));
+      Http.send();
+      var ok;
+      Http.onreadystatechange = (e) => {
+        ok = Http.responseText;
+        if (Http.readyState == 4) {
+          console.log(String(ok));
 
-    const pickerStyle = {
-        inputIOS: {
-          color: 'black',
-          alignSelf: 'center',
-          fontSize: 15 * rem,
-          height: '100%',
-          width: '95%',
-          marginLeft:'5%',
-          fontFamily: 'SourceL'
-        },
-        inputAndroid: {
-          color: 'black',
-          alignSelf: 'center',
-          fontSize: 15 * rem,
-          height: '100%',
-          width: '95%',
-          marginLeft:'5%',
-          fontFamily: 'SourceL'
-  
-        },
-        placeholder: {
-          color: '#9EA0A4',
-          fontSize: rem*15,
-          fontFamily: 'SourceL'
-        },
-  
-      };    
-      const placeholder = {
-        label: 'Select an account type',
-        value: null,
-        color: '#9EA0A4',
-        fontFamily: 'SourceL',
-      };
-    const onPress = () => {
-      var uname = this.state.username;
-      var pword = this.state.password;
-      var sv = this.state.event;
-      var email = this.state.email
-      const emailgood = validateEmail(email)
-      if (uname != "" && pword != "" && sv != null && emailgood) {
-        this.setState({ loading: true });
-        const Http = new XMLHttpRequest();
-        const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?username=" + uname + "&password=" + pword + "&action=signup"+"&sv="+sv+"&email="+email;
-        console.log(data);
-        Http.open("GET", String(url + data));
-        Http.send();
-        var ok;
-        Http.onreadystatechange = (e) => {
-          ok = Http.responseText;
-          if (Http.readyState == 4) {
-            console.log(String(ok));
-
-            if (ok.substring(0, 4) == "true") {
-              this.setState({ loading: false });
-              Fire.shared.signout();
-              Fire.shared.observeAuth();
-              setTimeout(() => { alert("Succesfully signed up!"); }, 100);
-              this.props.navigation.navigate('Login')
-
-            }
-            else if (ok.substring(0, 5) == "email") {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("The email you have entered is already registered with an account."); }, 100);
-
-            }
-            else if (ok.substring(0, 8) == "username") {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Sorry, that username is already taken."); }, 100);
-
-            }
-            else {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Server Error"); }, 100);
-            }
+          if (ok.substring(0, 4) == "true") {
+            this.setState({ loading: false });
+            global.newuser = uname;
+            Fire.shared.signout();
+            Fire.shared.observeAuth();
+            setTimeout(() => { alert("Succesfully signed up!"); }, 100);
+            this.props.navigation.navigate('Login')
 
           }
-        }
-      }
-      else {
-        if (emailgood){
-        alert("Please fill all fields")
-        }
-        else{
-          alert("Please enter a valid email address")
+          else if (ok.substring(0, 5) == "email") {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("The email you have entered is already registered with an account."); }, 100);
+
+          }
+          else if (ok.substring(0, 8) == "username") {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("Sorry, that username is already taken."); }, 100);
+
+          }
+          else {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("Server Error"); }, 100);
+          }
+
         }
       }
     }
+    else {
+      if (emailgood){
+      alert("Please fill all fields")
+      }
+      else{
+        alert("Please enter a valid email address")
+      }
+    }
+  }
+  render() {
+
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -230,7 +231,7 @@ export default class Login extends React.Component {
                   justifyContent:'center',
                   alignItems:'center'
                 }}
-                onPress={onPress}
+                onPress={() => this.onPress()}
 
               >
                 <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(20*rem,36*wid),}}>Sign Up</Text>
