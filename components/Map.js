@@ -284,7 +284,7 @@ export default class App extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity style={{ marginTop: height * 0.005 }} onPress={this.onPress2}>
+                <TouchableOpacity style={{ marginTop: height * 0.005 }} onPress={() => this.props.navigation.navigate('Profile')}>
                   <Text style={{ fontSize: Math.min(rem * 15, wid * 27), fontFamily: 'Source' }}>Profile</Text>
                 </TouchableOpacity>
               </View>
