@@ -263,7 +263,7 @@ export default class Login extends React.Component {
                   <View style={{ flex: 0.7, alignItems: 'center', width: '100%', justifyContent: 'center' }}>
                     <View style={{ height: '80%', width: '85%', borderColor: 'black', borderWidth: 2, borderRadius: 20 }}>
                       <TextInput
-                        style={{ fontSize: 18 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
+                        style={{ fontSize: 16 * rem, width: '95%', height: '100%', marginLeft: '5%', fontFamily: 'SourceL' }}
                         autoCapitalize='none'
                         autoCompleteType='off'
                         placeholder="Preferred Store"
@@ -273,9 +273,9 @@ export default class Login extends React.Component {
                           if (first) {
                             Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
                             first = false;
-                          }
+                          }}
                         }
-                        }
+                        editable = {this.state.status == 'order'}
                       />
                     </View>
                   </View>
@@ -294,6 +294,12 @@ export default class Login extends React.Component {
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Payment</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Cancel</Text>
                     </LinearGradient>
                   </TouchableOpacity> : null}
                 <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
