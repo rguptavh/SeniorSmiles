@@ -106,6 +106,46 @@ export default class Login extends React.Component {
   _keyboardDidHide = () => {
     this.setState({keyboard: false})
   }
+  cancel = () => {
+    Alert.alert(
+      "Cancel Request",
+      "Are you sure you want to cancel your request?",
+      [
+        {
+          text: "No"
+        },
+        {
+          text: "Yes", onPress: () => {
+            const Http = new XMLHttpRequest();
+            const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+            var data = "?username=" + global.uname + "&action=sencancel";
+            this.setState({loading: true, message: 'Cancelling Request...'})
+            Http.open("GET", String(url + data));
+            Http.send();
+            Http.onreadystatechange = (e) => {
+              var ok = Http.responseText;
+              if (Http.readyState == 4) {
+                if (ok.substring(0, 4) == "true") {
+                  this.setState({ loading: false, status : 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: ''});
+                  setTimeout(() => { alert("Succesfully removed your request!"); }, 100);
+    
+                }
+                else if (ok == 'false'){
+                  this.setState({ loading: false});
+                  setTimeout(() => { alert("Sorry, your request has already been accepted by a volunteer."); }, 100);
+                }
+                else {
+                  this.setState({ loading: false });
+                  setTimeout(() => { alert("Server Error"); }, 100);
+                }
+              }
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  }
   _renderItem = ({ item }) => {
     if (item.add) {
       if (this.state.status == 'order') {
@@ -273,6 +313,7 @@ export default class Login extends React.Component {
                           if (first) {
                             Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
                             first = false;
+                            this.setState({keyboard: true})
                           }}
                         }
                         editable = {this.state.status == 'order'}
@@ -295,7 +336,7 @@ export default class Login extends React.Component {
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Payment</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                  </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.cancel()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
