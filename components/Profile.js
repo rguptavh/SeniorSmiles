@@ -27,7 +27,7 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Workhorse Bronze', description: 'Log 5 volunteer hours to receive this badge!'},{name: 'Workhorse Silver', description: 'Log 10 volunteer hours to receive this badge!'},{name: 'Workhorse Gold', description: 'Log 20 volunteer hours to receive this badge!'}],
+    badges: [{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',}],
     logs: global.logs,
     hours: global.hours,
     minutes: global.minutes
@@ -58,9 +58,6 @@ export default class Login extends React.Component {
     this.props.navigation.navigate('Chat')
   }
   
-  badgeinfo = (item) => {
-    Alert.alert(item.name, item.description);
-  }  
 
   onPress2 = async () => {
     Alert.alert(
@@ -228,13 +225,15 @@ export default class Login extends React.Component {
   if (item.name == 'Workhorse Bronze'){
     if(global.hours>=5){
     return (
+      <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Log 5 hours')}>
       <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/workbronze.png')} resizeMode='contain' >
       </Image>
+      </TouchableOpacity>
     );
     }
     else{
       return (
-        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Log 5 volunteer hours to receive this badge!')}>
 
           <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
           </Image>
@@ -245,13 +244,15 @@ export default class Login extends React.Component {
   if (item.name == 'Workhorse Silver'){
     if(global.hours>=10){
       return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Log 10 hours')}>
         <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/worksilver.png')} resizeMode='contain' >
         </Image>
+        </TouchableOpacity>
       );
     }
     else{
       return (
-        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Log 10 volunteer hours to receive this badge!')}>
 
           <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
           </Image>
@@ -263,7 +264,7 @@ export default class Login extends React.Component {
   if (item.name == 'Workhorse Gold'){
     if(global.hours>=20){
       return (
-        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Log 20 hours')}>
           <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/workgold.png')} resizeMode='contain' >
           </Image>
         </TouchableOpacity>
@@ -272,7 +273,73 @@ export default class Login extends React.Component {
     }
     else{
       return (
-        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Log 20 volunteer hours to receive this badge!')}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+
+  }
+  if (item.name == 'Wingman Bronze'){
+    if(global.peoplehelped>=10){
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 10 people')}>
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/wingmanbronze.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 10 people to receive this badge!')}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+
+  }
+  if (item.name == 'Wingman Silver'){
+    if(global.peoplehelped>=25){
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 25 people')}>
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/wingmansilver.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 25 people to receive this badge!')}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+
+  }
+  if (item.name == 'Wingman Gold'){
+    if(global.peoplehelped>=50){
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 50 people')}>
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/wingmangold.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 50 people to receive this badge!')}>
 
           <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
           </Image>
