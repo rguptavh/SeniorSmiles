@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
+import {  ListItem} from "native-base";
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
@@ -26,7 +27,8 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Workhorse Bronze'},{name: 'Workhorse Silver'},{name: 'Workhorse Gold'}]
+    badges: [{name: 'Workhorse Bronze'},{name: 'Workhorse Silver'},{name: 'Workhorse Gold'}],
+    logs: [{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: true},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false}]
   };
   constructor() {
     super();
@@ -235,6 +237,38 @@ export default class Login extends React.Component {
     );
   }
 }
+_renderItem3 = ({ item }) => {
+
+  if (item.header) {
+
+    
+    return (
+
+      <ListItem itemDivider>
+        <Body style={{ marginRight: 0, alignItems: 'center' }}>
+          <Text style={{ fontWeight: "bold" }}>
+            {moment(item.date, 'MM-DD-YYYY').format('MMMM Do, YYYY')}
+          </Text>
+        </Body>
+      </ListItem>
+
+
+
+    );
+    
+  }
+  else {
+
+
+        <ListItem style={{ marginLeft: 0, backgroundColor: 'transparent' }}>
+          <Body>
+            <Text style={{ flex: 1, fontFamily: 'SourceB', color: 'white' }}>Helped {item.helpee}</Text>
+            <Text style={{ flex: 1, fontFamily: 'Source', color: 'white' }}>{item.time}</Text>
+          </Body>
+        </ListItem>
+
+  }
+};
  onPress = async () => {
   var uname = global.uname;
   var items = this.state.items.slice();
@@ -342,10 +376,10 @@ export default class Login extends React.Component {
                     </View>
                     <View style = {{flex:3.5}}>
                     <FlatList style={{ width: '100%' }}
-                      data={this.state.items}
-                      renderItem={this._renderItem}
+                      data={this.state.logs}
+                      renderItem={this._renderItem3}
 
-                      keyExtractor={item => "" + item.index}
+                      keyExtractor={item => "" + item.helpee}
                     />
                     </View>
                   </View>
