@@ -581,7 +581,7 @@ _renderItem3 = ({ item }) => {
                   <View style={{ flex: 2, width: '90%', backgroundColor: '#CFD4FF', borderRadius: 20 }}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
                       <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                        <Text style={{ fontSize: Math.min(27 * wid, 15 * rem), fontFamily: 'SourceB' }}>Logs</Text>
+                        <Text style={{ fontSize: Math.min(27 * wid, 15 * rem), fontFamily: 'SourceB' }}>Volunteer Log</Text>
                       </View>
                     </View>
                     <View style = {{flex:3.5}}>

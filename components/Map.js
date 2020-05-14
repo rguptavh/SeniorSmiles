@@ -85,6 +85,77 @@ export default class App extends Component {
     console.log(global.volname + " " + global.senname)
     this.props.navigation.navigate('Chat')
   }
+  deliver = (senior) => {
+    Alert.alert(
+      "Deliver",
+      "Are you sure you want to mark this request as delivered?",
+      [
+        {
+          text: "No"
+        },
+        {
+          text: "Yes", onPress: async () => {
+            this.setState({ loading: true });
+            const Http = new XMLHttpRequest();
+            const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+            var data = "?vol=" + global.uname + "&sen=" + senior.name + "&action=deliver";
+            Http.open("GET", String(url + data));
+            Http.send();
+            Http.onreadystatechange = (e) => {
+              var ok = Http.responseText;
+              if (Http.readyState == 4) {
+                if (ok.substring(0,4) == 'true'){
+                  for (var x=0, l = this.state.seniors.length;x<l;x++){
+                    if (senior.name == this.state.seniors[x].name){
+                      var temp = this.state.seniors;
+                      global.seniors = temp;
+                      temp[x]['payment'] = true;
+                      console.log(JSON.stringify(temp))
+                      this.setState({seniors: temp})
+                    }
+                  }
+                  var log = JSON.parse(ok.substring(5,ok.length))
+                  var hours = parseInt(log.pop());
+                  global.hours = Math.floor(hours/60)
+                  global.minutes = Math.round(global.hours - hours/60);
+                  global.peoplehelped = log.pop();
+                  log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
+                  const map = new Map();
+                  let result = [];
+                  for (const item of log) {
+                    if (!map.has(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                      map.set(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
+                      result.push(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
+                    }
+                  }
+
+                  for (var i = 0; i < log.length; i++) {
+                    log[i].index = Math.random().toString(36).substr(2, 5);
+                    if (result.includes(moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                      result.shift();
+                      // console.log(result)
+                      const he = {
+                        header: true,
+                        id: "" + (data.length + i),
+                        date: moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
+                        index: Math.random().toString(36).substr(2, 5)
+                      }
+                      log.splice(i, 0, he);
+                    }
+                  }
+                  console.log(log)
+                  global.logs = log;
+                  this.setState({ loading: false });
+                  setTimeout(() => { alert('Success!') }, 100);
+                }
+              }
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  }
   distance(lat1, lon1, lat2, lon2, unit) {
     if ((lat1 == lat2) && (lon1 == lon2)) {
       return 0;
@@ -181,6 +252,38 @@ export default class App extends Component {
         </LinearGradient>
       );
     }
+    if (this.state.seniors[index].payment) {
+      return(
+      <LinearGradient colors={['#FFCD9F', '#FF6666']} style={styles.card} key={index}>
+      <View style={{ flex: 1, width: '100%' }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
+            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Need Verification for {this.state.seniors[index].name}</Text>
+          </View>
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Preferred Store: {this.state.seniors[index].store}</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
+        </View>
+        <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker)}>
+            <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection:'row' }}>
+          <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
+          <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
+            <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
+          </TouchableOpacity>
+          </View>
+
+        </View>
+      </View>
+    </LinearGradient>
+      );
+    }
     else {
       return (
         <LinearGradient colors={['#FFCD9F', '#FF6666']} style={styles.card} key={index}>
@@ -201,10 +304,17 @@ export default class App extends Component {
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
               </TouchableOpacity>
             </View>
-            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection:'row' }}>
+              <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
               <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
               </TouchableOpacity>
+              </View>
+              <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <TouchableOpacity onPress={() => this.deliver(this.state.seniors[index])}>
+                <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Deliver</Text>
+              </TouchableOpacity>
+              </View>
             </View>
           </View>
         </LinearGradient>

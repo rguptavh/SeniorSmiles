@@ -129,7 +129,7 @@ export default class AppContainer extends React.Component {
               var log = data[1];
               var hours = parseInt(log.pop());
               global.hours = Math.floor(hours/60)
-              global.minutes = Math.round(global.hours - hours/60);
+              global.minutes = Math.round(hours-60*global.hours);
               global.peoplehelped = log.pop();
               log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
               const map = new Map();
@@ -184,9 +184,9 @@ export default class AppContainer extends React.Component {
               var items = ok.substring(index+1,ok.length);
               global.status = status;
               var temp = JSON.parse(items);
-              global.userhelp = temp[temp.length-1].username
-              temp.splice(temp.length-1, 1);
               global.store = temp[temp.length-1].store
+              temp.splice(temp.length-1, 1);
+              global.userhelp = temp[temp.length-1].username
               temp.splice(temp.length-1, 1);
               global.items = temp;
               AsyncStorage.setItem('type', "Senior");
