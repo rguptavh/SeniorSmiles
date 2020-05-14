@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
-import {  ListItem} from "native-base";
+import {  ListItem, Body} from "native-base";
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
@@ -259,14 +259,14 @@ _renderItem3 = ({ item }) => {
   }
   else {
 
-
-        <ListItem style={{ marginLeft: 0, backgroundColor: 'transparent' }}>
+    return (
+        <ListItem style={{ marginLeft: 10, backgroundColor: 'transparent' }}>
           <Body>
             <Text style={{ flex: 1, fontFamily: 'SourceB', color: 'white' }}>Helped {item.helpee}</Text>
             <Text style={{ flex: 1, fontFamily: 'Source', color: 'white' }}>{item.time}</Text>
           </Body>
         </ListItem>
-
+    );
   }
 };
  onPress = async () => {
