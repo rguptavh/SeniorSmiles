@@ -126,7 +126,37 @@ export default class AppContainer extends React.Component {
               Fire.shared.observeAuth2();
               var data = JSON.parse(ok.substring(10,ok.length));
               var seniors = data[0];
-              var logs = data[1];
+              var log = data[1];
+              var hours = parseInt(log.pop());
+              global.hours = Math.floor(hours/60)
+              global.minutes = Math.round(global.hours - hours/60);
+              global.peoplehelped = log.pop();
+              log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
+              const map = new Map();
+              let result = [];
+              for (const item of log) {
+                if (!map.has(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                  map.set(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
+                  result.push(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
+                }
+              }
+  
+              for (var i = 0; i < log.length; i++) {
+                log[i].index = Math.random().toString(36).substr(2, 5);
+                if (result.includes(moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                  result.shift();
+                  // console.log(result)
+                  const he = {
+                    header: true,
+                    id: "" + (data.length + i),
+                    date: moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
+                    index: Math.random().toString(36).substr(2, 5)
+                  }
+                  log.splice(i, 0, he);
+                }
+              }
+              console.log(log)
+              global.logs = log;
               var accepted = []
               var notaccepted = [];
               for (const item of seniors){
