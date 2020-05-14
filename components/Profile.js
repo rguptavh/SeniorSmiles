@@ -27,7 +27,7 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Good Citizen',},{name: 'Numero Uno',},{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',},{name: 'The Flash',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',},{name: 'Superhuman',},{name: 'Iced Out',}],
+    badges: [{name: 'Good Samaritan',},{name: 'Numero Uno',},{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',},{name: 'The Flash',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',},{name: 'Superhuman',},{name: 'Iced Out',}],
     logs: global.logs,
     hours: global.hours,
     minutes: global.minutes
@@ -222,9 +222,9 @@ export default class Login extends React.Component {
     }
   };
   _renderItem2 = ({ item }) => {
-    if (item.name == 'Good Citizen'){
+    if (item.name == 'Good Samaritan'){
         return (
-          <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help sign up to be a volunteer')}>
+          <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Sign up to be a volunteer')}>
             <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/volunteer.png')} resizeMode='contain' >
             </Image>
           </TouchableOpacity>
@@ -403,9 +403,9 @@ export default class Login extends React.Component {
 
   }
   if (item.name == 'Superhuman'){
-    if(global.peoplehelped>=500){
+    if(global.peoplehelped>=200){
       return (
-        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 500 people')}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 200 people')}>
           <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/super.png')} resizeMode='contain' >
           </Image>
         </TouchableOpacity>
@@ -414,7 +414,7 @@ export default class Login extends React.Component {
     }
     else{
       return (
-        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 500 people to receive this badge!')}>
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 200 people to receive this badge!')}>
 
           <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
           </Image>
