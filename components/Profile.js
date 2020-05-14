@@ -27,7 +27,7 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Good Citizen',},{name: 'Numero Uno',},{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',},{name: 'The Flash',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',},{name: 'Superhuman',}],
+    badges: [{name: 'Good Citizen',},{name: 'Numero Uno',},{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',},{name: 'The Flash',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',},{name: 'Superhuman',},{name: 'Iced Out',}],
     logs: global.logs,
     hours: global.hours,
     minutes: global.minutes
@@ -415,6 +415,28 @@ export default class Login extends React.Component {
     else{
       return (
         <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 500 people to receive this badge!')}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+
+  }
+  if (item.name == 'Iced Out'){
+    if(global.peoplehelped>=100 && global.hours>50){
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 100 people and log 50 hours')}>
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/diamond.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 100 people and log 50 hours to receive this badge!')}>
 
           <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
           </Image>
