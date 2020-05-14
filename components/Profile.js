@@ -27,7 +27,7 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',}],
+    badges: [{name: 'Numero Uno',},{name: 'Workhorse Bronze',},{name: 'Workhorse Silver',},{name: 'Workhorse Gold',}, {name: 'Wingman Bronze',},{name: 'Wingman Silver',},{name: 'Wingman Gold',}],
     logs: global.logs,
     hours: global.hours,
     minutes: global.minutes
@@ -222,6 +222,28 @@ export default class Login extends React.Component {
     }
   };
   _renderItem2 = ({ item }) => {
+    if (item.name == 'Numero Uno'){
+      if(global.peoplehelped>=50){
+        return (
+          <TouchableOpacity onPress={() => Alert.alert(item.name, 'You already have this badge\nRequirement: Help 1 person')}>
+            <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/first.png')} resizeMode='contain' >
+            </Image>
+          </TouchableOpacity>
+  
+        );
+      }
+      else{
+        return (
+          <TouchableOpacity onPress={() => Alert.alert(item.name, 'Help 1 person to receive this badge!')}>
+  
+            <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+            </Image>
+          </TouchableOpacity>
+  
+        );
+      }
+  
+    }
   if (item.name == 'Workhorse Bronze'){
     if(global.hours>=5){
     return (
@@ -504,7 +526,7 @@ _renderItem3 = ({ item }) => {
                       horizontal={true}
                       data={this.state.badges}
                       renderItem={this._renderItem2}
-
+                      showsHorizontalScrollIndicator={false}
                       keyExtractor={item => "" + item.name}
                     />
                     </View>
