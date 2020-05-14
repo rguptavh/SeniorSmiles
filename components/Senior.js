@@ -244,6 +244,7 @@ export default class Login extends React.Component {
           if (Http.readyState == 4) {
             console.log(String(ok));
             if (ok == "true") {
+              global.status = 'nothelped'
               this.setState({ loading: false, status: 'nothelped' });
               setTimeout(() => { alert("Success!"); }, 100);
             }

@@ -60,7 +60,7 @@ export default class Login extends React.Component {
             var log = data[1];
             var hours = parseInt(log.pop());
             global.hours = Math.floor(hours/60)
-            global.minutes = Math.round(global.hours - hours/60);
+            global.minutes = Math.round(hours-60*global.hours);
             global.peoplehelped = log.pop();
             log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
             const map = new Map();
