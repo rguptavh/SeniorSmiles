@@ -27,7 +27,7 @@ export default class Login extends React.Component {
     keyboard: false,
     hours: '50',
     minutes: '47',
-    badges: [{name: 'Workhorse Bronze'},{name: 'Workhorse Silver'},{name: 'Workhorse Gold'}],
+    badges: [{name: 'Workhorse Bronze', description: 'Log 5 volunteer hours to receive this badge!'},{name: 'Workhorse Silver', description: 'Log 10 volunteer hours to receive this badge!'},{name: 'Workhorse Gold', description: 'Log 20 volunteer hours to receive this badge!'}],
     logs: global.logs,
     hours: global.hours,
     minutes: global.minutes
@@ -57,6 +57,11 @@ export default class Login extends React.Component {
     console.log(global.volname + " " + global.senname)
     this.props.navigation.navigate('Chat')
   }
+  
+  badgeinfo = (item) => {
+    Alert.alert(item.name, item.description);
+  }  
+
   onPress2 = async () => {
     Alert.alert(
       "Log Out",
@@ -221,22 +226,61 @@ export default class Login extends React.Component {
   };
   _renderItem2 = ({ item }) => {
   if (item.name == 'Workhorse Bronze'){
+    if(global.hours>=5){
     return (
       <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/workbronze.png')} resizeMode='contain' >
       </Image>
     );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+      );
+    }
   }
   if (item.name == 'Workhorse Silver'){
-    return (
-      <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/worksilver.png')} resizeMode='contain' >
-      </Image>
-    );
+    if(global.hours>=10){
+      return (
+        <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/worksilver.png')} resizeMode='contain' >
+        </Image>
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+      );
+    }
+
   }
   if (item.name == 'Workhorse Gold'){
-    return (
-      <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/workgold.png')} resizeMode='contain' >
-      </Image>
-    );
+    if(global.hours>=20){
+      return (
+        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75, marginLeft:wid*10 }} source={require('../assets/workgold.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+    else{
+      return (
+        <TouchableOpacity onPress={() => this.badgeinfo(item)}>
+
+          <Image style={{ height: '100%', width:entireScreenHeight/5.75 }} source={require('../assets/round.png')} resizeMode='contain' >
+          </Image>
+        </TouchableOpacity>
+
+      );
+    }
+
   }
 }
 _renderItem3 = ({ item }) => {
@@ -246,7 +290,7 @@ _renderItem3 = ({ item }) => {
     
     return (
 
-      <ListItem itemDivider>
+      <ListItem itemDivider >
         <Body style={{ marginRight: 0, alignItems: 'center' }}>
           <Text style={{ fontWeight: "bold" }}>
             {item.date}
@@ -264,8 +308,8 @@ _renderItem3 = ({ item }) => {
     return (
         <ListItem style={{ marginLeft: 10, backgroundColor: 'transparent' }}>
           <Body>
-            <Text style={{ flex: 1, fontFamily: 'SourceB', color: 'white' }}>Helped {item.helpee}</Text>
-            <Text style={{ flex: 1, fontFamily: 'Source', color: 'white' }}>{item.start} to {item.end}</Text>
+            <Text style={{ flex: 1, fontFamily: 'SourceB', color: 'black' }}>Helped {item.helpee}</Text>
+            <Text style={{ flex: 1, fontFamily: 'Source', color: 'black' }}>{item.start} to {item.end}</Text>
           </Body>
         </ListItem>
     );
