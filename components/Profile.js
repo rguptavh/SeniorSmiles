@@ -28,7 +28,9 @@ export default class Login extends React.Component {
     hours: '50',
     minutes: '47',
     badges: [{name: 'Workhorse Bronze'},{name: 'Workhorse Silver'},{name: 'Workhorse Gold'}],
-    logs: [{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: true},{date:'12-31-2020',time:'papi-papi',helpee:'helpee', header: false}]
+    logs: global.logs,
+    hours: global.hours,
+    minutes: global.minutes
   };
   constructor() {
     super();
@@ -247,7 +249,7 @@ _renderItem3 = ({ item }) => {
       <ListItem itemDivider>
         <Body style={{ marginRight: 0, alignItems: 'center' }}>
           <Text style={{ fontWeight: "bold" }}>
-            {moment(item.date, 'MM-DD-YYYY').format('MMMM Do, YYYY')}
+            {item.date}
           </Text>
         </Body>
       </ListItem>
@@ -263,7 +265,7 @@ _renderItem3 = ({ item }) => {
         <ListItem style={{ marginLeft: 10, backgroundColor: 'transparent' }}>
           <Body>
             <Text style={{ flex: 1, fontFamily: 'SourceB', color: 'white' }}>Helped {item.helpee}</Text>
-            <Text style={{ flex: 1, fontFamily: 'Source', color: 'white' }}>{item.time}</Text>
+            <Text style={{ flex: 1, fontFamily: 'Source', color: 'white' }}>{item.start} to {item.end}</Text>
           </Body>
         </ListItem>
     );
@@ -337,7 +339,7 @@ _renderItem3 = ({ item }) => {
             />
             <ImageBackground style={{ flex: 1, width: '100%', alignItems: 'center' }} source={require('../assets/profile.png')}>
               <View style={{ flex: 1, width: '100%', alignItems: 'flex-start' }}>
-                <Text style={{ marginTop: getStatusBarHeight(), marginLeft: wid * 20, fontSize: rem * 25, color: 'white', fontFamily: 'SourceB'}}>rgupta</Text>
+                <Text style={{ marginTop: getStatusBarHeight(), marginLeft: wid * 20, fontSize: rem * 25, color: 'white', fontFamily: 'SourceB'}}>{global.uname}</Text>
               </View>
             <TouchableOpacity
                 style={{
@@ -356,7 +358,7 @@ _renderItem3 = ({ item }) => {
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom: '0%' }}>
                   <View style={{ flex: 0.2 }}></View>
                   <View style={{ flex: 0.5, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '90%', alignItems: 'center', backgroundColor: '#CFD4FF', borderRadius: 20 }}>
-                    <Text style={{ fontSize: Math.min(24.3 * wid, 13.5 * rem), color: 'black', fontFamily: 'SourceB' }}>Total People Helped: 47</Text>
+                    <Text style={{ fontSize: Math.min(24.3 * wid, 13.5 * rem), color: 'black', fontFamily: 'SourceB' }}>Total People Helped: {global.peoplehelped}</Text>
                   </View>
                   <View style={{ flex: 0.2 }}></View>
                   <View style={{ flex: 0.5, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '90%', alignItems: 'center', backgroundColor: '#CFD4FF', borderRadius: 20 }}>
@@ -378,8 +380,7 @@ _renderItem3 = ({ item }) => {
                     <FlatList style={{ width: '100%' }}
                       data={this.state.logs}
                       renderItem={this._renderItem3}
-
-                      keyExtractor={item => "" + item.helpee}
+                      keyExtractor={item => "" + item.index}
                     />
                     </View>
                   </View>
