@@ -6,6 +6,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationActions, StackActions } from 'react-navigation'
 import Fire from '../Fire';
 import { LinearGradient } from 'expo-linear-gradient';
+import Spinner from 'react-native-loading-spinner-overlay';
+import moment from 'moment';
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height * 0.3;
@@ -88,7 +91,7 @@ export default class App extends Component {
   deliver = (senior) => {
     Alert.alert(
       "Deliver",
-      "Are you sure you want to mark this request as delivered?",
+      "Are you sure you want to mark this request as delivered?\n\nThe chosen senior will have to verify payment and delivery for the request to be closed.",
       [
         {
           text: "No"
@@ -117,7 +120,7 @@ export default class App extends Component {
                   var log = JSON.parse(ok.substring(5,ok.length))
                   var hours = parseInt(log.pop());
                   global.hours = Math.floor(hours/60)
-                  global.minutes = Math.round(global.hours - hours/60);
+                  global.minutes = Math.round(hours-60*global.hours);
                   global.peoplehelped = log.pop();
                   log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
                   const map = new Map();
@@ -234,7 +237,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Request from {this.state.seniors[index].name}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -258,7 +261,7 @@ export default class App extends Component {
       <View style={{ flex: 1, width: '100%' }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Need Verification for {this.state.seniors[index].name}</Text>
+            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name} needs to verify</Text>
           </View>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -290,7 +293,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Accepted {this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Accepted {this.state.seniors[index].name}'s request</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -346,6 +349,11 @@ export default class App extends Component {
     if (this.state.markers.length != 0) {
       return (
         <View style={styles.container}>
+          <Spinner
+              visible={this.state.loading}
+              textContent={'Marking request as delivered...'}
+              textStyle={styles.spinnerTextStyle}
+            />
           <MapView
             ref={map => this.map = map}
             initialRegion={this.state.mapRegion}
@@ -524,5 +532,9 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 12,
     color: "#444",
+  },
+  spinnerTextStyle: {
+    color: '#FFF',
+    top: 60
   },
 });

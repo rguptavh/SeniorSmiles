@@ -146,6 +146,46 @@ export default class Login extends React.Component {
       { cancelable: false }
     );
   }
+  verify = () => {
+    Alert.alert(
+      "Verify Request",
+      "Please verify that\n\na) You have recieved the items you requested\n\nb) You have paid your volunteer the full amount of the items they have bought\n\nBy clicking yes, you certify that both of these items have been fulfuilled.",
+      [
+        {
+          text: "No"
+        },
+        {
+          text: "Yes", onPress: () => {
+            const Http = new XMLHttpRequest();
+            const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
+            var data = "?username=" + global.uname + "&action=verify";
+            this.setState({loading: true, message: 'Verifying Request...'})
+            Http.open("GET", String(url + data));
+            Http.send();
+            Http.onreadystatechange = (e) => {
+              var ok = Http.responseText;
+              if (Http.readyState == 4) {
+                if (ok.substring(0, 4) == "true") {
+                  this.setState({ loading: false, status : 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: ''});
+                  setTimeout(() => { alert("Succesfully verified your request!"); }, 100);
+    
+                }
+                else if (ok == 'false'){
+                  this.setState({ loading: false});
+                  setTimeout(() => { alert("Sorry, there was an error, please reload the app."); }, 100);
+                }
+                else {
+                  this.setState({ loading: false });
+                  setTimeout(() => { alert("Server Error"); }, 100);
+                }
+              }
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  }
   _renderItem = ({ item }) => {
     if (item.add) {
       if (this.state.status == 'order') {
@@ -331,11 +371,11 @@ export default class Login extends React.Component {
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                  </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.verify()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Payment</Text>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Request</Text>
                     </LinearGradient>
                   </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.cancel()}>
                     <LinearGradient
