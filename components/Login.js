@@ -55,7 +55,9 @@ export default class Login extends React.Component {
           if (ok.substring(0, 9) == "Volunteer") {
             global.uname = uname;
             Fire.shared.observeAuth2();
-            var seniors = JSON.parse(ok.substring(10,ok.length));
+            var data = JSON.parse(ok.substring(10,ok.length));
+            var seniors = data[0];
+            var logs = data[1];
             var accepted = []
             var notaccepted = [];
             for (const item of seniors){
