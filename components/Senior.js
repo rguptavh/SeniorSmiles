@@ -158,7 +158,7 @@ export default class Login extends React.Component {
           text: "Yes", onPress: () => {
             const Http = new XMLHttpRequest();
             const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-            var data = "?sen=" + global.uname + "?vol=" + this.state.userhelp +  "&action=verify";
+            var data = "?sen=" + global.uname + "&vol=" + this.state.userhelp +  "&action=verify";
             this.setState({loading: true, message: 'Verifying Request...'})
             Http.open("GET", String(url + data));
             Http.send();
