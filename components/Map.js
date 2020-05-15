@@ -8,6 +8,8 @@ import Fire from '../Fire';
 import { LinearGradient } from 'expo-linear-gradient';
 import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
+import { Notifications } from 'expo';
+
 
 
 const { width, height } = Dimensions.get("window");
@@ -180,7 +182,25 @@ export default class App extends Component {
       return dist;
     }
   }
+  _handleNotification = notification => {
+    // do whatever you want to do with the notification
+    //  global.status = "helped"
+    if (notification.data.action == 'verify') {
+      for (var x=0; x<this.state.seniors.length; x++){
+        if (this.state.seniors[x].name == notification.data.username){
+          var sens = this.state.seniors
+          var marks = this.state.markers
+          sens.splice(x,1)
+          marks.splice(x,1)
+          global.seniors = sens
+          global.markers = marks
+          this.setState({seniors: sens, markers: marks})
+        }
+      }
+    }
+  };
   componentDidMount() {
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
     console.log('mount')
     this.focusListener = this.props.navigation.addListener('willFocus', () => {
       this.setState({ count: 0, markers: global.markers, seniors: global.seniors });

@@ -200,13 +200,11 @@ export default class Login extends React.Component {
     );
   }
   deleteNote = ( item) => {
-    console.log(item)
     var temp = this.state.items
     temp.splice(item.index,1)
     for (var x = item.index; x<this.state.items.length;x++){
     this.state.items[x].index -= 1
     }
-    console.log(temp)
     this.setState({items: temp})
   }
   _renderItem = ({ item }) => {
