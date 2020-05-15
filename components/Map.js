@@ -453,7 +453,7 @@ export default class App extends Component {
             style={styles.scrollView}
           >
 
-            <View style={styles.card}>
+            <View style={[styles.card,{backgroundColor:'white'}]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
                   <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>No Seniors</Text>
