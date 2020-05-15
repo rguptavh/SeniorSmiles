@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
+import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert, TouchableHighlight } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
@@ -8,6 +8,8 @@ import { NavigationActions, StackActions, ThemeColors } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
+import Swipeable from 'react-native-swipeable-row';
+
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -34,7 +36,7 @@ export default class Login extends React.Component {
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
   add = () => {
     var temp = this.state.items;
-    if (temp[temp.length - 1].index == 15) {
+    if (temp.length == 16) {
       alert("Please have a maximum of 15 items")
     }
     else {
@@ -197,7 +199,25 @@ export default class Login extends React.Component {
       { cancelable: false }
     );
   }
+  deleteNote = ( item) => {
+    console.log(item)
+    var temp = this.state.items
+    temp.splice(item.index,1)
+    for (var x = item.index; x<this.state.items.length;x++){
+    this.state.items[x].index -= 1
+    }
+    console.log(temp)
+    this.setState({items: temp})
+  }
   _renderItem = ({ item }) => {
+    const rightButtons = [
+      <TouchableHighlight style={{ backgroundColor: 'red', height: '100%', justifyContent: 'center', marginLeft:wid*5}} onPress={() => this.deleteNote(item)}><Text style={{ color: 'white', paddingLeft: entireScreenHeight / 50 }}>Delete</Text></TouchableHighlight>,
+    ];
+    var f = false
+    if (first) {
+      f = true;
+      first = false;
+    }
     if (item.add) {
       if (this.state.status == 'order') {
         return (
@@ -220,7 +240,9 @@ export default class Login extends React.Component {
     else {
       if (this.state.status == 'order') {
         return (
-      <View style={{ width: '100%', marginTop:rem*7, }}>
+
+      <View style={{ width: '100%', marginTop:rem*7, backgroundColor:'white'}}>
+                  <Swipeable rightButtons={rightButtons} rightButtonWidth={entireScreenWidth / 5} bounceOnMount={f}>
       <View style={{ width: '100%', flexDirection: 'row', }}>
         <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
                 <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} multiline={true} placeholder="Name" onChangeText={(value) => {
@@ -231,7 +253,7 @@ export default class Login extends React.Component {
                   console.log(this.state.items)
                 }}></TextInput>
               </View>
-              <View style={{ flex: 0.25 }}></View>
+              <View style={{ flex: 0.25, backgroundColor:'white' }}></View>
               <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
                 <TextInput style={{ flex: 1, width: '100%', textAlign: 'center', fontFamily: 'SourceL', fontSize: rem * 15 }} keyboardType='number-pad' maxLength={2} placeholder="#" onChangeText={(value) => {
                   var temp = this.state.items;
@@ -241,7 +263,9 @@ export default class Login extends React.Component {
                 }}></TextInput>
               </View>
             </View>
+            </Swipeable>
           </View>
+
         );
       }
       else {
@@ -344,7 +368,7 @@ export default class Login extends React.Component {
                     <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'order' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
                   <View style={{ flex: 3, width: '85%' }}>
-                    <FlatList style={{ width: '100%', }}
+                    <FlatList style={{ width: '100%', backgroundColor:'white' }}
                       data={this.state.items}
                       renderItem={this._renderItem}
                       
