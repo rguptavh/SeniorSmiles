@@ -97,6 +97,17 @@ export default class Login extends React.Component {
       this.setState({ status: 'yes', userhelp: notification.data.username })
 
     }
+    else if (notification.data.action == 'cancel') {
+      global.status = 'nothelped'
+      global.userhelp = '';
+      this.setState({ status: 'nothelped', userhelp: '' })
+
+    }
+    else if (notification.data.action == 'deliver') {
+      global.status = 'payment'
+      this.setState({ status: 'payment'})
+
+    }
     console.log(notification)
   };
   _keyboardDidShow = () => {
@@ -326,7 +337,6 @@ export default class Login extends React.Component {
                 {this.state.status == 'nothelped' ? <Image
                   style={{ flex: 1, resizeMode: 'contain', }}
                   source={require('../assets/spin.gif')} /> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'SourceB', marginTop: '2%' }}>{this.state.status == 'payment' ? 'Has delivered your items' : 'Has accepted your request'}</Text> : null}
-                {this.state.status == 'payment' || this.state.status == 'yes' ? <TouchableOpacity onPress={this.chat}><Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'Source', }}>Click to chat with them</Text></TouchableOpacity> : null}
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom: '7%' }}>
@@ -363,27 +373,49 @@ export default class Login extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={{ flex: 1, width: '70%' }}>
+              <View style={{ flex: 1, width: '90%', alignItems:'center'}}>
                 {this.state.status == 'order' ?
-                  <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                  <TouchableOpacity style={{ height: '45%', width: '70%', alignItems: 'center', }} onPress={onPress}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.verify()}>
+                  </TouchableOpacity> : this.state.status == 'payment' ? 
+                  <View style = {{height:'45%', width:'100%', flexDirection:'row', alignItems:'center'}}>
+                    <View style = {{flex:1, height:'100%', alignItems:'center'}}>
+                  <TouchableOpacity style={{ height: '100%', width: '80%' }} onPress={() => this.chat()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Request</Text>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Chat</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.cancel()}>
+                  </TouchableOpacity> 
+                  </View>
+                  <View style = {{flex:1, height:'100%', alignItems:'center'}}>
+                  <TouchableOpacity style={{ height: '100%', width: '80%', alignItems: 'center', }} onPress={() => this.verify()}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> 
+                  </View>
+                    </View>
+                  : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.cancel()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Cancel</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : null}
+                  </TouchableOpacity> : 
+                  <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.chat()}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Chat</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> }
                 <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
                   <Text style={{ fontSize: Math.min(rem * 15, wid * 36), fontFamily: 'Source' }}>Logout</Text>
                 </TouchableOpacity>
@@ -403,6 +435,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:'white'
     // left: 0, top: 0, position: 'absolute'
 
   },
@@ -441,6 +474,37 @@ const styles = StyleSheet.create({
     color: '#22B7CB',
     fontSize: 18 * wid,
     fontFamily: 'SourceB'
-  },
+  },    
+  backTextWhite: {
+    color: '#FFF',
+},
+rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#CCC',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    height: 50,
+},
+rowBack: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+},
+backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+},
+backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+},
 
 });
