@@ -149,7 +149,7 @@ export default class Login extends React.Component {
   verify = () => {
     Alert.alert(
       "Verify Request",
-      "Please verify that\n\na) You have recieved the items you requested\n\nb) You have paid your volunteer the full amount of the items they have bought\n\nBy clicking yes, you certify that both of these items have been fulfuilled.",
+      "Please verify that\n\na) You have received the items you requested\n\nb) You have paid your volunteer the full amount of the items they have bought\n\nBy clicking yes, you certify that both of these items have been fulfuilled.",
       [
         {
           text: "No"
