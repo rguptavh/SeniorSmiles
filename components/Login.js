@@ -45,6 +45,7 @@ export default class Login extends React.Component {
       const Http = new XMLHttpRequest();
       const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
       var data = "?username=" + uname + "&password=" + pword + "&token=" + global.token + "&action=login";
+      console.log(data);
       Http.open("GET", String(url + data));
       Http.send();
       var ok;
