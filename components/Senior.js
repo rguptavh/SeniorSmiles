@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert } from 'react-native';
+import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert, TouchableHighlight } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
@@ -8,6 +8,8 @@ import { NavigationActions, StackActions, ThemeColors } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
+import Swipeable from 'react-native-swipeable-row';
+
 
 const entireScreenHeight = Dimensions.get('window').height;
 const rem = entireScreenHeight / 380;
@@ -34,7 +36,7 @@ export default class Login extends React.Component {
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
   add = () => {
     var temp = this.state.items;
-    if (temp[temp.length - 1].index == 15) {
+    if (temp.length == 16) {
       alert("Please have a maximum of 15 items")
     }
     else {
@@ -95,6 +97,17 @@ export default class Login extends React.Component {
       global.status = 'yes'
       global.userhelp = notification.data.username;
       this.setState({ status: 'yes', userhelp: notification.data.username })
+
+    }
+    else if (notification.data.action == 'cancel') {
+      global.status = 'nothelped'
+      global.userhelp = '';
+      this.setState({ status: 'nothelped', userhelp: '' })
+
+    }
+    else if (notification.data.action == 'deliver') {
+      global.status = 'payment'
+      this.setState({ status: 'payment'})
 
     }
     console.log(notification)
@@ -186,7 +199,25 @@ export default class Login extends React.Component {
       { cancelable: false }
     );
   }
+  deleteNote = ( item) => {
+    console.log(item)
+    var temp = this.state.items
+    temp.splice(item.index,1)
+    for (var x = item.index; x<this.state.items.length;x++){
+    this.state.items[x].index -= 1
+    }
+    console.log(temp)
+    this.setState({items: temp})
+  }
   _renderItem = ({ item }) => {
+    const rightButtons = [
+      <TouchableHighlight style={{ backgroundColor: 'red', height: '100%', justifyContent: 'center', marginLeft:wid*5}} onPress={() => this.deleteNote(item)}><Text style={{ color: 'white', paddingLeft: entireScreenHeight / 50 }}>Delete</Text></TouchableHighlight>,
+    ];
+    var f = false
+    if (first) {
+      f = true;
+      first = false;
+    }
     if (item.add) {
       if (this.state.status == 'order') {
         return (
@@ -209,7 +240,9 @@ export default class Login extends React.Component {
     else {
       if (this.state.status == 'order') {
         return (
-      <View style={{ width: '100%', marginTop:rem*7, }}>
+
+      <View style={{ width: '100%', marginTop:rem*7, backgroundColor:'white'}}>
+                  <Swipeable rightButtons={rightButtons} rightButtonWidth={entireScreenWidth / 5} bounceOnMount={f}>
       <View style={{ width: '100%', flexDirection: 'row', }}>
         <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
                 <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} multiline={true} placeholder="Name" onChangeText={(value) => {
@@ -220,7 +253,7 @@ export default class Login extends React.Component {
                   console.log(this.state.items)
                 }}></TextInput>
               </View>
-              <View style={{ flex: 0.25 }}></View>
+              <View style={{ flex: 0.25, backgroundColor:'white' }}></View>
               <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
                 <TextInput style={{ flex: 1, width: '100%', textAlign: 'center', fontFamily: 'SourceL', fontSize: rem * 15 }} keyboardType='number-pad' maxLength={2} placeholder="#" onChangeText={(value) => {
                   var temp = this.state.items;
@@ -230,7 +263,9 @@ export default class Login extends React.Component {
                 }}></TextInput>
               </View>
             </View>
+            </Swipeable>
           </View>
+
         );
       }
       else {
@@ -326,7 +361,6 @@ export default class Login extends React.Component {
                 {this.state.status == 'nothelped' ? <Image
                   style={{ flex: 1, resizeMode: 'contain', }}
                   source={require('../assets/spin.gif')} /> : (this.state.status != 'nothelped' && this.state.status != 'order') ? <Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'SourceB', marginTop: '2%' }}>{this.state.status == 'payment' ? 'Has delivered your items' : 'Has accepted your request'}</Text> : null}
-                {this.state.status == 'payment' || this.state.status == 'yes' ? <TouchableOpacity onPress={this.chat}><Text style={{ fontSize: Math.min(wid * 27, rem * 15), color: 'white', fontFamily: 'Source', }}>Click to chat with them</Text></TouchableOpacity> : null}
               </View>
               <View style={{ flex: 3.25, width: '100%', alignItems: 'center' }}>
                 <View style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, borderColor: '#3C5984', borderWidth: 2, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, marginBottom: '7%' }}>
@@ -334,7 +368,7 @@ export default class Login extends React.Component {
                     <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'order' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
                   <View style={{ flex: 3, width: '85%' }}>
-                    <FlatList style={{ width: '100%', }}
+                    <FlatList style={{ width: '100%', backgroundColor:'white' }}
                       data={this.state.items}
                       renderItem={this._renderItem}
                       
@@ -363,27 +397,49 @@ export default class Login extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={{ flex: 1, width: '70%' }}>
+              <View style={{ flex: 1, width: '90%', alignItems:'center'}}>
                 {this.state.status == 'order' ?
-                  <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={onPress}>
+                  <TouchableOpacity style={{ height: '45%', width: '70%', alignItems: 'center', }} onPress={onPress}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'payment' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.verify()}>
+                  </TouchableOpacity> : this.state.status == 'payment' ? 
+                  <View style = {{height:'45%', width:'100%', flexDirection:'row', alignItems:'center'}}>
+                    <View style = {{flex:1, height:'100%', alignItems:'center'}}>
+                  <TouchableOpacity style={{ height: '100%', width: '80%' }} onPress={() => this.chat()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify Request</Text>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Chat</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '100%', alignItems: 'center', }} onPress={() => this.cancel()}>
+                  </TouchableOpacity> 
+                  </View>
+                  <View style = {{flex:1, height:'100%', alignItems:'center'}}>
+                  <TouchableOpacity style={{ height: '100%', width: '80%', alignItems: 'center', }} onPress={() => this.verify()}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> 
+                  </View>
+                    </View>
+                  : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.cancel()}>
                     <LinearGradient
                       colors={['#8B9DFD', '#BF0DFE']}
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Cancel</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : null}
+                  </TouchableOpacity> : 
+                  <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.chat()}>
+                    <LinearGradient
+                      colors={['#8B9DFD', '#BF0DFE']}
+                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Chat</Text>
+                    </LinearGradient>
+                  </TouchableOpacity> }
                 <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
                   <Text style={{ fontSize: Math.min(rem * 15, wid * 36), fontFamily: 'Source' }}>Logout</Text>
                 </TouchableOpacity>
@@ -403,6 +459,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:'white'
     // left: 0, top: 0, position: 'absolute'
 
   },
@@ -441,6 +498,37 @@ const styles = StyleSheet.create({
     color: '#22B7CB',
     fontSize: 18 * wid,
     fontFamily: 'SourceB'
-  },
+  },    
+  backTextWhite: {
+    color: '#FFF',
+},
+rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#CCC',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    height: 50,
+},
+rowBack: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+},
+backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+},
+backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+},
 
 });
