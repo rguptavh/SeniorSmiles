@@ -63,7 +63,6 @@ export default class Login extends React.Component {
     Text.defaultProps = Text.defaultProps || {};
     // Ignore dynamic type scaling on iOS
     Text.defaultProps.allowFontScaling = false;
-
   }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
 

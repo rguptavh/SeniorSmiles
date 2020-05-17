@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Vibration, Platform, StyleSheet,AsyncStorage, Image, Alert } from 'react-native';
+import { Text, View, Vibration, Platform, StyleSheet,AsyncStorage, Image, Alert, TextInput } from 'react-native';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import * as Font from 'expo-font';
@@ -25,7 +25,7 @@ import Fire from './Fire';
 global.token = "None"
 let logged = false;
 let type = '';
-
+console.disableYellowBox = true;
 export default class AppContainer extends React.Component {
   state = {
     notification: {},
@@ -37,6 +37,8 @@ export default class AppContainer extends React.Component {
     Text.defaultProps = Text.defaultProps || {};
     // Ignore dynamic type scaling on iOS
     Text.defaultProps.allowFontScaling = false;
+    TextInput.defaultProps = TextInput.defaultProps || {};
+TextInput.defaultProps.allowFontScaling = false;
     SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
 
   }
