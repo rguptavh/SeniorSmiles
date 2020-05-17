@@ -237,8 +237,8 @@ export default class App extends Component {
       }, 0);
     });
   }
-  details = (senior, index, distance, store, marker) => {
-    global.accept = [senior, index, distance, store, marker];
+  details = (senior, index, distance, store, marker, verify) => {
+    global.accept = [senior, index, distance, store, marker, verify];
     this.props.navigation.navigate('Info')
   }
 
@@ -267,7 +267,7 @@ export default class App extends Component {
               <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
             </View>
             <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-              <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store,marker)}>
+              <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store,marker, false)}>
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
               </TouchableOpacity>
             </View>
@@ -291,7 +291,7 @@ export default class App extends Component {
           <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
         </View>
         <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker)}>
+          <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker, true)}>
             <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
           </TouchableOpacity>
         </View>
