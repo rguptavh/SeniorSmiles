@@ -23,6 +23,7 @@ export default class Login extends React.Component {
     distance: global.accept[2],
     store: global.accept[3],
     marker: global.accept[4],
+    verify: global.accept[5],
     location: null
   };
   constructor() {
@@ -165,6 +166,71 @@ export default class Login extends React.Component {
   }
 
   render() {
+    if (this.state.verify) {
+      return (
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
+
+          <View style={styles.container}>
+            <Spinner
+              visible={this.state.loading}
+              textContent={'Accepting request...'}
+              textStyle={styles.spinnerTextStyle}
+            />
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', marginTop: getStatusBarHeight() }}>
+              <View style={{ borderBottomColor: '#BF0DFE', borderBottomWidth: 10, marginTop: -entireScreenHeight * 0.01 }}>
+                <Text style={{ fontSize: Math.min(wid * 54, rem * 30), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center' }}>{this.state.senior.name}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', width: '80%', marginTop: '5%' }}>
+                <View style={{ flex: 4 }}>
+                  <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.distance} Miles Away</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity style={{ flex: 1 }} onPress={() => this.map()}>
+                    <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ width: '100%', flex: 1, borderRadius: 25 }} >
+
+                      <Image style={{ width: '100%', height: '100%' }} source={require('../assets/compass.png')} resizeMode='contain'>
+                      </Image>
+
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <Text style={{ fontSize: Math.min(wid * 31.5, rem * 17.5), color: '#BF0DFE', fontFamily: 'SourceB', textAlign: 'center', marginTop: '3%' }}>Preferred Store: {this.state.store}</Text>
+
+
+
+            </View>
+            <View style={{ flex: 2, width: '100%', alignItems: 'center' }}>
+              <LinearGradient colors={['#22B7CB', '#BF0DFE']} style={{ flex: 1, alignItems: 'center', width: '85%', backgroundColor: 'white', borderRadius: 20, shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.30, elevation: 8, padding: 2 }}>
+                <View style={{ flex: 1, width: '100%', alignItems: 'center', backgroundColor: 'white', borderRadius: 20 }}>
+                  <View style={{ flex: 0.6, justifyContent: 'center', paddingLeft: '0%', alignItems: 'flex-start', width: '100%', alignItems: 'center' }}>
+                    <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB', }}>Items List</Text>
+                  </View>
+                  <View style={{ flex: 3, width: '85%' }}>
+                    <FlatList style={{ width: '100%', }}
+                      data={this.state.senior.items}
+                      renderItem={this._renderItem}
+                      keyExtractor={item => "" + item.index}
+                    />
+                  </View>
+                  <View style={{ flex: 0.2 }}></View>
+                </View>
+              </LinearGradient>
+            </View>
+            <View style={{ flex: 0.75, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%', alignItems:'center' }}>
+                <TouchableOpacity style={{ width: '50%', height: '40%', }} onPress={() => this.props.navigation.navigate('Map')}>
+                  <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Back</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView >
+
+      );
+    }
     if (this.state.senior.userhelp != global.uname) {
       return (
         <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
