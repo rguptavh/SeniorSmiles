@@ -181,21 +181,19 @@ export default class Login extends React.Component {
             }}>
               <TouchableOpacity
                 style={{
-                  height: entireScreenWidth * 0.85 * 240 / 1068,
-                  marginTop:'7%',
-                  width: '80%',
+                  height: '20%',
+                  width: '90%',
+                  borderRadius:20,
+                  backgroundColor:'#BF0DFE',
+                  justifyContent:'center',
+                  marginTop:'10%',
+                  alignItems:'center'
                 }}
                 onPress={onPress}
                 disabled={this.state.loading}
 
               >
-                <Image source={require('../assets/forgot.png')} style={{
-                  height: '100%',
-                  width: '100%',
-                  flex: 1
-
-
-                }} resizeMode="contain"></Image>
+                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(20*rem,36*wid)}}>Send Login Info</Text>
               </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Check email for your credentials. </Text>
