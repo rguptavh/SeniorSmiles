@@ -221,7 +221,7 @@ export default class Login extends React.Component {
               justifyContent: 'flex-start',
               alignItems:'center'
             }}>
-              <View style = {{flex:1, marginTop:'4%', width:'100%', alignItems:'center',}}>
+              <View style = {{flex:1, marginTop:'4%', width:'100%', alignItems:'center', paddingTop:'5%'}}>
               <TouchableOpacity
                 style={{
                   height: '40%',
@@ -229,7 +229,7 @@ export default class Login extends React.Component {
                   borderRadius:20,
                   backgroundColor:'#BF0DFE',
                   justifyContent:'center',
-                  alignItems:'center'
+                  alignItems:'center',
                 }}
                 onPress={() => this.onPress()}
 
