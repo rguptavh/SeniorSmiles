@@ -257,7 +257,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Request from {this.state.seniors[index].name}</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(12 * rem, 25 * wid) }}>Request from {this.state.seniors[index].name}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -281,7 +281,7 @@ export default class App extends Component {
       <View style={{ flex: 1, width: '100%' }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name} needs to verify</Text>
+            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(12 * rem, 25 * wid) }}>{this.state.seniors[index].name} needs to verify</Text>
           </View>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -313,7 +313,7 @@ export default class App extends Component {
           <View style={{ flex: 1, width: '100%' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Accepted {this.state.seniors[index].name}'s request</Text>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(12 * rem, 25 * wid) }}>Accepted {this.state.seniors[index].name}'s request</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

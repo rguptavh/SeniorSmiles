@@ -161,20 +161,19 @@ TextInput.defaultProps.allowFontScaling = false;
               global.logs = log;
               var accepted = []
               var notaccepted = [];
+              var markers = [];
               for (const item of seniors){
                 if (item.userhelp == global.uname){
                   accepted.push(item)
+                  markers.push(item.location)
                 }
                 else{
                   notaccepted.push(item)
+                  markers.push(item.location)
                 }
               }
               seniors = accepted.concat(notaccepted)
               global.seniors = seniors;
-              var markers = [];
-              for (var x=0,l=seniors.length;x<l;x++){
-                markers.push(seniors[x].location);
-              }
               global.markers = markers;
               console.log(markers)
               this.setState({ loading: false, isAppReady:true });
