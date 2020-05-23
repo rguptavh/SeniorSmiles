@@ -17,6 +17,7 @@ const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
 let location = null;
 let first = true;
+let first1 = true;
 export default class Login extends React.Component {
   state = {
     loading: false,
@@ -383,9 +384,9 @@ export default class Login extends React.Component {
                         onChangeText={(value) => this.setState({ store: value })}
                         value={this.state.store}
                         onFocus={() => {
-                          if (first) {
+                          if (first1) {
                             Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
-                            first = false;
+                            first1 = false;
                             this.setState({keyboard: true})
                           }}
                         }
