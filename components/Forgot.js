@@ -45,7 +45,7 @@ export default class Login extends React.Component {
         Http.onreadystatechange = (e) => {
           ok = Http.responseText;
           if (Http.readyState == 4) {
-            console.log(String(ok));
+            cotnsole.log(String(ok));
 
             if (ok.substring(0, 4) == "true") {
               this.setState({ loading: false });
