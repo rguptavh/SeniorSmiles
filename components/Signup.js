@@ -126,16 +126,22 @@ export default class Login extends React.Component {
       this.setState({ loading: false });
 
       res = await res.json();
-      console.log(res)
-      console.log(res[0].faceAttributes.age)
-      global.age = res[0].faceAttributes.age;
-      this.setState({camera: false});
-      if(global.age>60){
-        this.signup();
+      if(res.length!=0){
+        console.log(res)
+        console.log(res[0].faceAttributes.age)
+        global.age = res[0].faceAttributes.age;
+        this.setState({camera: false});
+        if(global.age>60){
+          this.signup();
+        }
+        else{
+          alert("Sorry! You do not look like a senior citizen LOL...");
+        }
       }
       else{
-        alert("Sorry! You do not look like a senior citizen LOL...");
+        alert("No face detected in the photo. Please retake");
       }
+
     } catch (e) {
       console.error(e);
     } 
