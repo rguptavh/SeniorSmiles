@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNPickerSelect from 'react-native-picker-select';
@@ -130,11 +130,11 @@ export default class Login extends React.Component {
       console.log(res[0].faceAttributes.age)
       global.age = res[0].faceAttributes.age;
       this.setState({camera: false});
-      if(global.age>60){
+      if(global.age>=50){
         this.signup();
       }
       else{
-        alert("Sorry! You do not look like a senior citizen LOL...");
+        Alert.alert("Age Verification","Sorry! Our automated system has determined that you are not someone who is at least 50 years old. If this is a mistake, please contact support@seniorsmiles.com.");
       }
     } catch (e) {
       console.error(e);
@@ -211,6 +211,7 @@ export default class Login extends React.Component {
     if(sv == 'Senior'){    
       if (uname != "" && pword != "" && sv != null) {
         if(emailgood){
+          Alert.alert("Age Verification","Please take a picture of your face. Our automated system will determine if you are at least 50 years old.")
           this.setState({camera: true});
         }
         else{
