@@ -3,8 +3,11 @@ import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, Text
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNPickerSelect from 'react-native-picker-select';
-
+import { Camera } from 'expo-camera';
+import * as ImageManipulator from "expo-image-manipulator";
 import Fire from '../Fire';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 
 const entireScreenHeight = Dimensions.get('window').height;
@@ -56,7 +59,10 @@ export default class Login extends React.Component {
     password: '',
     email: '',
     loading: false,
-    event:null
+    event:null,
+    cameraType: Camera.Constants.Type.front,
+    camera: false,
+    hasPermission: null,
   };
   constructor() {
     super();
@@ -64,15 +70,170 @@ export default class Login extends React.Component {
     // Ignore dynamic type scaling on iOS
     Text.defaultProps.allowFontScaling = false;
   }
+  getPermissionAsync = async () => {
+    // Camera roll Permission 
+    var roll = true;
+    if (Platform.OS === 'ios') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        roll = false
+      }
+    }
+    // Camera Permission
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ hasPermission: status === 'granted' && roll });
+  }
   static navigationOptions = { headerMode: 'none', gestureEnabled: false };
+  uriToBlob = (uri) => {
 
-   onPress = () => {
+    return new Promise((resolve, reject) => {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function () {
+        // return the blob
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function () {
+        // something went wrong
+        reject(new Error('uriToBlob failed'));
+      };
+
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+
+    });
+
+  }
+
+  getage = async(papi) => {
+    try {
+      let res = await fetch('https://eastus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age&recognitionModel=recognition_02&returnRecognitionModel=false&detectionModel=detection_01', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/octet-stream',
+          'Ocp-Apim-Subscription-Key': '98ed4babcfbb42198812199d905a9102',
+        },
+        body: 
+          papi,
+      
+      });
+      this.setState({ loading: false });
+
+      res = await res.json();
+      console.log(res)
+      console.log(res[0].faceAttributes.age)
+      global.age = res[0].faceAttributes.age;
+      this.setState({camera: false});
+      if(global.age>60){
+        this.signup();
+      }
+      else{
+        alert("Sorry! You do not look like a senior citizen LOL...");
+      }
+    } catch (e) {
+      console.error(e);
+    } 
+
+  }
+
+  handleCameraType = () => {
+    const { cameraType } = this.state
+
+    this.setState({
+      cameraType:
+        cameraType === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
+    })
+  }
+  takePicture = async () => {
+    if (this.camera) {
+      console.log('pressed papi');
+      //this.setState({camera: false})
+      this.setState({ loading: true });
+
+      let photo = await this.camera.takePictureAsync();
+      const manipResult = await ImageManipulator.manipulateAsync(
+        photo.uri,
+        [],
+        { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+
+      this.uriToBlob(manipResult.uri).then((blob)  => {
+          global.papito = blob;
+          console.log(JSON.stringify(global.papito))
+          this.getage(blob);
+
+      }).catch((error) => {
+        throw error;
+      }); 
+      //console.log(JSON.stringify(global.papito))
+
+    }
+  }
+
+  pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images
+    });
+    if (!result.cancelled) {
+      this.setState({ loading: true });
+
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [],
+        { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG }
+      );
+        this.uriToBlob(manipResult.uri).then((blob)  => {
+          global.papito = blob;
+          console.log(JSON.stringify(global.papito))
+          this.getage(blob);
+
+      }).catch((error) => {
+        throw error;
+      }); 
+    }
+  }
+
+  onPress = () => {
     var uname = this.state.username;
     var pword = this.state.password;
     var sv = this.state.event;
     var email = this.state.email
     const emailgood = validateEmail(email)
-    if (uname != "" && pword != "" && sv != null && emailgood) {
+    if(sv == 'Senior'){    
+      if (uname != "" && pword != "" && sv != null) {
+        if(emailgood){
+          this.setState({camera: true});
+        }
+        else{
+          alert("Please enter a valid email address")
+        }
+
+      }
+      else {
+        alert("Please fill all fields")      
+      }
+    }
+    else{
+      this.signup();
+    }
+  }
+   signup = () => {
+    var uname = this.state.username;
+    var pword = this.state.password;
+    var sv = this.state.event;
+    var email = this.state.email
+    const emailgood = validateEmail(email)
+    if (uname != "" && pword != "" && sv != null) {
+      if(emailgood){
       this.setState({ loading: true });
       const Http = new XMLHttpRequest();
       const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
@@ -113,17 +274,86 @@ export default class Login extends React.Component {
         }
       }
     }
+    else{
+      alert("Please enter a valid email address")
+    }
+  }
     else {
-      if (emailgood){
       alert("Please fill all fields")
-      }
-      else{
-        alert("Please enter a valid email address")
-      }
+      
+
+      
     }
   }
   render() {
+    if (this.state.camera) {
+      return (
+        <View style={{ flex: 1 }}>
+            <Spinner
+              visible={this.state.loading}
+              textContent={'Checking Age...'}
+              textStyle={styles.spinnerTextStyle}
+            />
+          <Camera style={{ flex: 1 }} type={this.state.cameraType} ref={ref => { this.camera = ref }}>
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", margin: 30 }}>
+              
+            <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent'
+                }}
+                onPress={() => this.setState({camera: false})}>
+                <Ionicons
+                  name="ios-arrow-back"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
 
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent'
+                }}
+                onPress={() => this.pickImage()}>
+                <Ionicons
+                  name="ios-photos"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                }}
+                onPress={() => this.takePicture()}
+              >
+                <FontAwesome
+                  name="camera"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                }}
+                onPress={() => this.handleCameraType()}
+              >
+                <MaterialCommunityIcons
+                  name="camera-switch"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </Camera>
+        </View>
+      );
+    }
+    else{
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -249,6 +479,7 @@ export default class Login extends React.Component {
       </KeyboardAvoidingView >
 
     );
+  }
   }
 }
 
