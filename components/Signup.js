@@ -135,7 +135,7 @@ export default class Login extends React.Component {
           this.signup();
         }
         else{
-          alert("Sorry! You do not look like a senior citizen LOL...");
+          alert("Sorry! Our algorithm determined that you do not look old enough to sign up as a senior. If you think there is a mistake or you have another condition that hinders you from going to the store please email us at SeniorSmiles@gmail.com with a picture of yourself and your age or other confirmation of your condition. Thank you!");
         }
       }
       else{
