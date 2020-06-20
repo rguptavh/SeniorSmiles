@@ -81,6 +81,9 @@ export default class Login extends React.Component {
                       temp[x]['userhelp'] = '';
                       temp[x]['helped'] = 'no'
                       var cancelled = temp.splice(x, 1);
+                      console.log(global.markers)
+                      var marker = global.markers.splice(x,1)
+                      global.markers.push(marker[0])
                       temp.push(cancelled[0])
                       break;
                     }
@@ -129,17 +132,16 @@ export default class Login extends React.Component {
         if (ok.substring(0, 4) == 'true') {
           var seniors = JSON.parse(ok.substring(5, ok.length));
           var markers = [];
-          for (var x = 0, l = seniors.length; x < l; x++) {
-            markers.push(seniors[x].location);
-          }
           var accepted = []
           var notaccepted = [];
           for (const item of seniors) {
             if (item.userhelp == global.uname) {
               accepted.push(item)
+              markers.push(item.location)
             }
             else {
               notaccepted.push(item)
+              markers.push(item.location)
             }
           }
           seniors = accepted.concat(notaccepted)
