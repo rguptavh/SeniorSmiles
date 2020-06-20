@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView } from 'react-native';
+import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNPickerSelect from 'react-native-picker-select';
 import { Camera } from 'expo-camera';
@@ -125,16 +126,22 @@ export default class Login extends React.Component {
       this.setState({ loading: false });
 
       res = await res.json();
-      console.log(res)
-      console.log(res[0].faceAttributes.age)
-      global.age = res[0].faceAttributes.age;
-      this.setState({ camera: false });
-      if (global.age >= 50) {
-        this.signup();
+      if (res.length != 0) {
+        console.log(res)
+        console.log(res[0].faceAttributes.age)
+        global.age = res[0].faceAttributes.age;
+        this.setState({ camera: false });
+        if (global.age > 60) {
+          this.signup();
+        }
+        else {
+          alert("Sorry! Our algorithm determined that you do not look old enough to sign up as a senior. If you think there is a mistake or you have another condition that hinders you from going to the store please email us at SeniorSmiles@gmail.com with a picture of yourself and your age or other confirmation of your condition. Thank you!");
+        }
       }
       else {
-        Alert.alert("Age Verification", "Sorry! Our automated system has determined that you are not someone who is at least 50 years old. If this is a mistake, please contact support@seniorsmiles.com.");
+        alert("No face detected in the photo. Please retake");
       }
+
     } catch (e) {
       console.error(e);
     }
@@ -210,7 +217,6 @@ export default class Login extends React.Component {
     if (sv == 'Senior') {
       if (uname != "" && pword != "" && sv != null) {
         if (emailgood) {
-          Alert.alert("Age Verification", "Please take a picture of your face. Our automated system will determine if you are at least 50 years old.")
           this.setState({ camera: true });
         }
         else {
