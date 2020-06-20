@@ -109,40 +109,40 @@ export default class App extends Component {
             Http.onreadystatechange = (e) => {
               var ok = Http.responseText;
               if (Http.readyState == 4) {
-                if (ok.substring(0,4) == 'true'){
-                  for (var x=0, l = this.state.seniors.length;x<l;x++){
-                    if (senior.name == this.state.seniors[x].name){
+                if (ok.substring(0, 4) == 'true') {
+                  for (var x = 0, l = this.state.seniors.length; x < l; x++) {
+                    if (senior.name == this.state.seniors[x].name) {
                       var temp = this.state.seniors;
                       global.seniors = temp;
                       temp[x]['payment'] = true;
                       console.log(JSON.stringify(temp))
-                      this.setState({seniors: temp})
+                      this.setState({ seniors: temp })
                     }
                   }
-                  var log = JSON.parse(ok.substring(5,ok.length))
+                  var log = JSON.parse(ok.substring(5, ok.length))
                   var hours = parseInt(log.pop());
-                  global.hours = Math.floor(hours/60)
-                  global.minutes = Math.round(hours-60*global.hours);
+                  global.hours = Math.floor(hours / 60)
+                  global.minutes = Math.round(hours - 60 * global.hours);
                   global.peoplehelped = log.pop();
                   log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
                   const map = new Map();
                   let result = [];
                   for (const item of log) {
-                    if (!map.has(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
-                      map.set(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
-                      result.push(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
+                    if (!map.has(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                      map.set(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
+                      result.push(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
                     }
                   }
 
                   for (var i = 0; i < log.length; i++) {
                     log[i].index = Math.random().toString(36).substr(2, 5);
-                    if (result.includes(moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                    if (result.includes(moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
                       result.shift();
                       // console.log(result)
                       const he = {
                         header: true,
                         id: "" + (data.length + i),
-                        date: moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
+                        date: moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
                         index: Math.random().toString(36).substr(2, 5)
                       }
                       log.splice(i, 0, he);
@@ -186,15 +186,15 @@ export default class App extends Component {
     // do whatever you want to do with the notification
     //  global.status = "helped"
     if (notification.data.action == 'verify') {
-      for (var x=0; x<this.state.seniors.length; x++){
-        if (this.state.seniors[x].name == notification.data.username){
+      for (var x = 0; x < this.state.seniors.length; x++) {
+        if (this.state.seniors[x].name == notification.data.username) {
           var sens = this.state.seniors
           var marks = this.state.markers
-          sens.splice(x,1)
-          marks.splice(x,1)
+          sens.splice(x, 1)
+          marks.splice(x, 1)
           global.seniors = sens
           global.markers = marks
-          this.setState({seniors: sens, markers: marks})
+          this.setState({ seniors: sens, markers: marks })
         }
       }
     }
@@ -267,7 +267,7 @@ export default class App extends Component {
               <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
             </View>
             <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-              <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store,marker, false)}>
+              <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker, false)}>
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
               </TouchableOpacity>
             </View>
@@ -276,35 +276,35 @@ export default class App extends Component {
       );
     }
     if (this.state.seniors[index].payment) {
-      return(
-      <LinearGradient colors={['#FFCD9F', '#FF6666']} style={styles.card} key={index}>
-      <View style={{ flex: 1, width: '100%' }}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
-            <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name} needs to verify</Text>
-          </View>
-        </View>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Preferred Store: {this.state.seniors[index].store}</Text>
-        </View>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
-        </View>
-        <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker, true)}>
-            <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection:'row' }}>
-          <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
-            <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
-          </TouchableOpacity>
-          </View>
+      return (
+        <LinearGradient colors={['#FFCD9F', '#FF6666']} style={styles.card} key={index}>
+          <View style={{ flex: 1, width: '100%' }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
+                <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>{this.state.seniors[index].name} needs to verify</Text>
+              </View>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Preferred Store: {this.state.seniors[index].store}</Text>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>Distance: {this.state.location != null ? this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1) + ' Miles' : null}</Text>
+            </View>
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => this.details(this.state.seniors[index], index, this.distance(marker.coordinate.latitude, marker.coordinate.longitude, this.state.location.latitude, this.state.location.longitude, 'N').toFixed(1), this.state.seniors[index].store, marker, true)}>
+                <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
+                  <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
+                </TouchableOpacity>
+              </View>
 
-        </View>
-      </View>
-    </LinearGradient>
+            </View>
+          </View>
+        </LinearGradient>
       );
     }
     else {
@@ -327,16 +327,16 @@ export default class App extends Component {
                 <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Click for more information</Text>
               </TouchableOpacity>
             </View>
-            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection:'row' }}>
-              <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
-              <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
-                <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
-              </TouchableOpacity>
+            <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => this.chat(this.state.seniors[index])}>
+                  <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Chat</Text>
+                </TouchableOpacity>
               </View>
-              <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
-              <TouchableOpacity onPress={() => this.deliver(this.state.seniors[index])}>
-                <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Deliver</Text>
-              </TouchableOpacity>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => this.deliver(this.state.seniors[index])}>
+                  <Text style={{ fontFamily: 'SourceL', fontSize: Math.min(15 * rem, 27 * wid) }}>Deliver</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -370,10 +370,10 @@ export default class App extends Component {
       return (
         <View style={styles.container}>
           <Spinner
-              visible={this.state.loading}
-              textContent={'Marking request as delivered...'}
-              textStyle={styles.spinnerTextStyle}
-            />
+            visible={this.state.loading}
+            textContent={'Marking request as delivered...'}
+            textStyle={styles.spinnerTextStyle}
+          />
           <MapView
             ref={map => this.map = map}
             initialRegion={this.state.mapRegion}
@@ -473,7 +473,7 @@ export default class App extends Component {
             style={styles.scrollView}
           >
 
-            <View style={[styles.card,{backgroundColor:'white'}]}>
+            <View style={[styles.card, { backgroundColor: 'white' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ borderBottomColor: 'black', borderBottomWidth: 4 }}>
                   <Text style={{ fontFamily: 'SourceB', fontSize: Math.min(15 * rem, 27 * wid) }}>No Seniors</Text>

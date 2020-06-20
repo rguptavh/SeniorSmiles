@@ -26,7 +26,7 @@ export default class Login extends React.Component {
   componentDidMount() {
     this.getLocationAsync();
   }
-  async getLocationAsync (){
+  async getLocationAsync() {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== 'granted') {
       this.setState({
@@ -35,9 +35,9 @@ export default class Login extends React.Component {
     } else {
       this.setState({ hasLocationPermissions: true });
     }
- 
-   }
-    onPress = () => {
+
+  }
+  onPress = () => {
     var uname = this.state.username;
     var pword = this.state.password;
     if (uname != "" && pword != "") {
@@ -56,32 +56,32 @@ export default class Login extends React.Component {
           if (ok.substring(0, 9) == "Volunteer") {
             global.uname = uname;
             Fire.shared.observeAuth2();
-            var data = JSON.parse(ok.substring(10,ok.length));
+            var data = JSON.parse(ok.substring(10, ok.length));
             var seniors = data[0];
             var log = data[1];
             var hours = parseInt(log.pop());
-            global.hours = Math.floor(hours/60)
-            global.minutes = Math.round(hours-60*global.hours);
+            global.hours = Math.floor(hours / 60)
+            global.minutes = Math.round(hours - 60 * global.hours);
             global.peoplehelped = log.pop();
             log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
             const map = new Map();
             let result = [];
             for (const item of log) {
-              if (!map.has(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
-                map.set(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
-                result.push(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
+              if (!map.has(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                map.set(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
+                result.push(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
               }
             }
 
             for (var i = 0; i < log.length; i++) {
               log[i].index = Math.random().toString(36).substr(2, 5);
-              if (result.includes(moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+              if (result.includes(moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
                 result.shift();
                 // console.log(result)
                 const he = {
                   header: true,
                   id: "" + (data.length + i),
-                  date: moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
+                  date: moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
                   index: Math.random().toString(36).substr(2, 5)
                 }
                 log.splice(i, 0, he);
@@ -91,18 +91,18 @@ export default class Login extends React.Component {
             global.logs = log;
             var accepted = []
             var notaccepted = [];
-            for (const item of seniors){
-              if (item.userhelp == global.uname){
+            for (const item of seniors) {
+              if (item.userhelp == global.uname) {
                 accepted.push(item)
               }
-              else{
+              else {
                 notaccepted.push(item)
               }
             }
             seniors = accepted.concat(notaccepted)
             global.seniors = seniors;
             var markers = [];
-            for (var x=0,l=seniors.length;x<l;x++){
+            for (var x = 0, l = seniors.length; x < l; x++) {
               markers.push(seniors[x].location);
             }
             global.markers = markers;
@@ -111,7 +111,7 @@ export default class Login extends React.Component {
             AsyncStorage.setItem('type', "Volunteer");
             this.setState({ loading: false });
             this.props.navigation.replace('Map');
-            
+
           }
           else if (ok.substring(0, 6) == "Senior") {
             global.uname = uname
@@ -119,15 +119,15 @@ export default class Login extends React.Component {
             Fire.shared.observeAuth2();
             AsyncStorage.setItem('username', this.state.username);
             AsyncStorage.setItem('type', 'Senior');
-            var index = ok.indexOf(",",7);
-            var status = ok.substring(7,index);
-            var items = ok.substring(index+1,ok.length);
+            var index = ok.indexOf(",", 7);
+            var status = ok.substring(7, index);
+            var items = ok.substring(index + 1, ok.length);
             global.status = status;
             var temp = JSON.parse(items);
-            global.store = temp[temp.length-1].store
-            temp.splice(temp.length-1, 1);
-            global.userhelp = temp[temp.length-1].username
-            temp.splice(temp.length-1, 1);
+            global.store = temp[temp.length - 1].store
+            temp.splice(temp.length - 1, 1);
+            global.userhelp = temp[temp.length - 1].username
+            temp.splice(temp.length - 1, 1);
             global.items = temp;
             AsyncStorage.setItem('type', "Senior");
             this.setState({ loading: false });
@@ -154,7 +154,7 @@ export default class Login extends React.Component {
   render() {
 
 
-    
+
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -167,9 +167,9 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Welcome.</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily: 'SourceB' }}>Welcome.</Text></View>
             <View style={{
-              flex: 2.25, width: '90%', alignItems:'flex-end'
+              flex: 2.25, width: '90%', alignItems: 'flex-end'
             }}>
               <View style={{ width: '100%', height: '80%', alignItems: 'flex-end' }}>
                 <View style={{
@@ -207,41 +207,41 @@ export default class Login extends React.Component {
                     secureTextEntry={true}
 
                   />
-                  </View>
+                </View>
 
               </View>
-              <TouchableOpacity style={{ marginTop: 2*rem, }} onPress={() => this.props.navigation.navigate('Forgot')}>
-                  <Text style={{color: '#22B7CB' ,fontSize:15*wid,fontFamily:'Source'}}>Forgot your password?</Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={{ marginTop: 2 * rem, }} onPress={() => this.props.navigation.navigate('Forgot')}>
+                <Text style={{ color: '#22B7CB', fontSize: 15 * wid, fontFamily: 'Source' }}>Forgot your password?</Text>
+              </TouchableOpacity>
             </View>
             <View style={{
               width: '73%',
               flex: 1.75,
               justifyContent: 'flex-start',
-              alignItems:'center'
+              alignItems: 'center'
             }}>
-              <View style = {{flex:1, marginTop:'4%', width:'100%', alignItems:'center'}}>
-              <TouchableOpacity
-                style={{
-                  height: '40%',
-                  width: '80%',
-                  borderRadius:20,
-                  backgroundColor:'#BF0DFE',
-                  justifyContent:'center',
-                  alignItems:'center'
-                }}
-                onPress={() => this.onPress()}
-                disabled={this.state.loading}
+              <View style={{ flex: 1, marginTop: '4%', width: '100%', alignItems: 'center' }}>
+                <TouchableOpacity
+                  style={{
+                    height: '40%',
+                    width: '80%',
+                    borderRadius: 20,
+                    backgroundColor: '#BF0DFE',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                  onPress={() => this.onPress()}
+                  disabled={this.state.loading}
 
-              >
-                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(25*rem,45*wid)}}>Login</Text>
-              </TouchableOpacity>
-              <View style={styles.row}>
-                <Text style={styles.label}>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
-                  <Text style={styles.link}>Sign up</Text>
+                >
+                  <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid) }}>Login</Text>
                 </TouchableOpacity>
-              </View>
+                <View style={styles.row}>
+                  <Text style={styles.label}>Don’t have an account? </Text>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
+                    <Text style={styles.link}>Sign up</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
@@ -283,18 +283,18 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginTop: rem*10,
+    marginTop: rem * 10,
   },
   label: {
     color: 'black',
-    fontSize:18*wid,
-    fontFamily:'Source'
+    fontSize: 18 * wid,
+    fontFamily: 'Source'
   },
   link: {
     fontWeight: 'bold',
     color: '#22B7CB',
-    fontSize:18*wid,
-    fontFamily:'SourceB'
+    fontSize: 18 * wid,
+    fontFamily: 'SourceB'
   },
 
 });

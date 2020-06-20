@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Vibration, Platform, StyleSheet,AsyncStorage, Image, Alert, TextInput } from 'react-native';
+import { Text, View, Vibration, Platform, StyleSheet, AsyncStorage, Image, Alert, TextInput } from 'react-native';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import * as Font from 'expo-font';
@@ -38,7 +38,7 @@ export default class AppContainer extends React.Component {
     // Ignore dynamic type scaling on iOS
     Text.defaultProps.allowFontScaling = false;
     TextInput.defaultProps = TextInput.defaultProps || {};
-TextInput.defaultProps.allowFontScaling = false;
+    TextInput.defaultProps.allowFontScaling = false;
     SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
 
   }
@@ -51,7 +51,7 @@ TextInput.defaultProps.allowFontScaling = false;
         console.log(asked)
         if (asked == null || asked == 'undefined') {
           AsyncStorage.setItem('asked', "true");
-          Alert.alert('Please Enable Notifications','This app uses notifications to notify you about the status of requests.');
+          Alert.alert('Please Enable Notifications', 'This app uses notifications to notify you about the status of requests.');
         }
 
         const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -94,14 +94,14 @@ TextInput.defaultProps.allowFontScaling = false;
       'SourceL': require('./assets/fonts/SourceSansPro-Light.otf'),
     });
     this.cacheResourcesAsync() // ask for resources
-    .then(() => this.setState({assetsLoaded: true})) // mark resources as loaded
+      .then(() => this.setState({ assetsLoaded: true })) // mark resources as loaded
 
     global.logging = false;
     let name;
     try {
       name = await AsyncStorage.getItem('username')
-    //  // console.log(name);
-    //  // console.log(global.logged);
+      //  // console.log(name);
+      //  // console.log(global.logged);
       if (name !== null && name != 'undefined') {
         logged = true;
         global.uname = name;
@@ -122,83 +122,83 @@ TextInput.defaultProps.allowFontScaling = false;
       Http.onreadystatechange = (e) => {
         ok = Http.responseText;
         if (Http.readyState == 4) {
-            console.log(ok);
-            if (type == "Volunteer") {
-              global.uname = uname;
-              Fire.shared.observeAuth2();
-              var data = JSON.parse(ok.substring(10,ok.length));
-              var seniors = data[0];
-              var log = data[1];
-              var hours = parseInt(log.pop());
-              global.hours = Math.floor(hours/60)
-              global.minutes = Math.round(hours-60*global.hours);
-              global.peoplehelped = log.pop();
-              log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
-              const map = new Map();
-              let result = [];
-              for (const item of log) {
-                if (!map.has(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
-                  map.set(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
-                  result.push(moment(item.end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
-                }
+          console.log(ok);
+          if (type == "Volunteer") {
+            global.uname = uname;
+            Fire.shared.observeAuth2();
+            var data = JSON.parse(ok.substring(10, ok.length));
+            var seniors = data[0];
+            var log = data[1];
+            var hours = parseInt(log.pop());
+            global.hours = Math.floor(hours / 60)
+            global.minutes = Math.round(hours - 60 * global.hours);
+            global.peoplehelped = log.pop();
+            log = log.sort((a, b) => moment(b.end, 'MM-DD-YYYY h:mm A').format('X') - moment(a.end, 'MM-DD-YYYY h:mm A').format('X'))
+            const map = new Map();
+            let result = [];
+            for (const item of log) {
+              if (!map.has(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                map.set(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'), true);    // set any value to Map
+                result.push(moment(item.end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'));
               }
-  
-              for (var i = 0; i < log.length; i++) {
-                log[i].index = Math.random().toString(36).substr(2, 5);
-                if (result.includes(moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
-                  result.shift();
-                  // console.log(result)
-                  const he = {
-                    header: true,
-                    id: "" + (data.length + i),
-                    date: moment(log[i].end,'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
-                    index: Math.random().toString(36).substr(2, 5)
-                  }
-                  log.splice(i, 0, he);
-                }
-              }
-              console.log(log)
-              global.logs = log;
-              var accepted = []
-              var notaccepted = [];
-              for (const item of seniors){
-                if (item.userhelp == global.uname){
-                  accepted.push(item)
-                }
-                else{
-                  notaccepted.push(item)
-                }
-              }
-              seniors = accepted.concat(notaccepted)
-              global.seniors = seniors;
-              var markers = [];
-              for (var x=0,l=seniors.length;x<l;x++){
-                markers.push(seniors[x].location);
-              }
-              global.markers = markers;
-              console.log(markers)
-              this.setState({ loading: false, isAppReady:true });
-              
             }
-            else if (type == "Senior") {
-              var index = ok.indexOf(",",7);
-              var status = ok.substring(7,index);
-              var items = ok.substring(index+1,ok.length);
-              global.status = status;
-              var temp = JSON.parse(items);
-              global.store = temp[temp.length-1].store
-              temp.splice(temp.length-1, 1);
-              global.userhelp = temp[temp.length-1].username
-              temp.splice(temp.length-1, 1);
-              global.items = temp;
-              AsyncStorage.setItem('type', "Senior");
-              this.setState({ loading: false, isAppReady:true });
 
+            for (var i = 0; i < log.length; i++) {
+              log[i].index = Math.random().toString(36).substr(2, 5);
+              if (result.includes(moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'))) {
+                result.shift();
+                // console.log(result)
+                const he = {
+                  header: true,
+                  id: "" + (data.length + i),
+                  date: moment(log[i].end, 'MM-DD-YYYY h:mm A').format('MMMM Do YYYY'),
+                  index: Math.random().toString(36).substr(2, 5)
+                }
+                log.splice(i, 0, he);
+              }
             }
-            else {
-              this.setState({ loading: false });
-              setTimeout(() => { alert("Server Error"); }, 100);
+            console.log(log)
+            global.logs = log;
+            var accepted = []
+            var notaccepted = [];
+            for (const item of seniors) {
+              if (item.userhelp == global.uname) {
+                accepted.push(item)
+              }
+              else {
+                notaccepted.push(item)
+              }
             }
+            seniors = accepted.concat(notaccepted)
+            global.seniors = seniors;
+            var markers = [];
+            for (var x = 0, l = seniors.length; x < l; x++) {
+              markers.push(seniors[x].location);
+            }
+            global.markers = markers;
+            console.log(markers)
+            this.setState({ loading: false, isAppReady: true });
+
+          }
+          else if (type == "Senior") {
+            var index = ok.indexOf(",", 7);
+            var status = ok.substring(7, index);
+            var items = ok.substring(index + 1, ok.length);
+            global.status = status;
+            var temp = JSON.parse(items);
+            global.store = temp[temp.length - 1].store
+            temp.splice(temp.length - 1, 1);
+            global.userhelp = temp[temp.length - 1].username
+            temp.splice(temp.length - 1, 1);
+            global.items = temp;
+            AsyncStorage.setItem('type', "Senior");
+            this.setState({ loading: false, isAppReady: true });
+
+          }
+          else {
+            this.setState({ loading: false });
+            setTimeout(() => { alert("Server Error"); }, 100);
+          }
 
         }
       }
@@ -209,7 +209,7 @@ TextInput.defaultProps.allowFontScaling = false;
       SplashScreen.hide();
       this.setState({ isAppReady: true });
     }
- 
+
   }
 
   _handleNotification = notification => {
@@ -220,10 +220,10 @@ TextInput.defaultProps.allowFontScaling = false;
   render() {
     if (!this.state.assetsLoaded) {
       return null;
-  }
+    }
     if (!this.state.isAppReady) {
-        return (
-          <View style={{ flex: 1 }}>
+      return (
+        <View style={{ flex: 1 }}>
           <Image
             style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
             source={require('./assets/splash.gif')}
@@ -234,43 +234,43 @@ TextInput.defaultProps.allowFontScaling = false;
           />
         </View>
       );
-        }
+    }
 
-      const AppNavigator = createStackNavigator({
-        Login: {
-          screen: log
-        },
-        Map: {
-          screen: map
-        },
-        Signup: {
-          screen:signup
-        },
-        Forgot: {
-          screen:forgot
-        },
-        Senior: {
-          screen:senior
-        },
-        Chat: {
-          screen:chat
-        },
-        Info: {
-          screen: info
-        },
-        Profile: {
-          screen: profile
-        },
+    const AppNavigator = createStackNavigator({
+      Login: {
+        screen: log
       },
-        {
-          initialRouteName: logged ? type == 'Volunteer' ? 'Map' : 'Senior' : 'Login',
-          headerMode:'none'
-        });
+      Map: {
+        screen: map
+      },
+      Signup: {
+        screen: signup
+      },
+      Forgot: {
+        screen: forgot
+      },
+      Senior: {
+        screen: senior
+      },
+      Chat: {
+        screen: chat
+      },
+      Info: {
+        screen: info
+      },
+      Profile: {
+        screen: profile
+      },
+    },
+      {
+        initialRouteName: logged ? type == 'Volunteer' ? 'Map' : 'Senior' : 'Login',
+        headerMode: 'none'
+      });
 
-      const AppContainer = createAppContainer(AppNavigator);
-      return(
-      <AppContainer/>
-      );
+    const AppContainer = createAppContainer(AppNavigator);
+    return (
+      <AppContainer />
+    );
   }
   async cacheResourcesAsync() {
     const images = [require('./assets/splash.png')];

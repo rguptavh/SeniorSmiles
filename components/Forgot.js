@@ -37,7 +37,7 @@ export default class Login extends React.Component {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?action=forgot"+"&email="+email;
+        var data = "?action=forgot" + "&email=" + email;
         console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
@@ -112,7 +112,7 @@ export default class Login extends React.Component {
               // console.log(JSON.stringify(data))
               AsyncStorage.setItem('username', this.state.username);
                 */
-               
+
               this.setState({ loading: false });
               setTimeout(() => { alert("Succesfully Sent Email"); }, 100);
               this.props.navigation.navigate('Login')
@@ -147,7 +147,7 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Forgot Login.</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily: 'SourceB' }}>Forgot Login.</Text></View>
             <View style={{
               flex: 1, width: '90%'
             }}>
@@ -169,7 +169,7 @@ export default class Login extends React.Component {
                     value={this.state.email}
 
                   /></View>
-              <View style = {{flex:0.5}}></View>
+                <View style={{ flex: 0.5 }}></View>
               </View>
 
             </View>
@@ -177,23 +177,23 @@ export default class Login extends React.Component {
               width: '85%',
               flex: 3,
               justifyContent: 'flex-start',
-              alignItems:'center'
+              alignItems: 'center'
             }}>
               <TouchableOpacity
                 style={{
                   height: '20%',
                   width: '90%',
-                  borderRadius:20,
-                  backgroundColor:'#BF0DFE',
-                  justifyContent:'center',
-                  marginTop:'10%',
-                  alignItems:'center'
+                  borderRadius: 20,
+                  backgroundColor: '#BF0DFE',
+                  justifyContent: 'center',
+                  marginTop: '10%',
+                  alignItems: 'center'
                 }}
                 onPress={onPress}
                 disabled={this.state.loading}
 
               >
-                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(20*rem,36*wid)}}>Send Login Info</Text>
+                <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid) }}>Send Login Info</Text>
               </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Check email for your credentials. </Text>
@@ -241,18 +241,18 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginTop: rem*20,
+    marginTop: rem * 20,
   },
   label: {
     color: 'black',
-    fontSize:18*wid,
-    fontFamily:'Source'
+    fontSize: 18 * wid,
+    fontFamily: 'Source'
   },
   link: {
     fontWeight: 'bold',
     color: '#22B7CB',
-    fontSize:18*wid,
-    fontFamily:'SourceB'
+    fontSize: 18 * wid,
+    fontFamily: 'SourceB'
   },
 
 });
