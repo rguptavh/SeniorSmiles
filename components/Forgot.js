@@ -37,7 +37,7 @@ export default class Login extends React.Component {
         this.setState({ loading: true });
         const Http = new XMLHttpRequest();
         const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-        var data = "?action=forgot"+"&email="+email;
+        var data = "?action=forgot" + "&email=" + email;
         console.log(data);
         Http.open("GET", String(url + data));
         Http.send();
@@ -45,9 +45,74 @@ export default class Login extends React.Component {
         Http.onreadystatechange = (e) => {
           ok = Http.responseText;
           if (Http.readyState == 4) {
-            cotnsole.log(String(ok));
+            console.log(String(ok));
 
             if (ok.substring(0, 4) == "true") {
+              // console.log(response.toString());
+              /*global.uname = uname;
+              var total = parseFloat(ok.substring(5, ok.indexOf(",", 5)));
+              global.hours = Math.floor(total);
+              global.minutes = Math.round((total - global.hours) * 60);
+              console.log(global.minutes)
+              var data = JSON.parse(ok.substring(ok.indexOf(",", 5) + 1, ok.length))
+
+              // console.log(JSON.stringify(data))
+              var ongoing = [];
+              var specific = [];
+              var log = [];
+              for (var x = 0; x < data.length; x++) {
+                if (data[x].type == "Log") {
+                  data[x]["id"] = "" + x;
+                  log.push(data[x]);
+                }
+                else if (data[x].type == "Ongoing") {
+                  data[x]["id"] = "" + x;
+                  ongoing.push(data[x]);
+                }
+                else if (data[x].type == "Specific") {
+                  data[x]["id"] = "" + x;
+                  specific.push(data[x]);
+                }
+              }
+              console.log(data)
+
+              specific = specific.sort((a, b) => moment(a.date + " " + a.start, 'MM-DD-YYYY h:mm A').format('X') - moment(b.date + " " + b.start, 'MM-DD-YYYY h:mm A').format('X'))
+              log = log.sort((a, b) => moment(b.date, 'MM-DD-YYYY').format('X') - moment(a.date, 'MM-DD-YYYY').format('X'))
+              const map = new Map();
+              let result = [];
+              for (const item of log) {
+                if (!map.has(item.date)) {
+                  map.set(item.date, true);    // set any value to Map
+                  result.push(item.date);
+                }
+              }
+              for (var i = 0; i < log.length; i++) {
+                if (result.includes(log[i].date)) {
+                  result.shift();
+                  // console.log(result)
+                  const he = {
+                    header: true,
+                    id: "" + (data.length + i),
+                    date: log[i].date
+                  }
+                  log.splice(i, 0, he);
+                }
+              }
+              var options = []
+              for (const item of ongoing) {
+                options.push({ label: item.name, value: item.name })
+              }
+              for (const item of specific) {
+                options.push({ label: item.name, value: item.name })
+              }
+              global.options = options;
+              global.ongoing = ongoing;
+              global.specific = specific;
+              global.logs = log;
+              // console.log(JSON.stringify(data))
+              AsyncStorage.setItem('username', this.state.username);
+                */
+
               this.setState({ loading: false });
               setTimeout(() => { alert("Succesfully Sent Email"); }, 100);
               this.props.navigation.navigate('Login')
@@ -82,7 +147,7 @@ export default class Login extends React.Component {
             />
             <View style={{ flex: 0.35 }}></View>
             <View style={{ flex: 2.5, width: '100%', alignItems: 'center', padding: 0, }}><Image source={require('../assets/logo.png')} style={styles.imagefront} resizeMode="contain"></Image></View>
-            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily:'SourceB' }}>Forgot Login.</Text></View>
+            <View style={{ flex: 0.75, alignItems: 'center', justifyContent: 'center', width: '100%' }}><Text style={{ fontSize: Math.min(20 * rem, 700 * wid), color: '#BF0DFE', fontWeight: 'bold', fontFamily: 'SourceB' }}>Forgot Login.</Text></View>
             <View style={{
               flex: 1, width: '90%'
             }}>
@@ -104,7 +169,7 @@ export default class Login extends React.Component {
                     value={this.state.email}
 
                   /></View>
-              <View style = {{flex:0.5}}></View>
+                <View style={{ flex: 0.5 }}></View>
               </View>
 
             </View>
@@ -112,23 +177,23 @@ export default class Login extends React.Component {
               width: '85%',
               flex: 3,
               justifyContent: 'flex-start',
-              alignItems:'center'
+              alignItems: 'center'
             }}>
               <TouchableOpacity
                 style={{
                   height: '20%',
                   width: '90%',
-                  borderRadius:20,
-                  backgroundColor:'#BF0DFE',
-                  justifyContent:'center',
-                  marginTop:'10%',
-                  alignItems:'center'
+                  borderRadius: 20,
+                  backgroundColor: '#BF0DFE',
+                  justifyContent: 'center',
+                  marginTop: '10%',
+                  alignItems: 'center'
                 }}
                 onPress={onPress}
                 disabled={this.state.loading}
 
               >
-                <Text style = {{color:'white', fontFamily:'SourceB', fontSize:Math.min(20*rem,36*wid)}}>Send Login Info</Text>
+                <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid) }}>Send Login Info</Text>
               </TouchableOpacity>
               <View style={styles.row}>
                 <Text style={styles.label}>Check email for your credentials. </Text>
@@ -176,18 +241,18 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginTop: rem*20,
+    marginTop: rem * 20,
   },
   label: {
     color: 'black',
-    fontSize:18*wid,
-    fontFamily:'Source'
+    fontSize: 18 * wid,
+    fontFamily: 'Source'
   },
   link: {
     fontWeight: 'bold',
     color: '#22B7CB',
-    fontSize:18*wid,
-    fontFamily:'SourceB'
+    fontSize: 18 * wid,
+    fontFamily: 'SourceB'
   },
 
 });

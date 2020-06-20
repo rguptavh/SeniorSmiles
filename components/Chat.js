@@ -141,14 +141,14 @@ class Chat extends React.Component {
         <View style={{ flex: 1 }}>
           <Camera style={{ flex: 1 }} type={this.state.cameraType} ref={ref => { this.camera = ref }}>
             <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", margin: 30 }}>
-              
-            <TouchableOpacity
+
+              <TouchableOpacity
                 style={{
                   alignSelf: 'flex-end',
                   alignItems: 'center',
                   backgroundColor: 'transparent'
                 }}
-                onPress={() => this.setState({camera: false})}>
+                onPress={() => this.setState({ camera: false })}>
                 <Ionicons
                   name="ios-arrow-back"
                   style={{ color: "#fff", fontSize: 40 }}

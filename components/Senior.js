@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { FlatList, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard, Image, ImageBackground, TextInput, TouchableOpacity, Dimensions, AsyncStorage, KeyboardAvoidingView, Alert, TouchableHighlight } from 'react-native';
-import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as Location from 'expo-location';
 import { Notifications } from 'expo';
-import { NavigationActions, StackActions, ThemeColors } from 'react-navigation'
+import { NavigationActions, StackActions } from 'react-navigation'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fire from '../Fire';
@@ -17,7 +16,6 @@ const entireScreenWidth = Dimensions.get('window').width;
 const wid = entireScreenWidth / 380;
 let location = null;
 let first = true;
-let first1 = true;
 export default class Login extends React.Component {
   state = {
     loading: false,
@@ -108,17 +106,17 @@ export default class Login extends React.Component {
     }
     else if (notification.data.action == 'deliver') {
       global.status = 'payment'
-      this.setState({ status: 'payment'})
+      this.setState({ status: 'payment' })
 
     }
     console.log(notification)
   };
   _keyboardDidShow = () => {
-    this.setState({keyboard: true})
+    this.setState({ keyboard: true })
   }
 
   _keyboardDidHide = () => {
-    this.setState({keyboard: false})
+    this.setState({ keyboard: false })
   }
   cancel = () => {
     Alert.alert(
@@ -133,19 +131,19 @@ export default class Login extends React.Component {
             const Http = new XMLHttpRequest();
             const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
             var data = "?username=" + global.uname + "&action=sencancel";
-            this.setState({loading: true, message: 'Cancelling Request...'})
+            this.setState({ loading: true, message: 'Cancelling Request...' })
             Http.open("GET", String(url + data));
             Http.send();
             Http.onreadystatechange = (e) => {
               var ok = Http.responseText;
               if (Http.readyState == 4) {
                 if (ok.substring(0, 4) == "true") {
-                  this.setState({ loading: false, status : 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: ''});
+                  this.setState({ loading: false, status: 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: '' });
                   setTimeout(() => { alert("Succesfully removed your request!"); }, 100);
-    
+
                 }
-                else if (ok == 'false'){
-                  this.setState({ loading: false});
+                else if (ok == 'false') {
+                  this.setState({ loading: false });
                   setTimeout(() => { alert("Sorry, your request has already been accepted by a volunteer."); }, 100);
                 }
                 else {
@@ -172,20 +170,20 @@ export default class Login extends React.Component {
           text: "Yes", onPress: () => {
             const Http = new XMLHttpRequest();
             const url = 'https://script.google.com/macros/s/AKfycbyy9wg6h8W2WzlpnTrTAxsioEsuFfBSVjE0hTrlQoRUnoSUsAk/exec';
-            var data = "?sen=" + global.uname + "&vol=" + this.state.userhelp +  "&action=verify";
-            this.setState({loading: true, message: 'Verifying Request...'})
+            var data = "?sen=" + global.uname + "&vol=" + this.state.userhelp + "&action=verify";
+            this.setState({ loading: true, message: 'Verifying Request...' })
             Http.open("GET", String(url + data));
             Http.send();
             Http.onreadystatechange = (e) => {
               var ok = Http.responseText;
               if (Http.readyState == 4) {
                 if (ok.substring(0, 4) == "true") {
-                  this.setState({ loading: false, status : 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: ''});
+                  this.setState({ loading: false, status: 'order', items: [{ index: 0, name: '', quantity: '', add: false }, { index: 1, name: '', quantity: '', add: true }], store: '' });
                   setTimeout(() => { alert("Succesfully verified your request!"); }, 100);
-    
+
                 }
-                else if (ok == 'false'){
-                  this.setState({ loading: false});
+                else if (ok == 'false') {
+                  this.setState({ loading: false });
                   setTimeout(() => { alert("Sorry, there was an error, please reload the app."); }, 100);
                 }
                 else {
@@ -200,17 +198,17 @@ export default class Login extends React.Component {
       { cancelable: false }
     );
   }
-  deleteNote = ( item) => {
+  deleteNote = (item) => {
     var temp = this.state.items
-    temp.splice(item.index,1)
-    for (var x = item.index; x<this.state.items.length;x++){
-    this.state.items[x].index -= 1
+    temp.splice(item.index, 1)
+    for (var x = item.index; x < this.state.items.length; x++) {
+      this.state.items[x].index -= 1
     }
-    this.setState({items: temp})
+    this.setState({ items: temp })
   }
   _renderItem = ({ item }) => {
     const rightButtons = [
-      <TouchableHighlight style={{ backgroundColor: 'red', height: '100%', justifyContent: 'center', marginLeft:wid*5}} onPress={() => this.deleteNote(item)}><Text style={{ color: 'white', paddingLeft: entireScreenHeight / 50 }}>Delete</Text></TouchableHighlight>,
+      <TouchableHighlight style={{ backgroundColor: 'red', height: '100%', justifyContent: 'center', marginLeft: wid * 5 }} onPress={() => this.deleteNote(item)}><Text style={{ color: 'white', paddingLeft: entireScreenHeight / 50 }}>Delete</Text></TouchableHighlight>,
     ];
     var f = false
     if (first) {
@@ -220,7 +218,7 @@ export default class Login extends React.Component {
     if (item.add) {
       if (this.state.status == 'order') {
         return (
-          <View style={{ height: rem * 35, width: '100%', marginTop:rem*7 }}>
+          <View style={{ height: rem * 35, width: '100%', marginTop: rem * 7 }}>
             <TouchableOpacity style={{ height: '60%', width: '100%', flexDirection: 'row', alignItems: 'center', }} onPress={this.add}>
               <Image style={{ flex: 0.75, width: '100%', height: '100%', }} source={require('../assets/plus.png')} resizeMode='contain'>
               </Image>
@@ -240,28 +238,28 @@ export default class Login extends React.Component {
       if (this.state.status == 'order') {
         return (
 
-      <View style={{ width: '100%', marginTop:rem*7, backgroundColor:'white'}}>
-                  <Swipeable rightButtons={rightButtons} rightButtonWidth={entireScreenWidth / 5} bounceOnMount={f}>
-      <View style={{ width: '100%', flexDirection: 'row', }}>
-        <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
-                <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} multiline={true} placeholder="Name" onChangeText={(value) => {
-                  var temp = this.state.items;
-                  temp[item.index]["name"] = value;
-                  this.setState({ items: temp })
+          <View style={{ width: '100%', marginTop: rem * 7, backgroundColor: 'white' }}>
+            <Swipeable rightButtons={rightButtons} rightButtonWidth={entireScreenWidth / 5} bounceOnMount={f}>
+              <View style={{ width: '100%', flexDirection: 'row', }}>
+                <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop: rem * 2, paddingBottom: rem * 2 }}>
+                  <TextInput style={{ flex: 1, width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15 }} multiline={true} placeholder="Name" onChangeText={(value) => {
+                    var temp = this.state.items;
+                    temp[item.index]["name"] = value;
+                    this.setState({ items: temp })
 
-                  console.log(this.state.items)
-                }}></TextInput>
+                    console.log(this.state.items)
+                  }}></TextInput>
+                </View>
+                <View style={{ flex: 0.25, backgroundColor: 'white' }}></View>
+                <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
+                  <TextInput style={{ flex: 1, width: '100%', textAlign: 'center', fontFamily: 'SourceL', fontSize: rem * 15 }} keyboardType='number-pad' maxLength={2} placeholder="#" onChangeText={(value) => {
+                    var temp = this.state.items;
+                    temp[item.index]["quantity"] = value;
+                    this.setState({ items: temp })
+                    console.log(this.state.items)
+                  }}></TextInput>
+                </View>
               </View>
-              <View style={{ flex: 0.25, backgroundColor:'white' }}></View>
-              <View style={{ flex: 1, borderWidth: 2, borderRadius: 20 }}>
-                <TextInput style={{ flex: 1, width: '100%', textAlign: 'center', fontFamily: 'SourceL', fontSize: rem * 15 }} keyboardType='number-pad' maxLength={2} placeholder="#" onChangeText={(value) => {
-                  var temp = this.state.items;
-                  temp[item.index]["quantity"] = value;
-                  this.setState({ items: temp })
-                  console.log(this.state.items)
-                }}></TextInput>
-              </View>
-            </View>
             </Swipeable>
           </View>
 
@@ -270,9 +268,9 @@ export default class Login extends React.Component {
       else {
         return (
 
-          <View style={{ width: '100%', marginTop:rem*7, }}>
-          <View style={{ width: '100%', flexDirection: 'row', }}>
-            <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop:rem*2, paddingBottom:rem*2 }}>
+          <View style={{ width: '100%', marginTop: rem * 7, }}>
+            <View style={{ width: '100%', flexDirection: 'row', }}>
+              <View style={{ flex: 3, borderWidth: 2, borderRadius: 20, justifyContent: 'center', paddingTop: rem * 2, paddingBottom: rem * 2 }}>
                 <Text style={{ width: '90%', marginLeft: '10%', fontFamily: 'SourceL', fontSize: rem * 15, }}>{this.state.items[item.index].name}</Text>
               </View>
               <View style={{ flex: 0.25 }}></View>
@@ -346,7 +344,7 @@ export default class Login extends React.Component {
     }
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
- <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false} disabled= {!this.state.keyboard}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false} disabled={!this.state.keyboard}>
           <View style={styles.container}>
             <Spinner
               visible={this.state.loading}
@@ -367,10 +365,10 @@ export default class Login extends React.Component {
                     <Text style={{ fontSize: Math.min(35 * wid, 17 * rem), color: '#BF0DFE', fontFamily: 'SourceB' }}>{this.state.status == 'order' ? 'Items Desired:' : 'Items Requested:'}</Text>
                   </View>
                   <View style={{ flex: 3, width: '85%' }}>
-                    <FlatList style={{ width: '100%', backgroundColor:'white' }}
+                    <FlatList style={{ width: '100%', backgroundColor: 'white' }}
                       data={this.state.items}
                       renderItem={this._renderItem}
-                      
+
                       keyExtractor={item => "" + item.index}
                     />
                   </View>
@@ -384,19 +382,20 @@ export default class Login extends React.Component {
                         onChangeText={(value) => this.setState({ store: value })}
                         value={this.state.store}
                         onFocus={() => {
-                          if (first1) {
+                          if (first) {
                             Alert.alert("Preferred Store", "Please make sure that your preferred store has all of the items on your list.")
-                            first1 = false;
-                            this.setState({keyboard: true})
-                          }}
+                            first = false;
+                            this.setState({ keyboard: true })
+                          }
                         }
-                        editable = {this.state.status == 'order'}
+                        }
+                        editable={this.state.status == 'order'}
                       />
                     </View>
                   </View>
                 </View>
               </View>
-              <View style={{ flex: 1, width: '90%', alignItems:'center'}}>
+              <View style={{ flex: 1, width: '90%', alignItems: 'center' }}>
                 {this.state.status == 'order' ?
                   <TouchableOpacity style={{ height: '45%', width: '70%', alignItems: 'center', }} onPress={onPress}>
                     <LinearGradient
@@ -404,48 +403,48 @@ export default class Login extends React.Component {
                       style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Submit</Text>
                     </LinearGradient>
-                  </TouchableOpacity> : this.state.status == 'payment' ? 
-                  <View style = {{height:'45%', width:'100%', flexDirection:'row', alignItems:'center'}}>
-                    <View style = {{flex:1, height:'100%', alignItems:'center'}}>
-                  <TouchableOpacity style={{ height: '100%', width: '80%' }} onPress={() => this.chat()}>
-                    <LinearGradient
-                      colors={['#8B9DFD', '#BF0DFE']}
-                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Chat</Text>
-                    </LinearGradient>
-                  </TouchableOpacity> 
-                  </View>
-                  <View style = {{flex:1, height:'100%', alignItems:'center'}}>
-                  <TouchableOpacity style={{ height: '100%', width: '80%', alignItems: 'center', }} onPress={() => this.verify()}>
-                    <LinearGradient
-                      colors={['#8B9DFD', '#BF0DFE']}
-                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify</Text>
-                    </LinearGradient>
-                  </TouchableOpacity> 
-                  </View>
+                  </TouchableOpacity> : this.state.status == 'payment' ?
+                    <View style={{ height: '45%', width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+                      <View style={{ flex: 1, height: '100%', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ height: '100%', width: '80%' }} onPress={() => this.chat()}>
+                          <LinearGradient
+                            colors={['#8B9DFD', '#BF0DFE']}
+                            style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                            <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Chat</Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={{ flex: 1, height: '100%', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ height: '100%', width: '80%', alignItems: 'center', }} onPress={() => this.verify()}>
+                          <LinearGradient
+                            colors={['#8B9DFD', '#BF0DFE']}
+                            style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                            <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Verify</Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.cancel()}>
-                    <LinearGradient
-                      colors={['#8B9DFD', '#BF0DFE']}
-                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Cancel</Text>
-                    </LinearGradient>
-                  </TouchableOpacity> : 
-                  <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.chat()}>
-                    <LinearGradient
-                      colors={['#8B9DFD', '#BF0DFE']}
-                      style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
-                      <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Chat</Text>
-                    </LinearGradient>
-                  </TouchableOpacity> }
+                    : this.state.status == 'nothelped' ? <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.cancel()}>
+                      <LinearGradient
+                        colors={['#8B9DFD', '#BF0DFE']}
+                        style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                        <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Cancel</Text>
+                      </LinearGradient>
+                    </TouchableOpacity> :
+                      <TouchableOpacity style={{ height: '45%', width: '60%', alignItems: 'center', }} onPress={() => this.chat()}>
+                        <LinearGradient
+                          colors={['#8B9DFD', '#BF0DFE']}
+                          style={{ height: '100%', alignItems: 'center', borderRadius: 20, width: '100%', justifyContent: 'center' }}>
+                          <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(25 * rem, 45 * wid), textAlign: 'center' }}>Chat</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>}
                 <TouchableOpacity style={{ alignSelf: 'center', justifyContent: 'center', marginTop: rem * 7 }} onPress={this.onPress2}>
                   <Text style={{ fontSize: Math.min(rem * 15, wid * 36), fontFamily: 'Source' }}>Logout</Text>
                 </TouchableOpacity>
               </View>
             </ImageBackground>
           </View>
-          </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView >
 
     );
@@ -458,7 +457,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'white'
+    backgroundColor: 'white'
     // left: 0, top: 0, position: 'absolute'
 
   },
@@ -497,37 +496,37 @@ const styles = StyleSheet.create({
     color: '#22B7CB',
     fontSize: 18 * wid,
     fontFamily: 'SourceB'
-  },    
+  },
   backTextWhite: {
     color: '#FFF',
-},
-rowFront: {
+  },
+  rowFront: {
     alignItems: 'center',
     backgroundColor: '#CCC',
     borderBottomColor: 'black',
     borderBottomWidth: 1,
     justifyContent: 'center',
     height: 50,
-},
-rowBack: {
+  },
+  rowBack: {
     alignItems: 'center',
     backgroundColor: 'red',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingLeft: 15,
-},
-backRightBtn: {
+  },
+  backRightBtn: {
     alignItems: 'center',
     bottom: 0,
     justifyContent: 'center',
     position: 'absolute',
     top: 0,
     width: 75,
-},
-backRightBtnRight: {
+  },
+  backRightBtnRight: {
     backgroundColor: 'red',
     right: 0,
-},
+  },
 
 });

@@ -220,7 +220,7 @@ export default class Login extends React.Component {
               </LinearGradient>
             </View>
             <View style={{ flex: 0.75, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
-              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%', alignItems:'center' }}>
+              <View style={{ flex: 1, width: '90%', paddingLeft: '3%', paddingRight: '3%', alignItems: 'center' }}>
                 <TouchableOpacity style={{ width: '50%', height: '40%', }} onPress={() => this.props.navigation.navigate('Map')}>
                   <LinearGradient colors={['#8B9DFD', '#BF0DFE']} style={{ flex: 1, width: '100%', borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ color: 'white', fontFamily: 'SourceB', fontSize: Math.min(20 * rem, 36 * wid), textAlign: 'center' }}>Back</Text>
